@@ -68,7 +68,7 @@ To push commits upstream to a non-master branch, use:
 git push -u origin branchName
 ```
 
-## Status updates ###
+### Status updates ###
 
 To get the status of the current repo:
 
