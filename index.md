@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
 # HowTos #
 
 This project brings together my notes having followed numerous courses in computer science. They are provided here for my own reference and may be helpful to those with similar interests.
