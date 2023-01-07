@@ -18,19 +18,20 @@ TBA
 
 ## <img src="./images/mysql-icon.svg" width="30" height="30"> MySQL and <img src="./images/postgresql-vertical.svg" width="30" height="30"> PostgreSQL ##
 
-[Introduction to MySQL](https://jfspps.github.io/MySQL-notes)
++ [Introduction to MySQL](https://jfspps.github.io/MySQL-notes)
 
 ## <img src="./images/icons8-docker.svg" width="30" height="30"> Docker ##
 
-[Installing the Docker engine](./Docker/Installation.md)
++ [Installing the Docker engine](./Docker/Installation.md)
 
 ## <img src="./images/Git-Icon-Black.svg" width="30" height="30"> Git and <img src="./images/Bash_Logo_Colored.svg" width="30" height="30"> Bash ##
 
-[Source control with Git](./Git/Introduction.md)
++ [Source control with Git](./Git/Introduction.md)
++ [Installing Git](./Git/Installation.md)
 
 ## <img src="./images/icons8-c++.svg" width="30" height="30"> C++ ##
 
-[Data Structures and Algorithms in C++](https://jfspps.github.io/Data-Structures-and-Algorithms)
++ [Data Structures and Algorithms in C++](https://jfspps.github.io/Data-Structures-and-Algorithms)
 
 ## <img src="./images/icons8-python.svg" width="30" height="30"> Python ##
 
