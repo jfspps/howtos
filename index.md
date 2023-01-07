@@ -2,7 +2,7 @@
 
 # HowTos #
 
-This project brings together my notes having followed numerous courses in computer science. They are provided here for my own reference and may be helpful to those with similar interests.
+This project brings together my notes having followed numerous courses in computer science. They are provided here for my own reference (they should not be taken as tutorials for beginners) and may be helpful to those with similar interests.
 
 ## <img src="./images/icons8-java.svg" width="30" height="30"> Java ##
 
@@ -26,7 +26,7 @@ TBA
 
 ## <img src="./images/Git-Icon-Black.svg" width="30" height="30"> Git and <img src="./images/Bash_Logo_Colored.svg" width="30" height="30"> Bash ##
 
-TBA
+[Source control with Git](./Git/Introduction.md)
 
 ## <img src="./images/icons8-c++.svg" width="30" height="30"> C++ ##
 
