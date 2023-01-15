@@ -23,6 +23,7 @@ yourRegistryHostname:5000/dockerImageTag:version
 ### Docker repository related commands
 
 + Log in to your Docker Hub account (required prior to image upload): ```docker login --username=yourDockerHubusername```
++ In the current directory (```.```) where the [Dockerfile](../Docker/Dockerfiles.md) resides, build and tag with: ```docker build -t imageTagName .```
 + Push images to Docker Hub: ```docker push imageTagName```
 + Pull Docker image: ```docker pull dockerHubImageTag```
 
@@ -56,3 +57,5 @@ yourRegistryHostname:5000/dockerImageTag:version
 
 + Remove a volume (forced with f): ```docker volume rm -f volume_id```
 + Remove all unused volumes (no confirmation with -f): ```docker volume prune -f```
+
+More on Docker volumes is given [here](https://docs.docker.com/storage/volumes/).
