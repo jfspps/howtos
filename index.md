@@ -6,11 +6,73 @@ This project brings together my notes having followed numerous courses in comput
 
 ## <img src="./images/icons8-java.svg" width="30" height="30"> Java ##
 
-TBA
+### Intermediate topics
 
-## <img src="./images/icons8-java-bean.svg" width="30" height="30"> Java EE ##
++ Interfaces and Abstract classes
++ static and final
++ Collections framework
++ Regular expressions
++ Java File I/O
++ Java Binary I/O
++ Java NIO files
++ Java NIO file systems
++ Downloading files
++ Introducing threads
++ Thread interference and synchronisation
++ Handling thread interference
++ Deadlocks and starvation
++ Fair and Live locks
++ Lambda functions and Streams
++ Client-Server demo
 
-TBA
+### ADTs and Design patterns
+
++ SOLID and design patterns
++ Singleton pattern
++ Factory method
++ Builder pattern
++ Custom ArrayList
++ Custom linked list
++ Custom stack
++ Custom queue
++ Custom binary tree
++ Custom binary search tree
+
+### Algorithms
+
++ Bubble and selection sort
++ Merge sort
++ Quick sort
++ Depth- and breadth-first search  
+
+## <img src="./images/icons8-java-bean.svg" width="30" height="30"> Java (Jakarta) EE ##
+
+### The basics
+
++ First Demo
++ Introduction to the CDI
++ Containers, contexts and beans
++ Producers and Interceptors
++ Events
+
+### Introduction to the JPA
+
++ Access and mapping types, Fetching and Embeddable
++ Primary keys, relational mapping and embedding Collections
++ Sorting collections and Maps in JPA
++ EJBs and transactions
++ Persistence context and Entity Manager
++ Java Persistence Query Language
++ Other JPA features
+
+### Introduction to JAX-RS
+
++ Response objects, Exception mappers and Form fields
++ Caching, content negotiation and file I/O
++ Loggers, cookies and filters
++ Security with JJWT and Apache Shiro
++ Resources, JSON-B, JSON-P, Clients and SSE
++ Web sockets
 
 ## <img src="./images/icons8-spring-logo.svg" width="30" height="30"> Spring ##
 

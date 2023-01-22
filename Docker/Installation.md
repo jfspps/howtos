@@ -35,7 +35,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 
-The Docker daemon always runs as the OS' ```root``` user (see [here](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)) and only responds to this user or those who are permitted to use ```sudo```. To enable other users, we first create a group ```docker``` (which Docker on restart will recognise and thread access through) and add the current OS user to the ```docker``` group. This then means the current OS' user does not need root access to use Docker.
+The Docker daemon always runs as the OS' ```root``` user (see [here](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)) and only responds to this user or those who are permitted to use ```sudo```. To enable other users, we first create a group ```docker``` (which Docker on restart will recognise and thread access through; note that on installation of Docker, this may have already been initialised) and add the current OS user to the ```docker``` group. This then means the current OS' user does not need root access to use Docker.
 
 ```bash
 sudo groupadd docker
