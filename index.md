@@ -108,6 +108,7 @@ TBA
 
 ## <img src="./images/engineer-281.svg" width="30" height="30"> Software Engineering ##
 
++ [Methodologies](./SoftwareEngineering/Methdologies.md)
 + [Software Testing](./SoftwareEngineering/SoftwareTesting.md)
 
 ## <img src="./images/comp_sci.png" width="30" height="30"> Computational Science ##
