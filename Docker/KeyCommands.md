@@ -34,15 +34,17 @@ yourRegistryHostname:5000/dockerImageTag:version
 + List all (-a) Docker images: ```docker images -a```
 + Remove a Docker image (forced with -f): ```docker rmi -f image_name```
 + Delete all dangling Docker images (-a to remove unreferenced images): ```docker image prune -a```
-+ Run a Docker image (initialise a Docker container) (-d as a daemon): ```docker -d run imageID```
 + Tag a Docker image (alternative to using Image IDs): ```docker tag imageID imageTagname```
 + Save Docker images locally as a tape archive or tarball (tar): ```docker save imageTagName > filename.tar```
 + Load an image from an archive (tar): ```docker load filename.tar```
+
+More Docker image commands from the offical docs [here](https://docs.docker.com/engine/reference/commandline/image/)
 
 ## Container related commands
 
 + List all running Docker containers: ```docker ps```
 + List all Docker containers: ```docker ps -a```
++ Run a Docker image, create a new container (-d as a daemon) and execute a command: ```docker container run -d imageID someCommand```
 + Start a Docker container: ```docker start container_name```
 + Stop (graceful) a Docker container: ```docker stop container_name```
 + Restart a Docker container: ```docker container restart container_name```
@@ -52,6 +54,8 @@ yourRegistryHostname:5000/dockerImageTag:version
 + Remove a stopped container: ```docker rm container_name```
 + Remove all stopped containers (optional -f to force without confirmation): ```docker container prune -f```
 + Display a live stream of containers' resource usage stats: ```docker stats containerName```
+
+More Docker container commands from the official docs [here](https://docs.docker.com/engine/reference/commandline/container/)
 
 ## Volume related commands
 
