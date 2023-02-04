@@ -1,6 +1,6 @@
 # Design Principles
 
-This part of the development process starts at the very beginning of the development process and continues on in an iterative fashion. Software Design is simply about the design of the full solution so that it meets the need of end-users. It centres on addressing the end-users' problems and overall attempts to provide an experience that end-users fundamentally understand and relate to.
+Software design starts at the very beginning of the development process and continues on in an iterative fashion. It is essentially about the design of the full solution so that it meets the need of end-users and focuses on addressing the end-users' problems while providing an experience that end-users fundamentally understand and relate to.
 
 The main concepts to start of with are __personas__ and __user stories__. A persona is representation of a person with a specific background, attitude and expectation. Not all end-users will be classed under a given persona and quite often the software will be required to cater to the needs of multiple personas. A user story defines a story that is linked to a given persona, describing what the persona wants to do and some explanation about the decisions they make and some justification why.
 
@@ -13,7 +13,7 @@ The field of Software Design cannot be adequately summarised in this article. Ne
 
 ## A design process
 
-There are all sorts of approaches to software design so the following is not representative of all approaches.
+There are all sorts of approaches to software design so the following summary is not meant to cover everything.
 
 ### Personas and user stories
 
