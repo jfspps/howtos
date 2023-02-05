@@ -106,12 +106,16 @@ TBA
 
 TBA
 
-## <img src="./images/engineer-281.svg" width="30" height="30"> Software Engineering ##
+## <img src="./images/engineer-281.svg" width="30" height="30"> Computer Science ##
+
++ [Essential Computer Security](./ComputerScience/ComputerSecurity.md)
+
+## <img src="./images/engineer-281.svg" width="30" height="30"> Software Development ##
 
 + [Software Development Methodologies](./SoftwareEngineering/Methdologies.md)
 + [Design Principles](./SoftwareEngineering/DesignPrinciples.md)
 + [Software Testing](./SoftwareEngineering/SoftwareTesting.md)
 
-## <img src="./images/comp_sci.png" width="30" height="30"> Computational Science ##
+## <img src="./images/comp_sci.png" width="30" height="30"> Scientific Computing ##
 
 TBA

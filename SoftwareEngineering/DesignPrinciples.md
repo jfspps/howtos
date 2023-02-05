@@ -32,7 +32,7 @@ Here we break down the information that is saved by the software. The phrasing i
 
 |![Information Architecture Diagram](./images/info_architecture.png)|
 |:--:|
-|https://uxdesign.cc/information-architecture-how-to-make-it-worth-your-time-money-6ae71c0f8674|
+|[Information Architecture Diagram](https://uxdesign.cc/information-architecture-how-to-make-it-worth-your-time-money-6ae71c0f8674)|
 
 The architecture should be designed such that it takes into consideration of the aforementioned personas and user stories.
 
