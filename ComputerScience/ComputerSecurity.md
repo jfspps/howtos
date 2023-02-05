@@ -50,7 +50,7 @@ Assymetric encryption is quite expensive and normally only performed on small fi
 
 For example, an actor (as a client) would send their public key to a server and have their private key on their system. 
 
-1. The generation of the private and public keys is performed on the same system i.e. the client. 
+1. The generation of the private and public keys is performed on the same system i.e. the client. The private key is normally protected by a passcode that the user must enter before proceeding with decryption.
 
 When the client logs in to the server, they must first establish a symmetric key. 
 
