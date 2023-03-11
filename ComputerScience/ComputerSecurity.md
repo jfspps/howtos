@@ -86,11 +86,15 @@ If a physical storage device is stolen then it then makes it possible for the ad
 
 The following are general principles which apply to all forms of software development:
 
-+ Validate the input parameters, making sure that mandatory values are supplied and in range. This check is also referred to as _sanitisation_.
++ Validate the input parameters i.e. make sure that mandatory values are supplied and in range. Some systems also modify input (known as _sanitisation_) so that it conforms to the service's standard (e.g. use double quotes in place of single quotes, or removing whitespace etc.) however this also runs the risk of modifying the intent of the message (the control) or removing innocuous characters (the content).
++ Sanitise output, making sure that the service provides data that conforms to the recipient's requirements. Calls to a SQL database should fail because the transaction could not complete, __not__ because the SQL statement syntax was wrongly formatted. Developers also take the opportunity to follow the _principle of least privilege_: only provide the minimum needed to get the job done.
 + Break down the system into independent modules such that each is responsible for their own part of the solution. A problem identified in one module will not spill over to others.
 + Use industry-standard cryptography where possible. Do no try to build your own.
 + Avoid memory overflows (a common exploit), making sure the heap is cleared when appropriate. This is particularly important for languages that do not use garbage collection (for example C and C++).
++ Integrate or implement an auditing system, recording system usage as logs independent of other in-built audit trails. Ensure that the logs are protected and cannot be modified.
 + Make sure logs do not print or record secrets.
++ Keep secrets away from source code and saved to a independent volume or encrypted drive. 
++ Establish a _key rotation_ policy, changing secrets on a regular basis.
 + Do not ignore compiler warnings.
 + Make sure functions are only given access to data they need. Follow the principle of least privilege.
 + Standardise secure coding practices across the development team.

@@ -109,6 +109,7 @@ TBA
 ## <img src="./images/engineer-281.svg" width="30" height="30"> Computer Science ##
 
 + [Essential Computer Security](./ComputerScience/ComputerSecurity.md)
++ [Web Application Security](./ComputerScience/WebApplicationSecutiry.md)
 
 ## <img src="./images/engineer-281.svg" width="30" height="30"> Software Development ##
 
