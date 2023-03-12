@@ -8,7 +8,7 @@ This project brings together my notes having followed numerous courses in comput
 
 ### Intermediate topics
 
-+ Interfaces and Abstract classes
++ [Interfaces and Abstract classes](./Java/InterfacesAndAbstractClasses.md)
 + static and final
 + Collections framework
 + Regular expressions
