@@ -9,8 +9,8 @@ This project brings together my notes having followed numerous courses in comput
 ### Intermediate topics
 
 + [Interfaces and Abstract classes](./Java/InterfacesAndAbstractClasses.md)
-+ [```static``` and ```final```](./Java/StaticAndFinal.md)
-+ Collections framework
++ [static and final](./Java/StaticAndFinal.md)
++ [Collections framework](./Java/CollectionsFramework.md)
 + Regular expressions
 + Java File I/O
 + Java Binary I/O
