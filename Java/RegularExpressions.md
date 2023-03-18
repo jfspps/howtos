@@ -125,9 +125,9 @@ System.out.println(sixthString.replaceAll("i+j*k0", "F****"));
 // looking for HTML tags
 StringBuilder htmlText = new StringBuilder("<h1>My Heading</h1>");
 htmlText.append("<h2>Subheading</h2>");
-htmlText.append("<p>Some paragraph</p>");
+htmlText.append("Some paragraph");
 htmlText.append("<h2>Subheading2</h2>");
-htmlText.append("<p>Some paragraph2</p>");
+htmlText.append("Some paragraph2");
 
 // using the Pattern and Matches classes
 // Matcher: An engine that performs match operations 

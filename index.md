@@ -12,7 +12,7 @@ This project brings together my notes having followed numerous courses in comput
 + [static and final](./Java/StaticAndFinal.md)
 + [Collections framework](./Java/CollectionsFramework.md)
 + [Regular expressions](./Java/RegularExpressions.md)
-+ Java File I/O
++ [Java File I/O](./Java/JavaFileIO.md)
 + Java Binary I/O
 + Java NIO files
 + Java NIO file systems
