@@ -105,8 +105,8 @@ try(ObjectInputStream someFile =
 
 As a side-note, the RandomAccessFile is briefly mentioned here. This file can be considered a flat-file form of a database system, where data occupies given uniform locations in a file, just as an array is organised. Taken from the official docs:
 
-```
-Instances of this class support both reading and writing to a random access file. A random access file behaves like a large array of bytes stored in the file system. There is a kind of cursor, or index into the implied array, called the file pointer; input operations read bytes starting at the file pointer and advance the file pointer past the bytes read.
-```
+
+> Instances of this class support both reading and writing to a random access file. A random access file behaves like a large array of bytes stored in the file system. There is a kind of cursor, or index into the implied array, called the file pointer; input operations read bytes starting at the file pointer and advance the file pointer past the bytes read.
+
 
 In many cases, if a RandomAccessFile is considered then it may prove more efficient to employ a database system, such SQL.
