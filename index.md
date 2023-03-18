@@ -13,7 +13,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Collections framework](./Java/CollectionsFramework.md)
 + [Regular expressions](./Java/RegularExpressions.md)
 + [Java File I/O](./Java/JavaFileIO.md)
-+ Java Binary I/O
++ [Java Binary I/O](./Java/JavaBinaryIO.md)
 + Java NIO files
 + Java NIO file systems
 + Downloading files
