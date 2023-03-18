@@ -64,7 +64,7 @@ System.out.println(s2.compareTo(s1));
 System.out.println(s1.compareTo(s3));  
 
 // returns 2 because "h" is 2 times greater than "f"
-System.out.println(s1.compareTo(s5));`
+System.out.println(s1.compareTo(s5));
 ```
 
 The next code snippet demonstrates a String, seatNumber. The ```compareTo()``` method returns a positive value if ```this.seatNumber > seat.getSeatNumber()```, a negative value if ```this.seatNumber < seat.getSeatNumber()``` and zero if they are equal.
@@ -110,27 +110,6 @@ static {
 
 // then compare(seat1, seat2) is equivalent to
 // seat1.getPrice().compareTo(seat2.getPrice())`;
-
-hashCodeEquals = `@Override
-public boolean equals(Object obj) {
-// referential equality
-if(this == obj) {
-    return true;
-}
-
-// someProperty is of type String; retrieve it
-
-// apply Java Lang's String equals() method
-return this.someProperty.equals(someProperty);
-}
-
-@Override
-public int hashCode() {
-// build a unique hashCode by adding, for example, 64 to the hashCode
-// someStringTypeProperty is of type String so here we apply String's
-// hashCode() method
-return this.someStringTypeProperty.hashCode() + 64;
-}
 ```
 
 According to the overridden method, the command ```Collections.sort(priceSeats, Theatre.PRICE_ORDER);``` then sorts the the list of Seats, priceSeats, by first by the order they were added (FIFO, lowest to highest index number) and then by price, from lowest price to highest. Elements are only swapped if they have different prices.
