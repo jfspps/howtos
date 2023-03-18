@@ -11,7 +11,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Interfaces and Abstract classes](./Java/InterfacesAndAbstractClasses.md)
 + [static and final](./Java/StaticAndFinal.md)
 + [Collections framework](./Java/CollectionsFramework.md)
-+ Regular expressions
++ [Regular expressions](./Java/RegularExpressions.md)
 + Java File I/O
 + Java Binary I/O
 + Java NIO files
