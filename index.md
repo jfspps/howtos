@@ -17,7 +17,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Java NIO files](./Java/JavaNIO.md)
 + [Java NIO file systems](./Java/JavaNIOFileSystems.md)
 + [Downloading files](./Java/DownloadingFiles.md)
-+ Introducing threads
++ [Introducing threads](./Java/IntroducingThreads.md)
 + Thread interference and synchronisation
 + Handling thread interference
 + Deadlocks and starvation
