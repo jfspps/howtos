@@ -14,7 +14,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Regular expressions](./Java/RegularExpressions.md)
 + [Java File I/O](./Java/JavaFileIO.md)
 + [Java Binary I/O](./Java/JavaBinaryIO.md)
-+ Java NIO files
++ [Java NIO files](./Java/JavaNIO.md)
 + Java NIO file systems
 + Downloading files
 + Introducing threads
