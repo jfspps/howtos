@@ -20,8 +20,8 @@ This project brings together my notes having followed numerous courses in comput
 + [Introducing threads](./Java/IntroducingThreads.md)
 + [Thread interference and synchronisation](./Java/ThreadInterferenceAndSynchronisation.md)
 + [Synchronisation blocks](./Java/SynchronisationBlocks.md)
-+ Deadlocks and starvation
-+ Fair and Live locks
++ [Deadlocks and starvation](./Java/Deadlocks.md)
++ [Fair and Live locks](./Java/FairAndLiveLocks.md)
 + Lambda functions and Streams
 + Client-Server demo
 
