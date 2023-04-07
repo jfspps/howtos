@@ -84,7 +84,7 @@ Path somePath = FileSystems.getDefault().getPath("someFileName.dat");
 
 Some terminology:
 
-+ A __channel______ is the data-source written to or read from
++ A __channel__ is the data-source written to or read from
 + A __buffer__ is the container for the block of data passed (data must be of one type) and can be varied in length
 + __Selectors__ (mostly used in large enterprise development) allow a single thread to manage multiple channels
 
