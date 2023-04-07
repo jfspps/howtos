@@ -22,7 +22,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Synchronisation blocks](./Java/SynchronisationBlocks.md)
 + [Deadlocks and starvation](./Java/Deadlocks.md)
 + [Fair and Live locks](./Java/FairAndLiveLocks.md)
-+ Lambda functions and Streams
++ [Lambda functions and Streams](./Java/LambdaFunctionsAndStreams.md)
 + Client-Server demo
 
 ### ADTs and Design patterns
