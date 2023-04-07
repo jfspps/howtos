@@ -16,7 +16,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Java Binary I/O](./Java/JavaBinaryIO.md)
 + [Java NIO files](./Java/JavaNIO.md)
 + [Java NIO file systems](./Java/JavaNIOFileSystems.md)
-+ Downloading files
++ [Downloading files](./Java/DownloadingFiles.md)
 + Introducing threads
 + Thread interference and synchronisation
 + Handling thread interference
