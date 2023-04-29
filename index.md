@@ -18,7 +18,7 @@ This project brings together my notes having followed numerous courses in comput
 + [Java NIO file systems](./Java/JavaNIOFileSystems.md)
 + [Downloading files](./Java/DownloadingFiles.md)
 + [Introducing threads](./Java/IntroducingThreads.md)
-+ [Thread interference and synchronisation](./Java/ThreadInterferenceAndSynchronisation.md)
++ [Thread interference and synchronisation](./Java/ThreadInterferenceAndSync.md)
 + [Synchronisation blocks](./Java/SynchronisationBlocks.md)
 + [Deadlocks and starvation](./Java/Deadlocks.md)
 + [Fair and Live locks](./Java/FairAndLiveLocks.md)
