@@ -34,9 +34,9 @@ This project brings together my notes having followed numerous courses in comput
 + [Custom ArrayList](./ADTsAndDesignPatterns/CustomArrayList.md)
 + [Custom linked list](./ADTsAndDesignPatterns/CustomLinkedList.md)
 + [Custom stack](./ADTsAndDesignPatterns/Stack.md)
-+ Custom queue
-+ Custom binary tree
-+ Custom binary search tree
++ [Custom queue](./ADTsAndDesignPatterns/CustomQueue.md)
++ [Custom binary tree](./ADTsAndDesignPatterns/CustomBinaryTree.md)
++ [Custom binary search tree](./ADTsAndDesignPatterns/CustomBinarySearchTree.md)
 
 ### Algorithms
 
