@@ -9,6 +9,4 @@ The key ideas and annotations used, provided in the project's readme, are:
 + REST endpoint exposure
 + Templates with JSP and JSF
 
-
-    The GitHub repo is <a href="https://github.com/jfspps/JavaEEDemo" target="_blank">here</a>.
-
+The GitHub repo is <a href="https://github.com/jfspps/JavaEEDemo" target="_blank">here</a>.

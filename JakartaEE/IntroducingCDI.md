@@ -11,5 +11,5 @@ Some of the main features of CDI 2.0 (an API that implements DI) are:
 + Typesafe dependency: the dependencies are typesafe; the compilation or runtime execution of the context is       halted if the wrong type is passed to a method
 + Lifecycle contexts: the context (where beans are instantiated) and objects (contextual instances) have a lifecycle and are automatically managed in the background by the container
 + Interceptors: these can perform tasks before, during and after a method is executed (typical example includes the logging of metadata for a specific method)
-Events: these are responses to particular events executed by the user or program, and can be asynchronous
++ Events: these are responses to particular events executed by the user or program, and can be asynchronous
 + Service Provider Interface: these are extensions available to the CDI
