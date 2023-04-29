@@ -27,7 +27,7 @@ This project brings together my notes having followed numerous courses in comput
 
 ### ADTs and Design patterns
 
-+ SOLID and design patterns
++ [SOLID and design patterns](./ADTsAndDesignPatterns/SolidAndDesignPatterns.md)
 + Singleton pattern
 + Factory method
 + Builder pattern
