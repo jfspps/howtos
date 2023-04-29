@@ -17,10 +17,10 @@ public abstract class Message {
       // Encrypt the content
     }
     
-  }
+}
 ```
 
-Then provide more specific extensions of the abstract Message class.
+Then provide more specific extensions of the abstract ```Message``` class.
 
 ```java
 public class JSONMessage extends Message {
@@ -30,21 +30,21 @@ public class JSONMessage extends Message {
       return "{JSON:[]}";
     }
     
+}
+  
+// defined elsewhere
+  
+public class TextMessage extends Message {
+
+  @Override
+  public String getContent() {
+    return "Text";
   }
   
-  // elsewhere
-  
-  public class TextMessage extends Message {
-	
-    @Override
-    public String getContent() {
-      return "Text";
-    }
-    
-  }
+}
 ```
 
-The abstract Factory class would instantiate the abstract Message class.
+The abstract Factory class would instantiate the abstract ```Message``` class.
 
 ```java
 public abstract class MessageCreator {
@@ -61,7 +61,7 @@ public abstract class MessageCreator {
     // Factory method (implemented by the concrete classes)
     // this method can also be defined to set defaults if desired
     protected abstract Message createMessage();
-  }
+}
 ```
 
 Then extend the abstract Factory method for all relevant concrete classes.
@@ -72,19 +72,19 @@ public class JSONMessageCreator extends MessageCreator {
     public Message createMessage() {
       return new JSONMessage();
     }
-  }
+}
   
-  // elsewhere
+// defined elsewhere
   
-  public class TextMessageCreator extends MessageCreator {
-    @Override
-    public Message createMessage() {
-      return new TextMessage();
-    }
+public class TextMessageCreator extends MessageCreator {
+  @Override
+  public Message createMessage() {
+    return new TextMessage();
   }
+}
 ```
 
-The client then requests specific instances as follows, passing a new concrete class instance and applying polymorphism in place of MessageCreator and Message.
+The client then requests specific instances as follows, passing a new concrete class instance and applying polymorphism in place of ```MessageCreator``` and ```Message```.
 
 ```java
 public class Client {
@@ -100,5 +100,5 @@ public class Client {
       Message msg = creator.getMessage();
       System.out.println(msg);
     }
-  }
+}
 ```
