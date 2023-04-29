@@ -42,8 +42,8 @@ This project brings together my notes having followed numerous courses in comput
 
 + [Bubble and selection sort](./Algorithms/BubbleAndSelectionSort.md)
 + [Merge sort](./Algorithms/MergeSort.md)
-+ Quick sort
-+ Depth- and breadth-first search  
++ [Quick sort](./Algorithms/QuickSort.md)
++ [Depth- and breadth-first search](./Algorithms/DepthAndBreadthFirstSearching.md)  
 
 ## <img src="./images/icons8-java-bean.svg" width="30" height="30"> Java (Jakarta) EE ##
 
