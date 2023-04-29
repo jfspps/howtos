@@ -49,9 +49,9 @@ This project brings together my notes having followed numerous courses in comput
 
 ### The basics
 
-+ First Demo
-+ Introduction to the CDI
-+ Containers, contexts and beans
++ [First Demo](./JakartaEE/FirstDemo.md)
++ [Introduction to CDI](./JakartaEE/IntroducingCDI.md)
++ [Containers, contexts and beans](./JakartaEE/ContainersContextsAndBeans.md)
 + Producers and Interceptors
 + Events
 
