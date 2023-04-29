@@ -30,10 +30,10 @@ This project brings together my notes having followed numerous courses in comput
 + [SOLID and design patterns](./ADTsAndDesignPatterns/SolidAndDesignPatterns.md)
 + [Singleton pattern](./ADTsAndDesignPatterns/Singleton.md)
 + [Factory method](./ADTsAndDesignPatterns/FactoryMethod.md)
-+ Builder pattern
-+ Custom ArrayList
-+ Custom linked list
-+ Custom stack
++ [Builder pattern](./ADTsAndDesignPatterns/Builder.md)
++ [Custom ArrayList](./ADTsAndDesignPatterns/CustomArrayList.md)
++ [Custom linked list](./ADTsAndDesignPatterns/CustomLinkedList.md)
++ [Custom stack](./ADTsAndDesignPatterns/Stack.md)
 + Custom queue
 + Custom binary tree
 + Custom binary search tree
