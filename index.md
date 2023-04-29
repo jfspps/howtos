@@ -40,8 +40,8 @@ This project brings together my notes having followed numerous courses in comput
 
 ### Algorithms
 
-+ Bubble and selection sort
-+ Merge sort
++ [Bubble and selection sort](./Algorithms/BubbleAndSelectionSort.md)
++ [Merge sort](./Algorithms/MergeSort.md)
 + Quick sort
 + Depth- and breadth-first search  
 
