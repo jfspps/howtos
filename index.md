@@ -52,8 +52,8 @@ This project brings together my notes having followed numerous courses in comput
 + [First Demo](./JakartaEE/FirstDemo.md)
 + [Introduction to CDI](./JakartaEE/IntroducingCDI.md)
 + [Containers, contexts and beans](./JakartaEE/ContainersContextsAndBeans.md)
-+ Producers and Interceptors
-+ Events
++ [Producers and Interceptors](./JakartaEE/ProducersAndInterceptors.md)
++ [Events](./JakartaEE/Events.md)
 
 ### Introduction to the JPA
 
