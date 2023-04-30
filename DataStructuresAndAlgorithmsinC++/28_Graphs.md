@@ -1,3 +1,9 @@
+---
+title: Graphs
+nav_order: 28
+parent: Data Structures and Algorithms in C++
+---
+
 # Graphs
 
 Graphs are made up of vertices and edges, and expressed as `G(V, E)`.

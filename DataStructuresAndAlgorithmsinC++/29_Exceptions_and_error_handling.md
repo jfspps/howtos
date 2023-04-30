@@ -1,3 +1,9 @@
+---
+title: Exceptions and error-handling
+nav_order: 29
+parent: Data Structures and Algorithms in C++
+---
+
 # Exceptions and error-handling
 
 Exceptions (blocks of code that are executed when a run-time error occurs) are offered in a similar way to Java. The block of code where a run-time error can

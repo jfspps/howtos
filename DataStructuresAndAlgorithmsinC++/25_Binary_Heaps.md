@@ -1,4 +1,10 @@
-# The heap
+---
+title: The heap
+nav_order: 25
+parent: Data Structures and Algorithms in C++
+---
+
+# Binary Heaps
 
 All binary heaps are complete binary trees, with height of `log[2] n` with `n` nodes. Binary heaps, unlike BSTs, are not used for searching purposes (discussed later).
 

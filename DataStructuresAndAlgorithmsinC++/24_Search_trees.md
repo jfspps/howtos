@@ -1,3 +1,9 @@
+---
+title: Other search trees
+nav_order: 24
+parent: Data Structures and Algorithms in C++
+---
+
 # Other search trees
 
 ## 2-3 (search) trees

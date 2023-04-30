@@ -1,3 +1,9 @@
+---
+title: Hashing techniques
+nav_order: 27
+parent: Data Structures and Algorithms in C++
+---
+
 # Hashing techniques
 
 Hashing supports search methods. The simplest example involves the searching of integers. Suppose an array [2, 3, 6, 10, 0, 5] is stored in an array, how would one find the value 3? With hashing one could store all the elements in another array (or other data structure, known as the _hash table_) in which the value of the element (the value is known as the _key_) forms the basis of the index of the element where it is stored. That is:

@@ -1,3 +1,9 @@
+---
+title: Sorting methods
+nav_order: 26
+parent: Data Structures and Algorithms in C++
+---
+
 # Sorting methods
 
 Sorting methods are developed with the following aspects in mind:
