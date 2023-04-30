@@ -1,6 +1,7 @@
 ---
 title: Java Abstract classes and Interfaces
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Abstract classes and interfaces

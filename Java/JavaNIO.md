@@ -1,6 +1,7 @@
 ---
 title: Java NIO files
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java NIO files

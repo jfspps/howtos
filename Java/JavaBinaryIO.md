@@ -1,6 +1,7 @@
 ---
 title: Java Binary I/O
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java Binary I/O

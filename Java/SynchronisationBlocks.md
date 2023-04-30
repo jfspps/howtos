@@ -1,6 +1,7 @@
 ---
 title: Synchronisation blocks
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Synchronisation blocks

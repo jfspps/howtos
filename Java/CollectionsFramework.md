@@ -1,6 +1,7 @@
 ---
 title: Java Collections
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java Collections

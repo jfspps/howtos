@@ -1,6 +1,7 @@
 ---
 title: Java Lambda functions and Streams
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java 8 lambda functions

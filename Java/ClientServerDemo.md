@@ -1,6 +1,7 @@
 ---
 title: Java Client and Server demo
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java Client and Server demo

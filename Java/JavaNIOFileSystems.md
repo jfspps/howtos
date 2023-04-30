@@ -1,6 +1,7 @@
 ---
 title: Java NIO filesystems
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java NIO filesystems

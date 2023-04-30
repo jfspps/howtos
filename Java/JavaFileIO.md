@@ -1,6 +1,7 @@
 ---
 title: Java File I/O
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Java File I/O

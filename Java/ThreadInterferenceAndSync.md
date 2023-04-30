@@ -1,6 +1,7 @@
 ---
 title: Thread interference and synchronisation
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Thread interference and synchronisation

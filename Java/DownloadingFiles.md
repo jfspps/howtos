@@ -1,6 +1,7 @@
 ---
 title: Java Downloading Files
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Downloading files

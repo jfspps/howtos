@@ -1,6 +1,7 @@
 ---
 title: Introducing Threads
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Threads in Java

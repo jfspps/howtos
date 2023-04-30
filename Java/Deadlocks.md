@@ -1,6 +1,7 @@
 ---
 title: Deadlocks
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # Deadlocks

@@ -1,6 +1,7 @@
 ---
 title: Java static and final
 nav_order: 3
+parent: Intermediate Java
 ---
 
 # The static keyword
