@@ -1,4 +1,10 @@
-# The Stack data type #
+---
+title: The Stack
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Stack
 
 The first example of a stack ADT is based on an array.
 

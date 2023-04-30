@@ -1,4 +1,10 @@
-# The Singleton design pattern
+---
+title: The Singleton
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Singleton
 
 The Singleton design pattern provides a way of building one and only one instance of a class in a given application. Applications which operate across multiple threads can lead to undefined problems and so a thread-safe approach is required.
 

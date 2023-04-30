@@ -1,4 +1,4 @@
-# Installing Git #
+# Installing Git
 
 This briefly outlines how to install Git on Ubuntu based distros and includes ```/home``` [files](./git-custom-console.tar.gz) that (on reboot) customise the console when navigating git projects.
 

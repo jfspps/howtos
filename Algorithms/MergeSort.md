@@ -1,4 +1,4 @@
-# Merge sorting #
+# Merge sorting
 
 The method continually divides an array in half until there are two singleton arrays. The helper method ```mergeArrays()``` then proceeds to copy across all elements from "array" to the working array ("array" will retain sorted elements on each iteration). Then it copies the element with the lowest value from the pair and update the index (the working lower or upper) accordingly. This repeats until the lower or upper pointers reaches the current array boundary. If the upper indexed elements were sent to the front, then all remaining lower indexed elements (which would have higher value) are copied across. Time complexity is ```O(n (log[2]n))```.
 

@@ -1,4 +1,10 @@
-# The Queue data type #
+---
+title: The Queue
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Queue
 
 This represents an example showing how to implement a queue.
 

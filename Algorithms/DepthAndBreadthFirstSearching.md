@@ -1,4 +1,4 @@
-# Depth- and Breadth-first searching #
+# Depth- and Breadth-first searching
 
 The child nodes are stored in primitive Java arrays. The breadth-first search (BFS) uses the custom [Queue ADT](../ADTsAndDesignPatterns/CustomQueue.md) and resembles a level-order traversal.
 

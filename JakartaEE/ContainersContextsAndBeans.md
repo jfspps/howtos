@@ -1,4 +1,4 @@
-# Bean discovery mode #
+# Bean discovery mode
 
 __Bean discovery__ is handled by the _beans.xml_ configuration. By default, the __bean-discovery-mode__ is
 set to "annotated" and directs only annotated classes (beans) to be managed by the CDI runtime. The other discovery
@@ -7,17 +7,17 @@ mode.
 
 Assuming the program runs, then the object will not be null and can be accessed by its reference from anywhere in the application.
 
-# CDI container, beans and contextual instances #
+# CDI container, beans and contextual instances
 
 The CDI container can be viewed as factory where beans (classes which will be instantiated in preparation for DI) are managed and looks out for adherence to the API standards. Failure to do so prevents the program from running.
 
 The context is a part of the container where beans are instantiated. Contexts build objects, known as contextual instances and there can be more than one context present in the container. Dependencies can be injected through class fields, via a constructor or directly into methods. To do so, set the field/constructor/method with the @Inject annotation.
 
-## Lifecycle callbacks ##
+## Lifecycle callbacks
 
 The ```@PostConstruct``` and ```@PreDestroy``` are applied to methods which will be executed, respectively, once the contextual instance is built and before it is destroyed. The access modifiers private, package-private (i.e. nothing declared), protected (visible to parent and child classes only) and public can be applied.
 
-## Managed beans and bean types ##
+## Managed beans and bean types
 
 Managed beans are simply beans managed by the CDI runtime. Beans which appear to be of the same type: they implement the same interface (and all parent interfaces before it), for example. The correct dependency is injected via a mechanism known as __CDI qualifiers__.
 
@@ -98,7 +98,7 @@ Then use the SomeClass (TYPE2) implementation with the following.
 private CommonInterface someInstance;
 ```
 
-## CDI scopes and contexts ##
+## CDI scopes and contexts
 
 The context is the environment within the container where contextual instances are created and reside. There can be more than one context in the given container. The container is responsible for the lifecycle of all contexts. When a bean is instantiated in a particular context, the bean is said to be in scope of the given context and is bound to that context. Scopes are definitions that associate a managed bean with a context. That is, it defines which context is responsible for the lifecycle of the bean.
 

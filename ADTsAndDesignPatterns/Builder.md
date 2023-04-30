@@ -1,4 +1,10 @@
-# The Builder pattern #
+---
+title: The Builder Pattern
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Builder pattern
 
 This pattern is quite useful when:
 

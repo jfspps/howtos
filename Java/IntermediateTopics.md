@@ -6,4 +6,4 @@ has_children: true
 
 # Intermediate Java
 
-This section some of the intermediate topics of Java.
+This section documents intermediate topics in Java.

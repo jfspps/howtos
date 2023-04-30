@@ -1,4 +1,10 @@
-# The Linked List #
+---
+title: The Linked List
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Linked List
 
 This represents how one way to implement a linked list data type.
 

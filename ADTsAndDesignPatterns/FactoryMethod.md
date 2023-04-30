@@ -1,4 +1,10 @@
-# The Factory method pattern #
+---
+title: The Factory method
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Factory method
 
 The Factory method pattern, as the name implies, provides a way of building multiple instances of different types without knowing precisely how the objects are created. Quite often, one builds a singleton Factory method implementation and then uses the same method to build other objects as needed.
 

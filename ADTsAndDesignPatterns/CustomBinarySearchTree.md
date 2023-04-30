@@ -1,4 +1,10 @@
-# The Binary Search Tree data type #
+---
+title: The Binary Search Tree
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Binary Search Tree
 
 This represents an example showing how to implement a binary search tree.
 

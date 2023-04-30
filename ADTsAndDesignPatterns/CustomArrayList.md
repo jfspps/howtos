@@ -1,4 +1,10 @@
-# The ArrayList #
+---
+title: The ArrayList
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The ArrayList
 
 This represents how one way to implement the well-known ArrayList data type.
 

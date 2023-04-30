@@ -1,5 +1,5 @@
 ---
-title: "The HowTos homepage"
+title: HowTos Homepage
 nav_order: 1
 ---
 

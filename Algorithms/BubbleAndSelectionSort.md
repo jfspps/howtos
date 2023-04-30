@@ -1,4 +1,4 @@
-# Bubble sorting method #
+# Bubble sorting method
 
 The bubble sorting method traverses an array, comparing and shuffling neighbouring pairs of elements, a maximum of n times (n = length of the array).
 
@@ -48,7 +48,7 @@ public class BubbleSort {
   }
 ```
 
-# Selection sorting method #
+# Selection sorting method
 
 The selection sorting method traverses an array, comparing and shuffling a trailing element (i.e. towards the beginning of the array) to all other leading elements. During the next pass, the reference to the trailing element in incremented one place. As a result, there are as many passes as there are elements.
 

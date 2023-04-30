@@ -1,4 +1,10 @@
-# The Binary Tree data type #
+---
+title: The Binary Tree
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# The Binary Tree
 
 This represents an example showing how to implement a binary tree.
 

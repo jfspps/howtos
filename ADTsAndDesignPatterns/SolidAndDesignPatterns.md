@@ -1,4 +1,10 @@
-# SOLID design principles #
+---
+title: SOLID design principles
+nav_order: 3
+parent: ADTs and Design Patterns in Java
+---
+
+# SOLID design principles
 
 + Single responsibility: a class or method is responsible for one aspect only. Any changes to external objects may change a class (through composition) which adheres to the single responsibility principle but only one change is possible.
 + Open-closed: Open means that classes are open for inheritance, with overridable methods. Closed means the existing base classes should not be modified. Quite often such classes are composed of abstract methods which cannot be changed in the class but are defined in child classes.
