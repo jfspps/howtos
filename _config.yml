@@ -2,9 +2,6 @@
 # plugins:
 # - jekyll-remote-theme # add this line to the plugins list if you already have one
 
-plugins:
-  - jekyll-default-layout
-  
 title: HowTos
 description: Computer Science topics
 theme: just-the-docs
