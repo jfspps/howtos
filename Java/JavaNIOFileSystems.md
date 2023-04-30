@@ -1,3 +1,8 @@
+---
+title: Java NIO filesystems
+nav_order: 3
+---
+
 # Java NIO filesystems
 
 The Java NIO's Path interface handles a files path information.

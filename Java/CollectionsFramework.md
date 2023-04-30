@@ -1,3 +1,8 @@
+---
+title: Java Collections
+nav_order: 3
+---
+
 # Java Collections
 
 What follows is a brief overview of major data structures and methods from the Java Collections framework (part of the Java utils package).

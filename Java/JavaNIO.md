@@ -1,3 +1,8 @@
+---
+title: Java NIO files
+nav_order: 3
+---
+
 # Java NIO files
 
 The Java NIO was introduced to provide a non-blocking implementation of Java IO. The speed and other design features

@@ -1,4 +1,9 @@
-# Downloading via a URL to a byte array
+---
+title: Java Downloading Files
+nav_order: 3
+---
+
+# Downloading files
 
 Files identified by a URL can be sent to a byte array (suitable for all file formats) via a byte stream. A new InputStream instance is assigned to the URL and holds the byte sequence the URL refers to. The InputStream instance effectively holds the same data as the file, keeping a record of the last known position with a pointer and is read in chunks to an output stream, in this case, a ByteArrayOutputStream instance.
 

@@ -1,3 +1,8 @@
+---
+title: Java File I/O
+nav_order: 3
+---
+
 # Java File I/O
 
 First, we start of with the FileWriter class with the help of an output stream. FileWriter is meant for writing streams of characters. For writing streams of raw bytes, use FileOutputStream. With regard to text files, the order in which data is printed to and extracted from must clearly match.

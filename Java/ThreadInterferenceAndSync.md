@@ -1,3 +1,8 @@
+---
+title: Thread interference and synchronisation
+nav_order: 3
+---
+
 # Thread interference and synchronisation
 
 Instance variables are stored on the heap. If only one instance is created and shared between threads, each thread of the same type is effectively in control of the same instance and its variables. This project shows how both threads change one instance's data. This is referred to as 'race conditions' or 'thread interference'.

@@ -1,3 +1,8 @@
+---
+title: Introducing Threads
+nav_order: 3
+---
+
 # Threads in Java
 
 This project highlights the implementation of separate threads in Java, by either implementing the Runnable interface (generally more convenient)...

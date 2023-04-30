@@ -1,3 +1,8 @@
+---
+title: Java static and final
+nav_order: 3
+---
+
 # The static keyword
 
 Given the following definition for a class:

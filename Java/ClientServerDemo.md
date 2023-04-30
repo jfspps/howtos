@@ -1,3 +1,8 @@
+---
+title: Java Client and Server demo
+nav_order: 3
+---
+
 # Java Client and Server demo
 
 This demo serves as an introduction to low-level and high-level networking APIs provided by Java SE. This includes TCP and UDP connections for the former, and, URI and URL connections for the latter.

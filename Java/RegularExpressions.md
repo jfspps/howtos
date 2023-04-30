@@ -1,3 +1,8 @@
+---
+title: Regular Expressions with Java
+nav_order: 3
+---
+
 # Regular Expression with Java
 
 Regular expressions are universal across programming environments. Here it is demonstrated in the the context of a Java application.

@@ -1,3 +1,8 @@
+---
+title: Java Lambda functions and Streams
+nav_order: 3
+---
+
 # Java 8 lambda functions
 
 Lambda functions (also known as _closures_) provide a more concise and arguably clearer execution of essentially unnamed, anonymous (class) methods. Lambda functions are composed of three main parts, the argument list, the arrow token and the body, as

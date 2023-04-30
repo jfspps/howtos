@@ -1,3 +1,8 @@
+---
+title: Java Binary I/O
+nav_order: 3
+---
+
 # Java Binary I/O
 
 Binary data is often referred to as byte streams. This contrasts to readable text files covered elsewhere. Byte streams handle Java primitive types and the String objects only. FileWriter and FileReader are replaced with FileInputStream and FileOutputStream, and their buffered classes also apply.

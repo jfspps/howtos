@@ -1,7 +1,6 @@
 ---
 title: "The HowTos homepage"
 nav_order: 1
-has_children: true
 ---
 
 # HowTos #

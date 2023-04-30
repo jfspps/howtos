@@ -1,3 +1,8 @@
+---
+title: Synchronisation blocks
+nav_order: 3
+---
+
 # Synchronisation blocks
 
 'Thread-safe' code is that in which thread interference is not possible. Methods which can only be called within synchronised code are wait(), notify() and notifyAll(). The example shows these methods with a producer and a consumer example. Some methods are 'atomic' in that all threads cannot interrupt any part of the operation of an atomic method.

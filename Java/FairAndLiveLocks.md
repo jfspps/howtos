@@ -1,3 +1,8 @@
+---
+title: Java Fair and Live Locks
+nav_order: 3
+---
+
 # Fair locks
 
 Fair reentrant locks are alternatives to synchronisation blocks and attempts to make locks on a FIFO basis. The small change comes from the utility of the ReentrantLock(true) method from the [deadlocks example](./Deadlocks.md).

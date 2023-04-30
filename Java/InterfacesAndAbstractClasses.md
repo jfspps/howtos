@@ -1,3 +1,8 @@
+---
+title: Java Abstract classes and Interfaces
+nav_order: 3
+---
+
 # Abstract classes and interfaces
 
 When to use an abstract class and when to use interfaces is sometimes not always clear since they both appear to offer the same features. Neither abstract classes nor interfaces can be instantiated. This summary outlines the differences.
