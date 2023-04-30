@@ -1,3 +1,9 @@
+---
+title: Web Application Security
+nav_order: 3
+parent: Computer Science
+---
+
 # Web Application Security
 
 This article covers the main security concerns when developing web services and clients, following on from the article, [Essential Computer Security](./ComputerSecurity.md).

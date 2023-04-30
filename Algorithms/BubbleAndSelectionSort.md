@@ -1,4 +1,10 @@
-# Bubble sorting method
+---
+title: Bubble sorting
+nav_order: 3
+parent: Algorithms in Java
+---
+
+# Bubble sorting
 
 The bubble sorting method traverses an array, comparing and shuffling neighbouring pairs of elements, a maximum of n times (n = length of the array).
 

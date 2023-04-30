@@ -1,4 +1,10 @@
-# Essential Computer Security
+---
+title: Foundations of Computer Security
+nav_order: 3
+parent: Computer Science
+---
+
+# Foundations of Computer Security
 
 This article focuses primarily on software security, and in particular to software running in a network.
 

@@ -1,3 +1,9 @@
+---
+title: Quick sorting
+nav_order: 3
+parent: Algorithms in Java
+---
+
 # Quick sorting
 
 This method uses two pointers ```i``` (near the start) and ```j``` (near the end) to traverse the array, respectively, forwards and backwards. As this happens, the elements are compared and swapped so that the lower value is placed nearer the start of the array. If required, the lower of the indexed elements then becomes the pivot point, the element with the lowest value. The result is a left-half which is sorted and a right-half which is not sorted. The pivot point is then usually traversed from the start to the centre of the array and hence the next iteration is processed more quickly. The overall time complexity is at worst ```O(n^2)```, approximated from ```O(n(n+1)/2)```.
