@@ -1,3 +1,9 @@
+---
+title: Software Development Methodologies
+nav_order: 3
+parent: Software Engineering
+---
+
 # Software Development Methodolgies
 
 Software development is based on a model or set of principles which define the various roles and project stages involved. In this short brief, we explore the main ideas behind Software Development methodogies.

@@ -1,3 +1,9 @@
+---
+title: Installing Docker
+nav_order: 3
+parent: Docker
+---
+
 # Installing Docker
 
 This outlines how to install Docker to Linux Mint (Vera, v21). The instructions are obviously taken from the Docker [official instructions](https://docs.docker.com/engine/install/ubuntu/) but I repeat them here without all the other stuff.

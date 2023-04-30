@@ -1,3 +1,9 @@
+---
+title: Software Testing
+nav_order: 3
+parent: Software Engineering
+---
+
 # Software Testing
 
 ## Verification and validation

@@ -1,3 +1,9 @@
+---
+title: Orchestrating Docker containers with Docker Compose
+nav_order: 3
+parent: Docker
+---
+
 # Orchestrating Docker containers with Docker Compose
 
 Docker containers can be run in one run using Docker Compose. More official documentation re. Docker Compose is available [here](https://docs.docker.com/compose/).

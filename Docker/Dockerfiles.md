@@ -1,3 +1,10 @@
+---
+title: Building images from Dockerfiles
+nav_order: 3
+parent: Docker
+---
+
+
 # Building images from Dockerfiles
 
 A [Dockerfile](https://docs.docker.com/build/) is a text file that defines how to build Docker images:

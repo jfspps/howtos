@@ -1,4 +1,10 @@
-# Context Dependency Injection CDI
+---
+title: Introducing Context Dependency Injection CDI
+nav_order: 3
+parent: Jakarta EE The Basics
+---
+
+# Introducing Context Dependency Injection CDI
 
 __Inversion of control (IOC)__ is a paradigm which enables individual components of a program to be loosely
 coupled with one another. It makes large scale programs to be extended more easily and tested more independently.

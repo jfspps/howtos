@@ -1,3 +1,9 @@
+---
+title: Bean discovery mode
+nav_order: 3
+parent: Jakarta EE The Basics
+---
+
 # Bean discovery mode
 
 __Bean discovery__ is handled by the _beans.xml_ configuration. By default, the __bean-discovery-mode__ is

@@ -1,3 +1,9 @@
+---
+title: CDI Producers
+nav_order: 3
+parent: Jakarta EE The Basics
+---
+
 # CDI Producers
 
 Producers are non-void methods (annotated with <span class="annot">@Produces</span>) that convert Java classes, not normally managed or owned, into CDI managed beans. The method must return an object. The method parameters are optional but must be injectable. All are handled by the container.

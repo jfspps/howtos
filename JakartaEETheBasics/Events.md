@@ -1,3 +1,9 @@
+---
+title: CDI events
+nav_order: 3
+parent: Jakarta EE The Basics
+---
+
 # CDI events
 
 Disparate classes can be linked, such that one observes the events (occurrences) of another. The observer class (an event observer) is not dependency. One can trigger the observer class (the event is fired by the observed class) to run its own code. The observed class passes data (a payload) to the observer class and the observer class processes the payload. Since CDI 2.0, the observer class can run asynchronously to the observed class.

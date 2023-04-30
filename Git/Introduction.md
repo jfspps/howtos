@@ -1,3 +1,9 @@
+---
+title: Source control with Git
+nav_order: 3
+parent: Git
+---
+
 # Source control with Git
 
 Source control is the practice of tracking changes to source code. Git and [Apache Subversion](https://subversion.apache.org/) (or just "SVN") represent the more popular source control management (SCM) tools in use. Older tools such as [CVS](https://savannah.nongnu.org/projects/cvs/) (Concurrent Version Control Systems), are still available though largely superseded.

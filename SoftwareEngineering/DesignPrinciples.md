@@ -1,3 +1,9 @@
+---
+title: Design Principles
+nav_order: 3
+parent: Software Engineering
+---
+
 # Design Principles
 
 Software design starts at the very beginning of the development process and continues on in an iterative fashion. It is essentially about the design of the full solution so that it meets the need of end-users and focuses on addressing the end-users' problems while providing an experience that end-users fundamentally understand and relate to.
