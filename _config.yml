@@ -15,3 +15,6 @@ plugins:
 permalink: pretty
 
 enable_copy_code_button: true
+search.button: true # bottom-right search button
+
+gh_edit_repository: "https://github.com/jfspps/howtos" # the github URL for your repo
