@@ -1,7 +1,7 @@
 ---
 title: Triggers in MySQL
 nav_order: 12
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Triggers in MySQL

@@ -1,7 +1,7 @@
 ---
 title: Graphs
 nav_order: 28
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Graphs

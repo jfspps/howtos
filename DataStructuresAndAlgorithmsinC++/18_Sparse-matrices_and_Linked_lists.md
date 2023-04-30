@@ -1,7 +1,7 @@
 ---
 title: Linked lists as alternatives to arrays
 nav_order: 18
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Linked lists as alternatives to arrays

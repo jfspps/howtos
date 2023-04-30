@@ -1,7 +1,7 @@
 ---
 title: Linked lists
 nav_order: 17
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Linked lists

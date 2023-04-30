@@ -1,7 +1,7 @@
 ---
 title: Classes in C++
 nav_order: 3
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Classes in C++

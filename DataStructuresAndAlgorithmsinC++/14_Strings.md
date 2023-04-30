@@ -1,7 +1,7 @@
 ---
 title: Strings in C and C++
 nav_order: 14
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Strings in C and C++

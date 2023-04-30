@@ -1,7 +1,7 @@
 ---
 title: More data types in SQL
 nav_order: 8
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # More data types in SQL

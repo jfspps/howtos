@@ -1,7 +1,7 @@
 ---
 title: Essential C and C++
 nav_order: 2
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Essential C and C++

@@ -1,7 +1,7 @@
 ---
 title: AVL Trees
 nav_order: 23
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # AVL Trees

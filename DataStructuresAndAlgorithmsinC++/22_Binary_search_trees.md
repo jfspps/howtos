@@ -1,7 +1,7 @@
 ---
 title: Binary Search Trees BST
 nav_order: 22
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Binary Search Trees BST

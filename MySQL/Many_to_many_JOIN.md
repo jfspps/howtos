@@ -1,7 +1,7 @@
 ---
 title: Many-to-many JOINs
 nav_order: 11
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Many-to-many JOINs

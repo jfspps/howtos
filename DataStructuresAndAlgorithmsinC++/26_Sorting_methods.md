@@ -1,7 +1,7 @@
 ---
 title: Sorting methods
 nav_order: 26
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Sorting methods

@@ -1,7 +1,7 @@
 ---
 title: Arrays in C++
 nav_order: 10
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Arrays in C++

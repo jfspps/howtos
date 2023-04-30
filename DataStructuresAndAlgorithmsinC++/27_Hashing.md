@@ -1,7 +1,7 @@
 ---
 title: Hashing techniques
 nav_order: 27
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Hashing techniques

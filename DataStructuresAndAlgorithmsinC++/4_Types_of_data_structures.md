@@ -1,7 +1,7 @@
 ---
 title: Types of data structures
 nav_order: 4
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Types of data structures

@@ -1,7 +1,7 @@
 ---
 title: The Stack data structure
 nav_order: 19
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # The Stack data structure

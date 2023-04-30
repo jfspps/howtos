@@ -1,7 +1,7 @@
 ---
 title: Inserting data into SQL tables
 nav_order: 3
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Inserting data into SQL tables

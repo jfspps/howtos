@@ -1,7 +1,7 @@
 ---
 title: Create, Read, Update and Delete CRUD
 nav_order: 4
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 ## Create, Read, Update and Delete CRUD

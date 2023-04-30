@@ -1,7 +1,7 @@
 ---
 title: More refined selections
 nav_order: 6
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # More refined selections

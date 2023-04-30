@@ -1,7 +1,7 @@
 ---
 title: Commonly used string functions in MySQL
 nav_order: 5
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Commonly used string functions in MySQL

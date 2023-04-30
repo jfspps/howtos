@@ -1,7 +1,7 @@
 ---
 title: The Queue data structure
 nav_order: 20
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # The Queue data structure

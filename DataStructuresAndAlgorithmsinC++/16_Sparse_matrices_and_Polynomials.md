@@ -1,7 +1,7 @@
 ---
 title: Sparse Matrices
 nav_order: 16
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Sparse Matrices

@@ -1,7 +1,7 @@
 ---
 title: Static variables and methods
 nav_order: 7
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Static variables and methods

@@ -1,7 +1,7 @@
 ---
 title: Time and space complexity
 nav_order: 5
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Time and space complexity

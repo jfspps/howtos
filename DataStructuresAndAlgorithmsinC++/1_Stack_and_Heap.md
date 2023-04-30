@@ -1,7 +1,7 @@
 ---
 title: Utilising data structures in memory
 nav_order: 1
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Utilising data structures in memory

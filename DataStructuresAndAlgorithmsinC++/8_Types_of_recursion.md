@@ -1,7 +1,7 @@
 ---
 title: Types of recursive functions
 nav_order: 8
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Types of recursive functions

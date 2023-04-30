@@ -1,7 +1,7 @@
 ---
 title: Searching Arrays
 nav_order: 12
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Searching Arrays

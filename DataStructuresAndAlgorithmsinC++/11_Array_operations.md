@@ -1,7 +1,7 @@
 ---
 title: Array operations in C++
 nav_order: 11
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Array operations in C++

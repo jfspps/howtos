@@ -1,7 +1,7 @@
 ---
 title: Operators in MySQL
 nav_order: 9
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Operators in MySQL

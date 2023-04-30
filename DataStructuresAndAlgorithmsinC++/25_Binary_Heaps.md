@@ -1,7 +1,7 @@
 ---
 title: The heap
 nav_order: 25
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Binary Heaps

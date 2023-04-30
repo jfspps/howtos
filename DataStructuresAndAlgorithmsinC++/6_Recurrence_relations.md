@@ -1,7 +1,7 @@
 ---
 title: Recurrence relations and recursion
 nav_order: 6
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Recurrence relations and recursion

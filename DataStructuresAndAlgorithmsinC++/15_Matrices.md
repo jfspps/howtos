@@ -1,7 +1,7 @@
 ---
 title: Matrix methods in C and C++
 nav_order: 15
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Matrix methods in C and C++

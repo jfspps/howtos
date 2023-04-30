@@ -1,7 +1,7 @@
 ---
 title: Tree data structures
 nav_order: 21
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Tree data structures

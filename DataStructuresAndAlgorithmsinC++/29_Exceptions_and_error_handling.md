@@ -1,7 +1,7 @@
 ---
 title: Exceptions and error-handling
 nav_order: 29
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Exceptions and error-handling

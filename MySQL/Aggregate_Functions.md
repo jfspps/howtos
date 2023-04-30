@@ -1,7 +1,7 @@
 ---
 title: Aggregate functions in MySQL
 nav_order: 7
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Aggregate functions in MySQL

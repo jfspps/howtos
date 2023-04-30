@@ -1,7 +1,7 @@
 ---
 title: Examples of algorithms on arrays
 nav_order: 13
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Examples of algorithms on arrays

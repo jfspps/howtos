@@ -1,7 +1,7 @@
 ---
 title: MySQL databases
 nav_order: 2
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # MySQL Databases

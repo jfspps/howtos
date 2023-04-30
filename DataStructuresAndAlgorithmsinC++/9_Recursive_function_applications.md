@@ -1,7 +1,7 @@
 ---
 title: Examples of recursive functions in action
 nav_order: 9
-parent: Data Structures and Algorithms in C++
+parent: ADTs and Algorithms in C++
 ---
 
 # Examples of recursive functions in action

@@ -1,7 +1,7 @@
 ---
 title: Installing MySQL
 nav_order: 1
-parent: Introduction to SQL with MySQL
+parent: Introduction to MySQL
 ---
 
 # Installing MySQL
