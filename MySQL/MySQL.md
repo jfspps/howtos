@@ -1,9 +1,9 @@
 ---
-title: Introduction to SQL with MySQL
+title: Introduction to MySQL
 nav_order: 5
 has_children: true
 ---
 
-# Introduction to SQL with MySQL
+# Introduction to MySQL
 
 This section provides an introduction to SQL with MySQL.

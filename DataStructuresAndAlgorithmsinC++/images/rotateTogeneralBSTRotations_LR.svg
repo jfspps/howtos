@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="rotateTogeneralBSTRotations_LR.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 264.58333 92.604173"
+   height="350"
+   width="1000">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker4364"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path4362" />
+    </marker>
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect2971"
+       effect="bspline" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect2516"
+       is_visible="true"
+       lpeversion="1"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect2342"
+       effect="bspline" />
+    <marker
+       inkscape:collect="always"
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1953"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1951"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect1901"
+       effect="bspline" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect1789"
+       effect="bspline" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect1266"
+       effect="bspline" />
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker1953-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1951-5" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     inkscape:snap-global="false"
+     units="px"
+     inkscape:window-maximized="1"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-height="837"
+     inkscape:window-width="1600"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="258.91476"
+     inkscape:cx="481.88886"
+     inkscape:zoom="0.98994949"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-5-9-1"
+       cx="64.298698"
+       cy="14.509915"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="35.223309"
+       cx="45.857098"
+       id="path833-0-8-9-6"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 60.289671,18.118056 48.529801,31.214262"
+       id="path874-6-5-1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="62.561443"
+       y="16.31399"
+       id="text1172-0"><tspan
+         sodipodi:role="line"
+         id="tspan1170-9"
+         x="62.561443"
+         y="16.31399"
+         style="font-size:6.35px;stroke-width:0.264583">A</tspan></text>
+    <text
+       id="text1172-3-6"
+       y="37.331238"
+       x="43.684826"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:6.35px;stroke-width:0.264583"
+         y="37.331238"
+         x="43.684826"
+         id="tspan1170-7-1"
+         sodipodi:role="line">B</tspan></text>
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-8-2"
+       cx="28.164474"
+       cy="56.251797"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <path
+       id="path874-6-5-0-20"
+       d="M 42.597021,39.146543 30.837161,52.242746"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="24.933853"
+       y="57.830555"
+       id="text1172-3-3-2"><tspan
+         sodipodi:role="line"
+         id="tspan1170-7-0-3"
+         x="24.933853"
+         y="57.830555"
+         style="font-size:4.93889px;stroke-width:0.264583">BL</tspan></text>
+    <path
+       id="path2201-0-4"
+       d="m 49.523751,37.936569 9.35444,13.898015"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="55.843632"
+       cx="61.550884"
+       id="path833-0-8-9-8-4-1-7-4"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="58.250011"
+       y="57.398018"
+       id="text1172-3-3-1-5-2"><tspan
+         sodipodi:role="line"
+         x="58.250011"
+         y="57.398018"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         id="tspan2274-0">BR</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 67.698081,17.891354 9.35443,13.898017"
+       id="path2201-0-0-6" />
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-8-4-1-7-6-4"
+       cx="79.725197"
+       cy="35.798416"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <text
+       id="text1172-3-3-1-5-5-4"
+       y="37.352802"
+       x="75.366005"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         id="tspan2274-4-0"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="37.352802"
+         x="75.366005"
+         sodipodi:role="line">AR1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:#ff0000;stroke-width:0.264583"
+       x="35.56723"
+       y="27.00477"
+       id="text2308-2"><tspan
+         sodipodi:role="line"
+         id="tspan2306-2"
+         x="35.56723"
+         y="27.00477"
+         style="font-size:7.05556px;stroke:#ff0000;stroke-width:0.264583">-1</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 64.223581,59.184497 9.35443,13.898018"
+       id="path2201-0-6-2" />
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-8-4-1-7-1-8"
+       cx="76.250694"
+       cy="77.09156"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <text
+       id="text1172-3-3-1-5-9-0"
+       y="78.64595"
+       x="71.891502"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         id="tspan2274-42-3"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="78.64595"
+         x="71.891502"
+         sodipodi:role="line">BRR</tspan></text>
+    <text
+       id="text2308-2-9"
+       y="55.065109"
+       x="50.908443"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:#ff0000;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:7.05556px;stroke:#ff0000;stroke-width:0.264583"
+         y="55.065109"
+         x="50.908443"
+         id="tspan2306-2-0"
+         sodipodi:role="line">0</tspan></text>
+    <text
+       id="text2308-2-8"
+       y="8.827486"
+       x="51.710262"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:#ff0000;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:7.05556px;stroke:#ff0000;stroke-width:0.264583"
+         y="8.827486"
+         x="51.710262"
+         id="tspan2306-2-8"
+         sodipodi:role="line">2</tspan></text>
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="76.171814"
+       cx="44.901279"
+       id="path833-0-8-9-8-4-1-7-1-8-5"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="40.542088"
+       y="77.726204"
+       id="text1172-3-3-1-5-9-0-2"><tspan
+         sodipodi:role="line"
+         x="40.542088"
+         y="77.726204"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         id="tspan2274-42-3-3">BRL</tspan></text>
+    <path
+       id="path874-6-5-1-3"
+       d="M 58.799301,59.73474 47.039431,72.830947"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="33.104561"
+       cx="192.45245"
+       id="path833-5-9-1-3"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-6-1"
+       cx="152.89655"
+       cy="36.445435"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <path
+       id="path874-6-5-1-2"
+       d="M 167.32912,19.340179 155.56925,32.436386"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text
+       id="text1172-0-4"
+       y="34.90863"
+       x="190.71519"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:6.35px;stroke-width:0.264583"
+         y="34.90863"
+         x="190.71519"
+         id="tspan1170-9-7"
+         sodipodi:role="line">A</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="150.72427"
+       y="38.553364"
+       id="text1172-3-6-6"><tspan
+         sodipodi:role="line"
+         id="tspan1170-7-1-2"
+         x="150.72427"
+         y="38.553364"
+         style="font-size:6.35px;stroke-width:0.264583">B</tspan></text>
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="57.473923"
+       cx="135.20392"
+       id="path833-0-8-9-8-2-9"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 149.63647,40.368666 137.87661,53.464869"
+       id="path874-6-5-0-20-1" />
+    <text
+       id="text1172-3-3-2-5"
+       y="59.052681"
+       x="131.9733"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:4.9389px;stroke-width:0.264583"
+         y="59.052681"
+         x="131.9733"
+         id="tspan1170-7-0-3-3"
+         sodipodi:role="line">BL</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 154.15777,40.762309 9.35444,13.898015"
+       id="path2201-0-4-6" />
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-8-4-1-7-4-7"
+       cx="171.79758"
+       cy="16.440784"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <text
+       id="text1172-3-3-1-5-2-3"
+       y="17.995167"
+       x="168.4967"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         id="tspan2274-0-8"
+         style="font-size:4.9389px;stroke-width:0.264583"
+         y="17.995167"
+         x="168.4967"
+         sodipodi:role="line">BR</tspan></text>
+    <path
+       id="path2201-0-0-6-7"
+       d="m 195.31727,37.020535 9.35443,13.898018"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="54.927601"
+       cx="207.34441"
+       id="path833-0-8-9-8-4-1-7-6-4-4"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="202.98521"
+       y="56.481987"
+       id="text1172-3-3-1-5-5-4-3"><tspan
+         sodipodi:role="line"
+         x="202.98521"
+         y="56.481987"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         id="tspan2274-4-0-6">AR1</tspan></text>
+    <path
+       id="path2201-0-6-2-7"
+       d="m 176.54296,18.027835 12.15805,11.525724"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <ellipse
+       ry="4.4099469"
+       rx="4.8108511"
+       cy="57.466663"
+       cx="179.54837"
+       id="path833-0-8-9-8-4-1-7-1-8-4"
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="175.18918"
+       y="59.021046"
+       id="text1172-3-3-1-5-9-0-27"><tspan
+         sodipodi:role="line"
+         x="175.18918"
+         y="59.021046"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         id="tspan2274-42-3-31">BRR</tspan></text>
+    <ellipse
+       style="fill:none;stroke:#0000ff;stroke-width:0.519999"
+       id="path833-0-8-9-8-4-1-7-1-8-5-1"
+       cx="163.96786"
+       cy="59.486874"
+       rx="4.8108511"
+       ry="4.4099469" />
+    <text
+       id="text1172-3-3-1-5-9-0-2-2"
+       y="61.041271"
+       x="159.60867"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         id="tspan2274-42-3-3-9"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="61.041271"
+         x="159.60867"
+         sodipodi:role="line">BRL</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 189.05688,36.808971 -8.48401,15.421637"
+       id="path874-6-5-1-3-6" />
+    <ellipse
+       transform="matrix(0.84466531,-0.53529479,0.62779182,0.77838129,0,0)"
+       ry="24.353962"
+       rx="10.971269"
+       cy="62.075859"
+       cx="40.084221"
+       id="path4336"
+       style="fill:none;stroke:#ff0000;stroke-width:0.327758;stroke-miterlimit:4;stroke-dasharray:1.96655, 1.96655;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       id="path4338"
+       d="m 87.664403,46.772168 8.819896,12.027127"
+       style="fill:none;stroke:#ff0000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.59, 1.59;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker1953)" />
+    <ellipse
+       ry="19.109772"
+       rx="26.192413"
+       cy="68.821907"
+       cx="61.471992"
+       id="path4358"
+       style="fill:none;stroke:#ff0000;stroke-width:0.264999;stroke-miterlimit:4;stroke-dasharray:1.59, 1.59;stroke-dashoffset:0;stroke-opacity:1" />
+    <path
+       id="path4360"
+       d="M 62.54107,48.643054 V 22.083242"
+       style="fill:none;stroke:#ff0000;stroke-width:0.406982;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.44189, 2.44189;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker4364)" />
+    <text
+       id="text4416"
+       y="79.111778"
+       x="123.74579"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:7.05556px;stroke-width:0.264583"
+         y="79.111778"
+         x="123.74579"
+         id="tspan4414"
+         sodipodi:role="line">note the relative positioning </tspan><tspan
+         id="tspan4418"
+         style="font-size:7.05556px;stroke-width:0.264583"
+         y="87.931229"
+         x="123.74579"
+         sodipodi:role="line">of BRL and BRR is preserved</tspan></text>
+  </g>
+</svg>

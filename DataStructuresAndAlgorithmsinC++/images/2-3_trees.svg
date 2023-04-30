@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1000"
+   height="300"
+   viewBox="0 0 264.58333 79.375002"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="2-3_trees.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="498.56406"
+     inkscape:cy="118.1107"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1600"
+     inkscape:window-height="837"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875"
+       id="rect833"
+       width="14.967093"
+       height="13.096207"
+       x="116.26225"
+       y="12.027129" />
+    <rect
+       y="12.027129"
+       x="131.22934"
+       height="13.096207"
+       width="14.967093"
+       id="rect833-0"
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875" />
+    <rect
+       y="49.31123"
+       x="74.835464"
+       height="13.096207"
+       width="14.967093"
+       id="rect833-4"
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875" />
+    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875"
+       id="rect833-0-4"
+       width="14.967093"
+       height="13.096207"
+       x="89.802559"
+       y="49.31123" />
+    <rect
+       y="49.31123"
+       x="116.79678"
+       height="13.096207"
+       width="14.967093"
+       id="rect833-8"
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875" />
+    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875"
+       id="rect833-0-2"
+       width="14.967093"
+       height="13.096207"
+       x="131.76387"
+       y="49.31123" />
+    <rect
+       y="49.31123"
+       x="159.02536"
+       height="13.096207"
+       width="14.967093"
+       id="rect833-5"
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875" />
+    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:0.264583;stroke-dasharray:1.5875, 1.5875"
+       id="rect833-0-0"
+       width="14.967093"
+       height="13.096207"
+       x="173.99245"
+       y="49.31123" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.213314px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 146.19643,25.123337 27.79602,24.18789"
+       id="path886" />
+    <path
+       id="path4179"
+       d="m 131.22934,25.123337 0.53453,24.187892"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       id="path4181"
+       d="M 116.26225,25.123337 89.802559,49.311229"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text
+       id="text4185"
+       y="33.141418"
+       x="5.8799291"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:7.05556px;stroke-width:0.264583"
+         y="33.141418"
+         x="5.8799291"
+         id="tspan4183"
+         sodipodi:role="line">note placement of edges</tspan></text>
+  </g>
+</svg>
