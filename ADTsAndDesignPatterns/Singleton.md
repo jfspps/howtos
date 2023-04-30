@@ -1,6 +1,6 @@
 ---
 title: The Singleton
-nav_order: 3
+nav_order: 2
 parent: ADTs and Design Patterns in Java
 ---
 

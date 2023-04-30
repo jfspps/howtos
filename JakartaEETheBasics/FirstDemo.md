@@ -1,6 +1,6 @@
 ---
 title: Introduction to Jakarta EE
-nav_order: 3
+nav_order: 1
 parent: Jakarta EE The Basics
 ---
 

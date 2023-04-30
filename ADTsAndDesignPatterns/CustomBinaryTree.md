@@ -1,6 +1,6 @@
 ---
 title: The Binary Tree
-nav_order: 3
+nav_order: 9
 parent: ADTs and Design Patterns in Java
 ---
 

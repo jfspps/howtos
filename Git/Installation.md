@@ -1,6 +1,6 @@
 ---
 title: Installing Git
-nav_order: 3
+nav_order: 2
 parent: Git
 ---
 

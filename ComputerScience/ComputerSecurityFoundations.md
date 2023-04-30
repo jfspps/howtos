@@ -1,6 +1,6 @@
 ---
 title: Foundations of Computer Security
-nav_order: 3
+nav_order: 1
 parent: Computer Science
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: The Linked List
-nav_order: 3
+nav_order: 6
 parent: ADTs and Design Patterns in Java
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Java Fair and Live Locks
-nav_order: 3
+nav_order: 14
 parent: Intermediate Java
 ---
 

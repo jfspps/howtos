@@ -1,6 +1,6 @@
 ---
 title: The Binary Search Tree
-nav_order: 3
+nav_order: 10
 parent: ADTs and Design Patterns in Java
 ---
 

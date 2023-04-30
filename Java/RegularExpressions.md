@@ -1,6 +1,6 @@
 ---
 title: Regular Expressions with Java
-nav_order: 3
+nav_order: 4
 parent: Intermediate Java
 ---
 
