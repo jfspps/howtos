@@ -1,4 +1,8 @@
-<link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico">
+---
+title: "The HowTos homepage"
+nav_order: 1
+has_children: true
+---
 
 # HowTos #
 
