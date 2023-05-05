@@ -4,7 +4,7 @@ nav_order: 3
 parent: Jakarta EE The JPA
 ---
 
-<h5>Primary keys</h5>
+# Primary keys
 
 Primary keys can take the form of different Java types, not only (wrapped) Long types. Generally, the floating point types like double and Double are not recommended given the representation is not uniformly defined across systems. 
 
@@ -46,7 +46,7 @@ public class someClass {
 
 Going through each part (above), the name of the table is "pkTable". The primary key column for _pkTable_ is "generatedIDsPKs". The second column in _pkTable_ labelled "latestPK" contains a record of the last primary key that was set. This last column informs the JPA provider what the next key should be, normally one unit integer higher. It examines the value in this column and then proceeds to assign the next entity primary key based on teh value in "latestPK".
 
-<h5>Relational mapping with JPA</h5>
+# Relational mapping with JPA
 
 Relationships between two entities can either be unidirectional or bidirectional (explain in more detail shortly). An address related to a employee is normally unidirectional since it makes more sense for the employee to know its address but it does not make sense for an address to know its employee.
 
@@ -54,7 +54,7 @@ The _cardinality_ refers to the number entities at the end of each relationship.
 
 The _ordinality_ (or "optionality") refers to a boolean which denotes whether or not a entity must be defined when persisting data. Other authors refer to ordinality as the minimum number of entities that must exist in a given relationship. In order for employees to be saved to the database, a department must exist. However, in order for a department to be saved, having employees is not a requirement. From a global viewpoint, the ordinality (in the department-employee relationship) is said to be "0" or false for employee and "1+" or true for the department.
 
-<h5>Single-valued associations</h5>
+## Single-valued associations
 
 _Single-valued associations_ are those where there is only one entity at the target end of the relationship. From the employee point of view, whether there is one employee or multiple employees, the target entity (the department) is the sole entity. As such, there are consequently either one-to-one and many-to-one relationships.
 
@@ -124,7 +124,7 @@ public class Employee {
 }
 ```
 
-<h5>Multivalued associations</h5>
+## Multivalued associations
 
 When there is more than one target entity, it gives rise to Collection valued relationships. This includes one-to-many and many-to-many relationships.
 
@@ -185,7 +185,7 @@ The owned table (entity) is signified by a field with ```@ManyToMany(mappedBy = 
 
 With the above relationships, it is necessary to control what other related entities are loaded when a contextual instance is constructed. This is handled with options to the relationship annotations. Note that the provider is not bound to fetch lazily or eagerly, and any fetch annotation is considered a suggestion (consult the provider documentation).
 
-<h5>Embedding Collections</h5>
+# Embedding Collections
 
 Previously Embeddable objects were given their own allocation in the database when the embedded object was persisted to a database. The above example focused on one entity.
 
