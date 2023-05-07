@@ -83,22 +83,22 @@ public class PersistenceService {
 }
 ```
 
-When a new transaction begins, a persistence context is initialised. Changes to the database entities are not made to the database entries (rows) directly but are instead made to entities pulled (using find()) from the database to the persistence context. Once the transaction is committed, any entities in the persistence context are sent back to the database that have matching IDs, thus saving any changes. The transaction is then no longer in action and the persistence context is flushed.
+When a new transaction begins, a persistence context is initialised. Changes to the database entities are not made to the database entries (rows) directly but are instead made to entities pulled (using ```find()```) from the database to the persistence context. Once the transaction is committed, any entities in the persistence context are sent back to the database that have matching IDs, thus saving any changes. The transaction is then no longer in action and the persistence context is flushed.
 
-The key EntityManager methods to note are persist(), find(), detach(), merge() and remove().
+The key EntityManager methods to note are ```persist()```, ```find()```, ```detach()```, ```merge()``` and ```remove()```.
 
-+ persist() - save the new entity (not already in the persistence context) to a given persistence context (and ultimately the database)
-+ find() - find the entity on, usually by primary key, from the persistence context or the provider (more below)
-+ detach() - remove the entity from the persistence context (usually sent to the viewer layer, e.g. JSF); this does not remove the entity from the database
-+ merge() - the opposite of detach(), placing the object into the persistence context; this is also used to update entities once the transaction is committed
-+ remove() - remove the entity from the persistence context and database
++ ```persist()``` - save the new entity (not already in the persistence context) to a given persistence context (and ultimately the database)
++ ```find()``` - find the entity on, usually by primary key, from the persistence context or the provider (more below)
++ ```detach()``` - remove the entity from the persistence context (usually sent to the viewer layer, e.g. JSF); this does not remove the entity from the database
++ ```merge()``` - the opposite of detach(), placing the object into the persistence context; this is also used to update entities once the transaction is committed
++ ```remove()``` - remove the entity from the persistence context and database
 
 Recall that the entity manager operates on the persistence context. A few comments are in order.
 
-+ An exception is thrown when persist() is performed on an entity that already exists in the database
-+ The method find() first queries the persistence context and if the entity cannot be found it then queries the provider's database, and places anything found in to the persistence context
++ An exception is thrown when ```persist()``` is performed on an entity that already exists in the database
++ The method ```find()``` first queries the persistence context and if the entity cannot be found it then queries the provider's database, and places anything found in to the persistence context
 + Detached entities are no longer part of the persistence context. Changes to the detached entity are not automatically applied to the corresponding entity on the database.
-+ If the entity was found (using find()) on the persistence layer then it automatically becomes detached. Fields of an entity that are set to be loaded lazily can only be retrieved from the database while the entity resides in the persistence context. Hence, lazily loaded fields must be retrieved (if required later) before the entity is detached, either through detach() or find(). Any getter related to a lazily defined field (that has not already been accessed) that is executed on a detached entity will return undefined behaviour. To get around this, first extract the field data before detachment.
++ If the entity was found (using ```find()```) on the persistence layer then it automatically becomes detached. Fields of an entity that are set to be loaded lazily can only be retrieved from the database while the entity resides in the persistence context. Hence, lazily loaded fields must be retrieved (if required later) before the entity is detached, either through ```detach()``` or ```find()```. Any getter related to a lazily defined field (that has not already been accessed) that is executed on a detached entity will return undefined behaviour. To get around this, first extract the field data before detachment.
 
 When the transaction is committed, all entities in the persistence context will be transferred to the database. Subsequent calls to a operation will trigger a new transaction and a new persistence context.
 
@@ -235,17 +235,17 @@ To set the persistence provider, use the provider tags. Different application se
 </persistence>
 ```
 
-The JTA datasource tag (optional) defines the configuration (usernames, passwords etc.) need to allow the application server to connect to the database. The datasource itself can take the form of an annotation <span class="annot">@DataSourceDefinition()</span> and list the required settings for a class which requires access to the database. The name given in the "jta-data-source" tag references the name attribute of the <span class="annot">@DataSourceDefinition()</span> annotation.
+The JTA datasource tag (optional) defines the configuration (usernames, passwords etc.) need to allow the application server to connect to the database. The datasource itself can take the form of an annotation ```@DataSourceDefinition()``` and list the required settings for a class which requires access to the database. The name given in the "jta-data-source" tag references the name attribute of the ```@DataSourceDefinition()``` annotation.
 
 ```java
-@DataSourceDefinition(
+  @DataSourceDefinition(
   name = "java:app/pathTo/theDB",
   className = "org.apache.derby.jdbc.ClientDriver",
   url = "jdbc:derby://localhost:1976/theDB",
   user = "usernameHere",
   password = "pwd")
-@Stateless
-public class SomeService {
+  @Stateless
+  public class SomeService {
 
   @Inject
   EntityManager entityManager;
