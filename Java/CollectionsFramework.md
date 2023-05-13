@@ -126,11 +126,16 @@ Instead of building a Comparator instance, one could write a class which impleme
 
 ## The List interface
 
+The List interface implementations in common use are the generic classes ```ArrayList``` and ```LinkedList```. 
+
++ ```ArrayList``` is assigned an initial fixed size and adjusted (really copied to a new larger list and appended) accordingly, and given that the location of each element is immediately known, it makes ArrayLists optimal for frequent read requests. One drawback with ArrayLists is that write heavy tasks, resulting in repeated array list length adjustments can hinder performance.
++ ```LinkedList``` is a linked list and consequently never adjusted as ArrayLists need to, making LinkedLists suitable for write heavy applications. A drawback with linked lists in general is that the list must be traversed in order to ascertain the location of an element, making LinkedLists less desirable for read heavy tasks.
+
 Lists can be copied by reference (a shallow copy) by initialising a new List as ```List<ClassID> newList = new ArrayList<>(sourceList)```, in preference to ```Collections.copy(dest, source)```.  Elements can be reversed and shuffled using ```reverse()``` and ```shuffle()```. Reversing a list requires the implementation of the Comparable interface. The ```min()``` and ```max()``` methods return the smallest and largest numerical based element. One can also swap elements with ```swap()```.
 
 ## The Map interface
 
-This interface has a key and value pairings and replaces dictionaries. Maps can be implement with the HashMap generic class with ```Map<Integer, String> someMap = new HashMap<>();```, for example. Keys are unique so all references, with ```put()```, to the same key will overwrite the stored value. Keys are also immutable. The method ```put()``` returns the previous value if the key-value pair already exists and null if not.
+This interface has a key and value pairings and replaces dictionaries. Maps can be implemented with the HashMap generic class with ```Map<Integer, String> someMap = new HashMap<>();```, for example. Keys are unique so all references, with ```put()```, to the same key will overwrite the stored value. Keys are also immutable. The method ```put()``` returns the previous value if the key-value pair already exists and null if not.
 
 One can also use ```containsKey()``` to determine if a value already exists without overwriting it through ```put()```. With regard to thread management, one can use ```putIfAbsent()```, preventing two or more threads from writing to the map repeatedly.
 
@@ -195,7 +200,7 @@ Some thought is required though when overriding ```equals()``` for a class and i
 
 ## LinkedHashMap and TreeMap
 
-HashMaps and HashSets are chaotic and the sorted forms are LinkedHashMap and LinkedHashSet. They are ordered in the same order they were entered, that is, FIFO. The methods for Maps and Sets are very similar.
+HashMaps and HashSets are chaotic. The sorted forms are LinkedHashMap and LinkedHashSet and are both ordered in the same order they were entered, that is, FIFO. The methods for Maps and Sets are very similar.
 
 Below is a more comprehensive example which summarises many of the concepts covered thus far.
 
