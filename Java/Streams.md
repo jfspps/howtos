@@ -115,3 +115,84 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
             .collect(Collectors.toList());
 }
 ```
+
+## Java 9 Reactive Streams
+
+Java 9 introduces capabilities that enable data to traverse a _flow_ from a _Publisher_ to any number of _Subscribers_. This amounts to overriding a number of methods:
+
++ Publisher ```subscribe()```
++ Subscriber
+  - ```onSubscribe()```
+  - ```onNext()```
+  - ```onError()```
+  - ```onComplete()```
+
+The relevant classes are located in the ```java.util.concurrent``` package. The Subscriber class implemented the ```Subscriber``` interface. The Subscriber calls ```request(n)``` to indicate it is ready to receive data,
+where ```n``` is the number of elements it can receive.
+
+```java
+public class DemoSubscriber<T> implements Subscriber<T> {
+
+    private Subscription subscription;
+
+    public List<T> consumedElements = new LinkedList<>();
+
+    // called prior to all stream processing
+    @Override
+    public void onSubscribe(Subscription subscription) {
+        this.subscription = subscription;
+        subscription.request(1);
+    }
+
+    // called when the Publisher sends a message
+    @Override
+    public void onNext(T item) {
+        System.out.println("Received:" + item);
+        consumedElements.add(item);
+        subscription.request(1);
+    }
+
+    // thrown whenever errors occur
+    @Override
+    public void onError(Throwable t) {
+        t.printStackTrace();
+    }
+
+    // called when the Publisher is closed
+    @Override
+    public void onComplete() {
+        System.out.println("Publisher closed; transfer complete");
+    }
+}
+```
+
+The publisher is based on the ```SubmissionPublisher``` generic which implements the Publisher interface. Developers are not recommended
+to implement the Publisher interface in majority of use cases. If it is necessary, then developers can confirm their new library meets the 
+reactive streams specifications by consulting the [Reactive Streams Technology Compatibility Kit](https://github.com/reactive-streams/reactive-streams-jvm/tree/master/tck) project.
+
+```java
+    // establish the Publisher
+    SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
+
+    // establish the Subscriber and give the go-ahead
+    DemoSubscriber<String> subscriber = new EndSubscriber<>();
+    publisher.subscribe(subscriber);
+
+
+    List<String> items = List.of("1", "x", "2", "x", "3", "x");
+
+    // call submit() to send each String
+    items.forEach(publisher::submit);
+
+    // remember to close the Publisher; this then invokes the Subscriber's onComplete()
+    publisher.close();
+```
+
+The data is fed in a _non-blocking back-pressure_ manner in that the transmission does not hold up the subject thread 
+and hinder it from performing other tasks. The _back-pressure_ management mechanism 
+(which is in reference to the Publisher's point of view, increasing as the Subscriber struggles more to consume each message) 
+which refers to the restriction of flow rate by the Subscriber. Above, the subscriber's ```request()``` call indicates when the Subscriber 
+is ready to receive more data (in a sense, data is pulled from the Publisher, not pushed). Some authors refer to the _upstream_ from Publisher
+to Subscriber and the _downstream_ from Subscriber to Publisher.
+
+Java 8 developers could enlist ```CompletableFutures``` to manage streams asynchronously but this is usually more difficult to work with.
