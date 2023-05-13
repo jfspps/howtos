@@ -20,9 +20,47 @@ Overall, abstract classes provide a common/default definition of some (not all) 
 
 ## Interfaces
 
-Interfaces are more commonly applied when the classes that implement them are unrelated. There are no fields, only method declarations*, all of which are ```public``` and ```abstract``` by default. Such flexibility is a core part of interfaces, they state what should be provided but not how. There are a few Java 8 and 9 changes to note:
+Interfaces are more commonly applied when the classes that implement them are unrelated. There are no fields, only* method declarations, all of which are ```public``` and ```abstract``` by default. Such flexibility is a core part of interfaces, they state what should be provided but not how. There are a few Java 8 and 9 changes to note:
 
-+ Java 8 interfaces can include ```default``` and ```static``` method implementations
++ Java 8 interfaces can include ```default``` and ```static``` method implementations*. The ```default``` keyword defines the implementation of a method that is available to all classes that implement the interface, and does not need to be implemented again. Default methods can be overridden.
+
+```java
+public interface InterfaceWithDefaultImpl {
+
+    default int isNullAndBlank(String keyword){
+        if (keyword == null && keyword.isBlank()){
+            return 1;
+        }
+
+        return 0;
+    }
+
+    static boolean isBlank(String keyword){
+        return (keyword != null && keyword.isBlank());
+    }
+
+    void implementMe();
+}
+
+// somewhere-else
+
+public class someClass implements InterfaceWithDefaultImpl {
+
+    private String somethingUseful;
+
+    // constructors, getters and setter etc...
+
+    public int callDefault(){
+        return isNullAndBlank(this.somethingUseful);
+    }
+
+    @Override
+    public void implementMe() {
+        InterfaceWithDefaults.isBlank("Calling the static");
+    }
+}
+```
+
 + Java 9 interfaces can contain ```private``` methods and ```private static``` methods, though these can only be used by other methods in the same interface. That is, ```private``` methods of Java 9 interfaces are helper methods.
 
 Typical examples of interfaces are the Collections List interface, implemented by ArrayList and LinkedList. The JDBC API is another example, where JDBC drivers function as the implementation.
