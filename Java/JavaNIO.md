@@ -12,33 +12,39 @@ streams in blocks of data.
 
 ## Text files (NIO with IO)
 
-The first example below shows how text files are handled. In most cases, one uses a Path class with NIO and pass it
-to an instance of a Files class.
+The first example below shows how text files are handled. In most cases, one uses a ```Path``` class with NIO and pass it
+to an instance of a ```Files``` class.
 
 ```java
 public someFunction() throws IOException {
 
     Path somePath = FileSystems.getDefault().getPath("textFileName.txt");
+
     try (BufferedWriter someBufferedWriter = Files.newBufferedWriter(somePath)) {
+
         for(...) {
           // write to the text file
           someBufferedWriter.write(pojo.getInt());
           ...
         }
+
     } catch(IOException e) {
         System.out.println("IOException: " + e.getMessage());
     }
 
     // reading from a text file
-    try (Scanner scanner = new Scanner(Files.newBufferedReader(somePath))) {
-      scanner.useDelimiter(",");
+    try (Scanner scanner = new Scanner(
+        Files.newBufferedReader(somePath))) {
 
-      while(scanner.hasNextLine()) {
-          int someInt = scanner.nextInt();
-          scanner.skip(scanner.delimiter());
-          String someString = scanner.nextLine();
-          ...
-      }
+        scanner.useDelimiter(",");
+
+        while(scanner.hasNextLine()) {
+            int someInt = scanner.nextInt();
+            scanner.skip(scanner.delimiter());
+            String someString = scanner.nextLine();
+            ...
+        }
+
     } catch(IOException e) {
         e.printStackTrace();
     }
@@ -54,28 +60,36 @@ Handling of binary files with NIO as shown below. Take note of the exceptions co
 public someFunc() throws IOException {
 
 Path somePath = FileSystems.getDefault().getPath("someFileName.dat");
+
 try (ObjectOutputStream objectStream = 
-new ObjectOutputStream(
-    new BufferedOutputStream(Files.newOutputStream(somePath)))) {
-    for(...) {
-    objectStream.writeObject(pojoInstance);
-    }
+    new ObjectOutputStream(
+        new BufferedOutputStream(
+            Files.newOutputStream(somePath)))) {
+
+            for(...) {
+            objectStream.writeObject(pojoInstance);
+            }
+
 }
 
 // reading from a binary file
 Path somePath = FileSystems.getDefault().getPath("someFileName.dat");
     try (ObjectInputStream someStream = 
         new ObjectInputStream(
-        new BufferedInputStream(Files.newInputStream(somePath)))) {
-        boolean eof = false;
-        while(!eof) {
-            try {
-                POJO pojo = (POJO) someStream.readObject();
-                // do something with pojo
-                } catch(EOFException e) {
-                eof = true;
-            }
-        }
+            new BufferedInputStream(
+                Files.newInputStream(somePath)))) {
+
+                boolean eof = false;
+                
+                while(!eof) {
+                    try {
+                        POJO pojo = (POJO) someStream.readObject();
+                        // do something with pojo
+                        } catch(EOFException e) {
+                        eof = true;
+                    }
+                }
+
     } catch(InvalidClassException e) {
         System.out.println("InvalidClassException " + e.getMessage());
     } catch(IOException e) {
@@ -108,26 +122,33 @@ try {
 
     // default is to read assuming UTF
     List<String> lines = Files.readAllLines(dataPath);
+
     for(String line : lines) {
     // do something with each line
     }
+
 } catch(IOException e) {
     e.printStackTrace();
 }
 ```
 
-There are two methods which exemplify one of the main uses of Java NIO: __wrap()__ and __flip()__. The wrap() method:
+There are two methods which exemplify one of the main uses of Java NIO: ```wrap()``` and ```flip()```. 
+
+The ```wrap()``` method:
 
 + ties the buffer with the byte array; changes to either one affects the other
 + sets the position (index of the next element, <= capacity) of the buffer to zero
 + the buffer's capacity (no. of elements) is set according to the size of the byte array (thus wrap() has a set capacity)
 + the buffer's mark (initially undefined and used as a custom pointer; buffer's reset() sets the pointer to mark's) is undefined
 
-Each operation on the buffer (getInt() and putInt(), for example) advances the buffer's pointer one place forward. Quite often one needs to reset the pointer before reading or writing from/to the buffer. This is achieved with the flip() method. The flip() method also discards any custom mark. The example below writes Hello World followed by two Integers.
+Each operation on the buffer (```getInt()``` and ```putInt()```, for example) advances the buffer's pointer one place forward. 
+Quite often one needs to reset the pointer before reading or writing from/to the buffer. This is achieved with the ```flip()``` method. 
+The ```flip()``` method also discards any custom mark. The example below writes Hello World followed by two Integers.
 
 ```java
 try(
       FileOutputStream binFile = new FileOutputStream("data.dat");
+
       FileChannel binChannel = binFile.getChannel()) {
 
         byte[] outputBytes = "Hello World!".getBytes();
@@ -172,7 +193,7 @@ try(
 
 The following section is a continuation of the above try block.
 
-The read() method: ```public int read(byte[] b) throws IOException```
+The ```read()``` method: ```public int read(byte[] b) throws IOException```
 
 + Reads some number of bytes from the input stream and stores them into the buffer array b. The number of bytes actually read is returned as an integer. This method blocks until input data is available, end of file is detected, or an exception is thrown.
     
@@ -185,7 +206,7 @@ at most, equal to the length of b. Let k be the number of bytes actually read; t
 elements b[0] through b[k-1], leaving elements b[k] through b[b.length-1] unaffected.
 
 The following sends the input stream data (data.dat via channel) to 'buffer', with read(). Hint: whenever "flipping"
-from read to write, or vice versa, always call flip().
+from read to write, or vice versa, always call ```flip()```.
 
 ```java
 RandomAccessFile ra = new RandomAccessFile("data.dat", "rwd");
@@ -214,8 +235,10 @@ One can access a particular element of the buffer with absolute read. Consequent
 ```java
 // Absolute read (passed index to getInt())
 intBuffer.flip();
+
 numBytesRead = channel.read(intBuffer);
 System.out.println(intBuffer.getInt(0));
+
 intBuffer.flip();
 numBytesRead = channel.read(intBuffer);
 System.out.println(intBuffer.getInt(0));
@@ -229,10 +252,13 @@ With relative reads, the flip() method is used more often.
 ```java
 // Relative read (no parameters passed to getInt())
 intBuffer.flip();
+
 numBytesRead = channel.read(intBuffer);
 intBuffer.flip();
+
 System.out.println(intBuffer.getInt());
 intBuffer.flip();
+
 numBytesRead = channel.read(intBuffer);
 intBuffer.flip();
 System.out.println(intBuffer.getInt());
@@ -243,7 +269,7 @@ ra.close();
 
 ## Copying files between channels and threads
 
-Files are coupled to Java NIO channels, and as such, one can copy file contents via their channels. The following transferTo() sends data from someOtherChannel to someFileChannel.
+Files are coupled to Java NIO channels, and as such, one can copy file contents via their channels. The following ```transferTo()``` sends data from someOtherChannel to someFileChannel.
 
 ```java
 RandomAccessFile someFile = 
@@ -262,7 +288,7 @@ long someLong = someOtherChannel.transferTo(
   0, someOtherChannel.size(), someFileChannel);
 ```
 
-Note that the position parameter is relative to the current position in the channel. One can also send data with respect to the destination channel with transferFrom(). The following is equivalent to the above transferTo().
+Note that the position parameter is relative to the current position in the channel. One can also send data with respect to the destination channel with ```transferFrom()```. The following is equivalent to the above ```transferTo()```.
 
 ```java
 RandomAccessFile someFile = 

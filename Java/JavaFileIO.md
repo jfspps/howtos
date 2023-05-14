@@ -6,19 +6,24 @@ parent: Intermediate Java
 
 # Java File I/O
 
-First, we start of with the FileWriter class with the help of an output stream. FileWriter is meant for writing streams of characters. For writing streams of raw bytes, use FileOutputStream. With regard to text files, the order in which data is printed to and extracted from must clearly match.
+First, we start of with the ```FileWriter``` class with the help of an output stream. ```FileWriter``` is meant for writing streams of characters. For writing streams of raw bytes, use ```FileOutputStream```. With regard to text files, the order in which data is printed to and extracted from must clearly match.
 
 ```java
 FileWriter someFile = null;
 
 try {
     someFile = new FileWriter("someFileName.txt");
+
     for( ... ) {
         someFile.write(POJO_getters_etc);
     }
+
 } catch(IOException e) {
+
     e.printStackTrace();
+    
 } finally {
+
     try {
         if(someFile != null) {
             // try to close the file and catch another exception
@@ -30,7 +35,7 @@ try {
 }
 ```
 
-Other statements or conditional statements or iterative blocks can be applied to print to the text file as required. Closing the file (the file stream) is important. The IOExceptions (checked exceptions, which cannot be ignored on compile time) are thrown when errors are encountered (e.g. read-only access, file not accessible).
+Other statements or conditional statements or iterative blocks can be applied to print to the text file as required. Closing the file (the file stream) is important. The IOExceptions (_checked exceptions_, which must always be caught or thrown up the stack) are thrown when errors are encountered (e.g. read-only access, file not accessible).
 
 The more concise way of implementing the above segment, when no specific action is taken after an exception (other than print exception stack traces), is to use try with resources (new to Java 7). Remember to add the 'throws IOException' to the method signature. The stream is automatically closed.
 
@@ -44,7 +49,7 @@ try(FileWriter someFile = new FileWriter("someFileName.txt")) {
 }
 ```
 
-To read from the text file, one can use the FileReader class. This can be implemented with the Scanner class (this automatically closes FileReader, which implements the Closeable interface). The delimiter represents the end of a line as such and is a recommended.
+To read from the text file, one can use the ```FileReader``` class. This can be implemented with the Scanner class (this automatically closes ```FileReader```, which implements the ```Closeable``` interface). The delimiter represents the end of a line as such and is a recommended.
 
 ```java
 Scanner scanner = null;
@@ -76,13 +81,16 @@ try {
 }
 ```
 
-Note that the while loop implementation requires the program to look for the next input so a buffered approach, where entire file contents are read, is more efficient. Like FileReader, BufferedReader implements the Closeable interface.
+Note that the while loop implementation requires the program to look for the next input so a buffered approach, where entire file contents are read, is more efficient. Like ```FileReader```, ```BufferedReader``` implements the ```Closeable``` interface.
 
 ```java
 Scanner scanner = null;
 
 try {
-    scanner = new Scanner(new Scanner(new BufferedReader(new FileReader("someFileName.txt")));
+    scanner = new Scanner(
+        new BufferedReader(
+            new FileReader("someFileName.txt")));
+
     scanner.useDelimiter(",");
 
     while(scanner.hasNextLine()) {
@@ -112,4 +120,4 @@ try(BufferedReader reader = new BufferedReader(new FileReader("someFileName.txt"
 }
 ```
 
-A BufferedWriter can take a FileWriter instance in much the same way as a BufferReader takes in a FileReader.
+A ```BufferedWriter``` can take a ```FileWriter``` instance in much the same way as a ```BufferReader``` takes in a ```FileReader```.

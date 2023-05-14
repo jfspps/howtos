@@ -13,7 +13,7 @@ Path path = FileSystems.getDefault().getPath("fileName.txt");
 printFile(path);  // defined below
 ```
 
-One can use the Path instance to access the file with BufferedReader or BufferWriter.
+One can use the ```Path``` instance to access the file with ```BufferedReader``` or ```BufferWriter```.
 
 ```java
 private void printFile(Path path) {
@@ -36,7 +36,7 @@ filePath = Paths.get(".");
 System.out.println(filePath.toAbsolutePath());
 ```
 
-Working directories are also retrieved using getDefault(). One can also pass each segment of the path (usually separated by a delimiter \ or / depending on the OS) with:
+Working directories are also retrieved using ```getDefault()```. One can also pass each segment of the path (usually separated by a delimiter \ or / depending on the OS) with:
 
 ```java
 // find ./dir2/someFile.txt
@@ -54,7 +54,8 @@ Note how important the order of each segment is.
 
 ## Exists and copy methods
 
-Java 7's IO Paths class was replaced by Java NIO's Path interface to accommodate exception handling and address other limitations, including delete() and rename(). With Java IO Paths class, no exceptions are thrown until a buffer is coupled to the file. Until then, the Paths objects is assumed to exist.
+Java 7's IO ```Paths``` class was replaced by Java NIO's ```Path``` interface to accommodate exception handling and address other limitations, including ```delete()``` and ```rename()```. 
+With Java IO ```Paths``` class, no exceptions are thrown until a buffer is coupled to the file. Until then, the ```Paths``` objects is assumed to exist.
 
 With Java NIO, one can check if a file exists:
 
@@ -63,7 +64,7 @@ Path filePath = FileSystems.getDefault().getPath("files");
 System.out.println("Exists = " + Files.exists(filePath));
 ```
 
-One can also use Java NIO's copy() method to copy across a file (without more parameters, files are not copied if they already exist):
+One can also use Java NIO's ```copy()``` method to copy across a file (without more parameters, files are not copied if they already exist):
 
 ```java
 try {
@@ -77,25 +78,25 @@ try {
 
 ## Moving, renaming and deleting files
 
-The methods to move, rename (with copy() shown below, or move()) and delete methods are:
+The methods to move, rename (with ```copy()``` shown below, or ```move()```) and delete methods are:
 
 ```java
 try {
-Path fileToDelete = FileSystems.getDefault().getPath("parentDir", "Dir1", "fileCopy.txt");
-Files.deleteIfExists(fileToDelete);
+    Path fileToDelete = FileSystems.getDefault().getPath("parentDir", "Dir1", "fileCopy.txt");
+    Files.deleteIfExists(fileToDelete);
 
-Path fileToMove = FileSystems.getDefault().getPath("parentDir", "file2.txt");
-Path destination = FileSystems.getDefault().getPath("parentDir", "childDir", "file2.txt");
-Files.move(fileToMove, destination);
+    Path fileToMove = FileSystems.getDefault().getPath("parentDir", "file2.txt");
+    Path destination = FileSystems.getDefault().getPath("parentDir", "childDir", "file2.txt");
+    Files.move(fileToMove, destination);
 
-// use copy() to replace the given file and effectively rename it
-// again, note that no exceptions are thrown at this stage
-sourceFile = FileSystems.getDefault().getPath("parentDir", "fileX");
-copyFile = FileSystems.getDefault().getPath("parentDir", "fileY");
-Files.copy(sourceFile, copyFile, StandardCopyOption.REPLACE_EXISTING);
+    // use copy() to replace the given file and effectively rename it
+    // again, note that no exceptions are thrown at this stage
+    sourceFile = FileSystems.getDefault().getPath("parentDir", "fileX");
+    copyFile = FileSystems.getDefault().getPath("parentDir", "fileY");
+    Files.copy(sourceFile, copyFile, StandardCopyOption.REPLACE_EXISTING);
 
 } catch(IOException e) {
-System.out.println(e.getMessage());
+    System.out.println(e.getMessage());
 }
 ```
 
@@ -116,7 +117,7 @@ System.out.println("Is directory = " + attrs.isDirectory());
 System.out.println("Is regular file = " + attrs.isRegularFile());
 ```
 
-There are other subclasses of BasicFileAttributes (OS specific) hence the need to pass the class in readAttributes().
+There are other subclasses of BasicFileAttributes (OS specific) hence the need to pass the class in ```readAttributes()```.
 
 ## Reading directories
 
@@ -129,6 +130,7 @@ The files and directories present in a given directory, excluding other files in
 Path directory = FileSystems.getDefault().getPath("FileTree/Dir");
 
 try (DirectoryStream<Path> contents = Files.newDirectoryStream(directory, "*.sql")) {
+
     for (Path file : contents) {
         System.out.println(file.getFileName());
     }
@@ -169,15 +171,21 @@ To get the drives (file stores) representing physical drives or partitions, and 
 
 ```java
 Iterable<FileStore> stores = FileSystems.getDefault().getFileStores();
+
 for(FileStore store : stores) {
+
     // output is OS specific
     System.out.println("Volume name/Drive letter = " + store);
     System.out.println("file store = " + store.name());
+
 }
 
 Iterable<Path> rootPaths = FileSystems.getDefault().getRootDirectories();
+
 for(Path path : rootPaths) {
+
     System.out.println("Root directory: " + path);
+
 }
 ```
 
@@ -187,15 +195,18 @@ This tends to be useful when searching for all files from a given parent directo
 
 ```java
 Path dirPath = FileSystems.getDefault().getPath("fileTree" + File.separator + "someDir");
+
 try {
-  // using the extension, PrintNames, below
+
+    // using the extension, PrintNames, below
     Files.walkFileTree(dirPath, new PrintNames());
+
 } catch(IOException e) {
     System.out.println(e.getMessage());
 }
 ```
 
-Walking the tree is normally supported by an extension of SimpleFileVisitor. This class keeps track of which file was used and can be extended to return info each time a file is visited:
+Walking the tree is normally supported by an extension of ```SimpleFileVisitor```. This class keeps track of which file was used and can be extended to return info each time a file is visited:
 
 ```java
 public class PrintNames extends SimpleFileVisitor<Path> {
@@ -228,7 +239,7 @@ public class PrintNames extends SimpleFileVisitor<Path> {
 }
 ```
 
-This approach also provides a way of copying all files found. Again, a class which extends SimpleFileVisitor can implement this functionality.
+This approach also provides a way of copying all files found. Again, a class which extends ```SimpleFileVisitor``` can implement this functionality.
 
 ```java
 Path source = FileSystems.getDefault().getPath(
