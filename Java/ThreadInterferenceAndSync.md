@@ -6,7 +6,9 @@ parent: Intermediate Java
 
 # Thread interference and synchronisation
 
-Instance variables are stored on the heap. If only one instance is created and shared between threads, each thread of the same type is effectively in control of the same instance and its variables. This project shows how both threads change one instance's data. This is referred to as 'race conditions' or 'thread interference'.
+Instance variables are stored on the heap. If only one instance is created and shared between threads, each thread of the same type is effectively in control of the same instance and its variables. When a thread is created, it establishes its own _thread stack_ where it stores its primitive values and object references (the values of objects are stored on the heap). These records are not shared with other threads.
+
+This project shows how both threads change one instance's data. This is referred to as _race conditions_ or _thread interference_.
 
 ```java
 public class Main {
@@ -25,9 +27,7 @@ public class Main {
       
       // t1 cannot access the thread stack of t2 (each thread has its own thread stack)
       // the program main() has its own heap, which all threads can access
-      
-      //local variables are stored in the thread stack
-  
+        
       t1.start();
       t2.start();
     }	
@@ -100,13 +100,15 @@ The GitHub repo with thread interference is [here](https://github.com/jfspps/Jav
 
 ## Synchronisation blocks
 
-To avoid thread interference, one can build a synchronisation block. It is also possible to declare an entire function with the ```synchronized``` keyword. This should be done minimally to prevent blocking threads unnecessarily. This block ensures that the current thread is not interrupted under normal conditions.
+To avoid thread interference (e.g. prevent other threads from modifying the subject thread's objects), one can build a _synchronisation block_. This block ensures that the current thread is not interrupted under normal conditions.
 
 The methods which control the state of a thread on a given object are ```wait()```, ```notify()``` and ```notifyAll()```.
 
 + ```wait(timeout)```: forces the current thread to wait until some other thread invokes notify() or notifyAll() on the same object
 + ```notify()```: wakes up a single random thread operating on the same object; since the next thread choice is arbitrary, this tends to be used if there are only two threads in tandem
 + ```notifyAll()```: wakes all threads that are waiting to operate on the same object; more general but more 'wasteful' compared to notify()
+
+We access the current thread by name, ```Thread.currentThread().getName()``` when deciding who does what and so forth.
 
 ```java
 public class Main {
@@ -128,45 +130,119 @@ public class Main {
     }	
   }
   
-  class Countdown{
-    
-    private int i;
-    
-    public void doCountdown() {
-      
-      switch(Thread.currentThread().getName()) {
-        case "Thread 1":
-          // do thread 1 stuff
-          break;
-        case "Thread 2":
-          // do thread 2 stuff
-          break;
-        default:
-          // do something else
+class Countdown {
   
-      // this effectively forces all other threads to wait (i.e. the for loop cannot
-      // be interrupted as before)
-      synchronized (this) {
-        for(i = 10; i >0; i--) {
-          System.out.println(Thread.currentThread().getName() + ": i = "+ i);
-        }
-      }  
+  private int i;
+  
+  public void doCountdown() {
+    
+    switch(Thread.currentThread().getName()) {
+      case "Thread 1":
+        // do thread 1 stuff
+        break;
+      case "Thread 2":
+        // do thread 2 stuff
+        break;
+      default:
+        // do something else
     }
+
+    // this effectively forces all other threads attempting to 
+    // access the Countdown instance to wait
+    synchronized (this) {
+      for(i = 10; i > 0; i--) {
+        System.out.println(Thread.currentThread().getName() + ": i = "+ i);
+      }
+    }  
+  }
+}
+
+class CountdownThread extends Thread {
+  
+  private Countdown threadCountdown;
+  
+  public CountdownThread(Countdown countdown) {
+    this.threadCountdown = countdown;
+    threadCountdown.doCountdown();
   }
   
-  class CountdownThread extends Thread{
-    
-    private Countdown threadCountdown;
-    
-    public CountdownThread(Countdown countdown) {
-      this.threadCountdown = countdown;
-      threadCountdown.doCountdown();
-    }
-    
-    public void run() {
-      threadCountdown.doCountdown();
-    }
+  public void run() {
+    threadCountdown.doCountdown();
   }
+}
 ```
 
-The GitHub repo to synchronisation is [here](https://github.com/jfspps/JavaThreadsSyncDemo). More about handling interference with synchronisation blocks is outlined in the [next section](./SynchronisationBlocks.md).
+All Java ```Object``` entities have _intrinsic locks_ or _monitors_ that instruct a thread to attempt to acquire the lock before executing their logic. That is why an object is passed to the 
+```synchronized(this)``` as shown above. Only one thread can hold the lock at any time. The choice of object __must__ come from an external variable where different threads share 
+the object; this way the lock can only be assigned to one thread at a time. _The exception are Strings_ which are managed as an independent pool of Strings monitored by the JVM. In this case,
+Strings are always share-able (may not visible or in scope) at runtime.
+
+Primitive Java types are not based on ```Object``` and therefore do not have or provide access to intrinsic locks.
+
+The GitHub repo to synchronisation is [here](https://github.com/jfspps/JavaThreadsSyncDemo).
+
+## Synchronised methods
+
+It is also possible to declare an entire function with the ```synchronized``` keyword. This should be done minimally to prevent blocking threads unnecessarily.
+
+```java
+public class Main {
+
+    public static void main(String[] args) {
+      Countdown countdown = new Countdown();
+      
+      CountdownThread t1 = new CountdownThread(countdown);
+      t1.setName("Thread 1");
+      CountdownThread t2 = new CountdownThread(countdown);
+      t2.setName("Thread 2");
+  
+      // local variables are stored in the thread stack; t1 and t2 share the object
+      // countdown and can change countdown's instance variables**;
+      // this means that both threads can see the changes brought about by the other thread
+      
+      t1.start();
+      t2.start();
+    }	
+  }
+  
+class Countdown {
+  
+  private int i;
+  
+  // prevent all other threads from running doCountDown() until the current thread has finished
+  public synchronized void doCountdown() {
+    
+    switch(Thread.currentThread().getName()) {
+      case "Thread 1":
+        // do thread 1 stuff
+        break;
+      case "Thread 2":
+        // do thread 2 stuff
+        break;
+      default:
+        // do something else
+    }
+
+
+    for(i = 10; i > 0; i--) {
+      System.out.println(Thread.currentThread().getName() + ": i = "+ i);
+    }
+  }
+}
+
+class CountdownThread extends Thread {
+  
+  private Countdown threadCountdown;
+  
+  public CountdownThread(Countdown countdown) {
+    this.threadCountdown = countdown;
+    threadCountdown.doCountdown();
+  }
+  
+  public void run() {
+    threadCountdown.doCountdown();
+  }
+}
+```
+
+All methods, except for constructors, can be declared ```synchronized```. More about this and handling interference with synchronisation blocks is outlined in the [next section](./SynchronisationBlocksAndMethods.md).

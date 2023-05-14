@@ -6,7 +6,7 @@ parent: Intermediate Java
 
 # Threads in Java
 
-This project highlights the implementation of separate threads in Java, by either implementing the Runnable interface (generally more convenient)...
+This project highlights the implementation of separate threads in Java, by either implementing the ```Runnable``` functional interface (generally more convenient)...
 
 ```java
 public class MyRunnable implements Runnable {
@@ -43,8 +43,9 @@ public static void main(String[] args) {
     Thread anotherThread = new AnotherThread();
     anotherThread.start();
 
-    // definition only
+    // thread def only; pass an anonymous class into Thread's constructor and define Runnable's run()
     Thread myRunnableThread = new Thread(new MyRunnable() {
+
         // override MyRunnable run() again!
         @Override
         public void run() {
@@ -61,12 +62,14 @@ public static void main(String[] args) {
                 System.out.println("myRunnableThread interrupted");
             }
         }
+
     });
 
-    // note that the above myRunnableThread hasn't been invoked yet; start with start()
+    // thread execution; start with start()
     myRunnableThread.start();
 
-    // interrupt anotherThread
+    // interrupt anotherThread; this is normally handled by the InterruptedException of AnotherThread or 
+    // forces the thread to cease
     anotherThread.interrupt();
 
 }
@@ -77,3 +80,5 @@ Two methods of note are ```threadX.interrupt()``` to interrupt the given threadX
 Entering a parameter to ```join()``` sets the timeout for ```threadY.join()``` to wait, like ```threadY.join(2000)```. This will set a time limit for the threadY to complete. If the time passes, then the statements proceeding ```join()``` will run regardless if threadY finished or not.
 
 The GitHub repo for the above example is [here](https://github.com/jfspps/JavaThreadsDemo).
+
+This article illustrates an example of _multithreading_, by running multiple tasks (and likely concurrent methods) at the same time. Above, there were at least three threads in operation during the application execution.

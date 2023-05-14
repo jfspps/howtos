@@ -1,5 +1,5 @@
 ---
-title: Synchronisation blocks
+title: Synchronisation blocks and synchronised methods
 nav_order: 12
 parent: Intermediate Java
 ---
