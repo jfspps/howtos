@@ -146,16 +146,16 @@ One can replace an already mapped value (a value with a key present) with ```rep
 The sub-classes and some of their characteristics are summarised below:
 
 
-+ HashMap: implemented as an array of linked lists, this tends to be used for quick lookup and insertion. Ordering of keys (not values) is arbitrary.
-+ TreeMap: implemented by a 
++ ```HashMap```: implemented as an array of linked lists, this tends to be used for quick lookup and insertion. Ordering of keys (not values) is arbitrary.
++ ```TreeMap```: implemented by a 
 [Red-black Tree](https://jfspps.github.io/Data-Structures-and-Algorithms/24_Search_trees.html), this naturally orders keys (alphabetically or numerically) and consequently must implement the Comparable interface's compareTo() method.
-+ LinkedHashMap: essentially provides lookup and insertion of the speed O(1) of HashMap and the ordering of TreeMap. The ordering is the same as the insertion order.
++ ```LinkedHashMap```: essentially provides lookup and insertion of the speed O(1) of HashMap and the ordering of TreeMap. The ordering is the same as the insertion order.
 
 More examples of LinkedHashMap and TreeMap are given at the end of this section.
 
 ## The Set interface
 
-Sets are unordered collections of unique elements. Sets are generic class based and have size() and isEmpty() methods. Generally, sets should store immutable objects or at the very least remain unique, otherwise the behaviour would be undefined and unpredictable. HashSets use hashes (using ```hashCode()```) like Maps to provide fast access (O(1)) to each element. The element itself is also stored in an underlying HashMap, as the key with a dummy value added to the backing HashMap. Since HashMap keys are all unique, then the overarching Set elements are unique. Sets also have mathematical union and intersection type methods.
+Sets are unordered collections of unique elements. Sets are generic class based and have size() and isEmpty() methods. Generally, sets should store immutable objects or at the very least remain unique, otherwise the behaviour would be undefined and unpredictable. ```HashSet``` collections use hashes (using ```hashCode()```) like Maps to provide fast access (O(1)) to each element. The element itself is also stored in an underlying HashMap, as the key with a dummy value added to the backing HashMap. Since HashMap keys are all unique, then the overarching Set elements are unique. Sets also have mathematical union and intersection type methods.
 
 Like Lists, shallow copies can be applied with ```Set<ClassID> newSet = new HashSet<>(sourceSet)```. Elements are added with add() and a union of two sets is achieved with addAll(). The methods removeAll() and containsAll() are useful with mathematical Set logic. The method addAll() can be applied to the union of Sets, removeAll() applies to the difference of two sets and containsAll() (a non-destructive method) can be used to test if one Set is a Subset of another.
 

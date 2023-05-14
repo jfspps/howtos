@@ -472,3 +472,24 @@ This functional interface requires no parameters and returns a value of the type
   System.out.println("Random integer: " + randomInt);
 }
 ```
+
+## Functional interfaces and method references
+
+It is possible to define the abstract method of a functional interface using a [method reference](./Streams.md), however, the call is made
+implicitly i.e. the compiler will infer from the abstract method argument list.
+
+```java
+// String.concat() is a static method and expects two String parameters 
+// and returns one String
+BiFunction<String, String, String> concatenateMe = String::concat;
+BiFunction<String, String, String> concatenateMeLambda = (string1, string2) -> string1.concat(string2);
+
+// UnaryOperator is an extension of Function and takes one argument of 
+// a given type and returns the same type, in this case String
+UnaryOperator<String> toLowerCaseMe = String::toLowerCase;
+UnaryOperator<String> toLowerCaseMeLambda = (string3) -> string3.toLowerCase();
+
+// these would not compile!
+UnaryOperator<String> concatenateMeUnary = String::concat;
+UnaryOperator<String> concatenateMeUnaryLambda = (string4, string5) -> string4.concat(string5);
+```
