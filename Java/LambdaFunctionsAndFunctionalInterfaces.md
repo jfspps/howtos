@@ -14,9 +14,9 @@ or for some already defined object as
 
 ```existingObject((argumentList) -> functionBody())```
 
-The curly braces are required for multiple statements. The compiler matches the argument list with _a_ method defined by the object's interface (note here that the function body defines the method so a class is not relevant here). Such interfaces are known as _functional interfaces_ and consequently lambda functions only apply to functional interfaces.
+The curly braces are required for multiple statements. The compiler matches the argument list with _a_ method defined by the object's interface (note here that the function body defines the method so a class is not relevant here). Such interfaces are known as _functional interfaces_ and consequently lambda functions only apply to functional interfaces. Note that Lambdas are never a requirement when writing Java.
 
-Lambda functions can be used for the Comparator interface, for example, to define the behaviour of compare(). Below is the anonymous class implementation of compare().
+Lambda functions can be used for the Comparator (functional) interface, for example, to define the behaviour of compare(). Below is the anonymous class implementation of compare().
 
 ```java
 Collections.sort(objects, new Comparator<SomeClass>() {
@@ -41,7 +41,7 @@ Collections.sort(objects, (object1, object2) ->
 
 ## Functional interfaces
 
-Java 8 also introduced _functional interfaces_: interfaces with only one abstract method. Lambda functions are defined in the context of the functional interface that they refer to and then executed elsewhere. A functional interface can have any number of ```default``` (i.e. implemented) methods.
+Java 8 introduced _functional interfaces_: interfaces with only one abstract method. The abstract method is normally defined in terms of a lambda function. What makes functional interfaces unique is that they can have any number of ```default``` (i.e. implemented) methods. First we cover how to write a Functional Interface and more commonly how to use the out-of-the-box interfaces available.
 
 ```java
 interface FunctionalInt {
@@ -298,7 +298,11 @@ someList.foreach(() -> {
 });
 ```
 
-What follows is an overview of functional interfaces already available in ```java.util.function``` package. which can demonstrate the use of lambdas. Note that Lambdas are never a requirement when writing Java.
+The ```foreach()``` methods accepts a Consumer functional interface.
+
+## The Java.Util.Function package
+
+In most cases, it usually is not necessary to write your own Functional Interfaces. What follows is an overview of some of the functional interfaces already available in ```java.util.function``` package and how the abstract method is defined (implemented) through a lambda function.
 
 + Consumer and BiConsumer
 + Predicate
