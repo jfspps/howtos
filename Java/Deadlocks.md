@@ -6,7 +6,7 @@ parent: Intermediate Java
 
 # Deadlocks
 
-The deadlock arises because each thread is trying to acquire locks in different order. For example, thread1 seeks lock 1 then lock 2; thread2 seeks lock 2 then lock 1. If they tried to seek both locks in the same order then a deadlock would not occur. These issues can be further complicated with more locks.
+A deadlock can arise when each thread is trying to acquire locks in different order. For example, ```thread1``` seeks lock 1 then lock 2; ```thread2``` seeks lock 2 then lock 1. If they tried to seek both locks in the same order then a deadlock would not occur. These issues can be further complicated with more locks.
 
 ```java
 public class Main {

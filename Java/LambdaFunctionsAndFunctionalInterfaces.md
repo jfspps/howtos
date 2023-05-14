@@ -14,34 +14,46 @@ or for some already defined object as
 
 ```existingObject((argumentList) -> functionBody())```
 
-The curly braces are required for multiple statements. The compiler matches the argument list with _a_ method defined by the object's interface (note here that the function body defines the method so a class is not relevant here). Such interfaces are known as _functional interfaces_ and consequently lambda functions only apply to functional interfaces. Note that Lambdas are never a requirement when writing Java.
+The curly braces are required for multiple statements. The compiler matches the argument list with _a_ method defined by the object's _functional interface_ (note here that the function body defines the method so a class is not relevant here). Functional interfaces are explained shortly.
+
+Note that Lambdas are never a requirement when writing Java.
 
 Lambda functions can be used for the Comparator (functional) interface, for example, to define the behaviour of compare(). Below is the anonymous class implementation of compare().
 
 ```java
-Collections.sort(objects, new Comparator<SomeClass>() {
+Collections.sort(
+  objects,
+  new Comparator<SomeClass>() {
+
     @Override
     public int compare(SomeClass object1, SomeClass object2) {
         return object1.getString().compareTo(object2.getString());
     }
-});
+  }
+);
 ```
 
-Ultimately, the override uses Comparable's compareTo() method for a String type. The Lambda function is actually the second parameter of sort(), and overrides the compare() method of Comparator and ends up using the compareTo() method of Comparable.
+Ultimately, the override uses Comparable's (also a functional interface) compareTo() method for a String type. The Lambda function is actually the second parameter of sort(), and overrides the compare() method of Comparator and ends up using the compareTo() method of Comparable.
 
 ```java
-Collections.sort(objects, (SomeClass object1, SomeClass object2) ->
-  object1.getString().compareTo(object2.getString());
+Collections.sort(
+  objects, 
+  (SomeClass object1, SomeClass object2) ->
+    object1.getString().compareTo(object2.getString());
   
 // since the class of objects is inferable, the compiler can deduce the
 // type of the parameters and infer:
-Collections.sort(objects, (object1, object2) ->
-  object1.getString().compareTo(object2.getString());
+Collections.sort(
+  objects, 
+  (object1, object2) ->
+    object1.getString().compareTo(object2.getString());
 ```
 
 ## Functional interfaces
 
-Java 8 introduced _functional interfaces_: interfaces with only one abstract method. The abstract method is normally defined in terms of a lambda function. What makes functional interfaces unique is that they can have any number of ```default``` (i.e. implemented) methods. First we cover how to write a Functional Interface and more commonly how to use the out-of-the-box interfaces available.
+Java 8 introduced _functional interfaces_: interfaces with only one abstract method. The abstract method is normally defined in terms of a lambda function. Functional interfaces can be seen as themed templates since they can have any number of ```default``` (i.e. implemented) methods that represent the scaffolding with the abstract method logic being customisable, taking front and centre.
+
+First we cover how to write a Functional Interface and more commonly how to use the out-of-the-box interfaces available.
 
 ```java
 interface FunctionalInt {

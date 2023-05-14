@@ -178,8 +178,8 @@ Some actions and methods cannot be suspended, they complete before all other ope
 
 + Assignment operations, variable1 = variable2
 + Reading and writing of primitive data types, except for long and double
-+ Volatile variables
++ Variables with the keyword ```volatile```
 
-CPUs operate on different threads and handle the same objects by taking the object from memory and storing it in the CPU's cache. Most modern day processors have multiple CPUs and therefore multiple caches. This introduces the problem of object synchronisation and consistency. To accommodate this, volatile variables are variables where the CPU cache is immediately offloaded to the system's memory to update all other copies of the object. This can be achieved by using the 'volatile' keyword. Note that race conditions are still possible with volatile variables!
+CPUs operate on different threads and handle the same objects by taking the object from memory and storing it in the CPU's cache. Most modern day processors have multiple CPUs and therefore multiple caches. This introduces the problem of object synchronisation and consistency. To accommodate this, ```volatile``` variables are variables where the CPU cache is immediately offloaded to the system's memory to update all other copies of the object. Note that race conditions are still possible with volatile variables!
 
 The usage of volatile is dependent on the context. It is frequently used for establishing long and double atomic actions. Refer to the Java Util Concurrency Atomic package for more info.
