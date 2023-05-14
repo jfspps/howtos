@@ -102,12 +102,6 @@ The GitHub repo with thread interference is [here](https://github.com/jfspps/Jav
 
 To avoid thread interference (e.g. prevent other threads from modifying the subject thread's objects), one can build a _synchronisation block_. This block ensures that the current thread is not interrupted under normal conditions.
 
-The methods which control the state of a thread on a given object are ```wait()```, ```notify()``` and ```notifyAll()```.
-
-+ ```wait(timeout)```: forces the current thread to wait until some other thread invokes notify() or notifyAll() on the same object
-+ ```notify()```: wakes up a single random thread operating on the same object; since the next thread choice is arbitrary, this tends to be used if there are only two threads in tandem
-+ ```notifyAll()```: wakes all threads that are waiting to operate on the same object; more general but more 'wasteful' compared to notify()
-
 We access the current thread by name, ```Thread.currentThread().getName()``` when deciding who does what and so forth.
 
 ```java

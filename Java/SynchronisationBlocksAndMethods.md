@@ -6,9 +6,17 @@ parent: Intermediate Java
 
 # Synchronisation blocks
 
-'Thread-safe' code is that in which thread interference is not possible. Methods which can only be called within synchronised code are wait(), notify() and notifyAll(). The example shows these methods with a producer and a consumer example. Some methods are 'atomic' in that all threads cannot interrupt any part of the operation of an atomic method.
+'Thread-safe' code is that in which thread interference is not possible, as a result of synchronisation. Some methods are 'atomic' and sufficiently granular that all threads cannot interrupt any part of its operation.
 
-This also highlights 'deadlocks' on objects, where a thread has not released a handle on an object. An object lock is released with the notify() or notifyAll() methods. A thread waits to be notified of a release, with either notify() or nootifyAll(), with wait().
+Handing over the intrinsic lock of an ```Object``` is carried out with the methods ```wait()```, ```notify()``` and ```notifyAll()```. These methods can only be called within a synchronised block method. The example shows these methods with a Producer-Consumer example. 
+
+If a thread does not release the object's lock then it results in a _deadlock_ of the object. See [here](./Deadlocks.md) for a more substantial example. 
+
+The methods which control the state of a thread on a given object are ```wait()```, ```notify()``` and ```notifyAll()```.
+
++ ```wait(timeout)```: forces the current thread to wait until some other thread invokes notify() or notifyAll() on the same object
++ ```notify()```: wakes up a single random thread operating on the same object; the next thread chosen is arbitrary, and so this tends to be used if there are only two threads accessing a given object
++ ```notifyAll()```: wakes all threads that are waiting to operate on the same object; more general but more 'wasteful' compared to notify() since the threads that do not acquire the lock have to be suspended again
 
 ```java
 public class Main {
@@ -117,14 +125,22 @@ public class Main {
     
     public void run() {
       Random random = new Random();
-      for(String latestMessage = message.read(); !latestMessage.equals("Finished");
-       latestMessage = message.read()) {
+
+      for(
+        String latestMessage = message.read(); 
+        !latestMessage.equals("Finished");
+        latestMessage = message.read()
+       ) {
         System.out.println(latestMessage);
-        try {Thread.sleep(random.nextInt(2000));
+
+        try {
+          Thread.sleep(random.nextInt(2000));
+
         } catch(InterruptedException e) {
           System.out.println(e);
         }
       }
+
     }
 }
 ```
@@ -171,17 +187,22 @@ public class Main {
           System.out.println(colour + "Adding..." + num);
 
           // this prevents two or more threads from changing the ArrayList
+          // note that this is Object is ultimately defined at the main thread level so is shared
           synchronized (buffer) {
             buffer.add(num);
           }
 
           Thread.sleep(random.nextInt(1000));
+
         } catch(InterruptedException e) {
           System.out.println("Producer was interrupted");
         }
       }
       
       System.out.println(colour + "Adding EOF and exiting...");
+
+      // this prevents two or more threads from changing the ArrayList
+      // note that this is Object is ultimately defined at the main thread level so is shared
       synchronized (buffer) {
         buffer.add(Main.EOF);
       }
@@ -199,11 +220,16 @@ public class Main {
     
     public void run() {
       while(true) {
+
+        // this prevents two or more threads from changing the ArrayList
+        // note that this is Object is ultimately defined at the main thread level so is shared
         synchronized (buffer) {
+
           if(buffer.isEmpty()) {
             continue;
             // keeps looping until something is present
           }
+
           if(buffer.get(0).equals(Main.EOF)) {
             System.out.println("Exiting");
             break;
@@ -211,6 +237,7 @@ public class Main {
             // print out and remove a String from the list
             System.out.println("Removed " + buffer.remove(0));
           }
+
         }
       }
     }
