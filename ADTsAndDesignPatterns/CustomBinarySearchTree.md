@@ -6,7 +6,7 @@ parent: ADTs and Design Patterns in Java
 
 # The Binary Search Tree
 
-This represents an example showing how to implement a [binary search tree](../DataStructuresAndAlgorithmsinC%2B%2B/22_Binary_search_trees.md).
+This represents an example showing how to implement a [binary search tree](../DataStructuresAndAlgorithmsinC++/22_Binary_search_trees.md).
 
 Overall, the construction of a BST is as follows. A sorted array of Integer is passed to ```buildBinarySearchTree()``` and then the parent BinaryTree structure is applied. The passed array is then partitioned as left and right arrays, both of which are independently passed again into ```buildBinarySearchTree()```, repeating the process.
 

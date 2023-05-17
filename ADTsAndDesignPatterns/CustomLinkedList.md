@@ -6,7 +6,7 @@ parent: ADTs and Design Patterns in Java
 
 # The Linked List
 
-This represents how one way to implement a [linked list](../DataStructuresAndAlgorithmsinC%2B%2B/17_LinkedLists.md) data type.
+This represents how one way to implement a [linked list](../DataStructuresAndAlgorithmsinC++/17_LinkedLists.md) data type.
 
 ```java
 public class LinkedList<T> {

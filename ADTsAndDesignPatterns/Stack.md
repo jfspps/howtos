@@ -6,7 +6,7 @@ parent: ADTs and Design Patterns in Java
 
 # The Stack
 
-The first example of a [stack](../DataStructuresAndAlgorithmsinC%2B%2B/19_The_Stack.md) ADT is based on an array.
+The first example of a [stack](../DataStructuresAndAlgorithmsinC++/19_The_Stack.md) ADT is based on an array.
 
 ```java
 public class ArrayStack<T> {

@@ -6,7 +6,7 @@ parent: ADTs and Design Patterns in Java
 
 # The Binary Tree
 
-This represents an example showing how to implement a [binary tree](../DataStructuresAndAlgorithmsinC%2B%2B/21_Trees.md).
+This represents an example showing how to implement a [binary tree](../DataStructuresAndAlgorithmsinC++/21_Trees.md).
 
 Methods for in-order, pre-order and post-order traversal are also given. Notice here that the level-order traversal of a tree (which uses a queue to store, in order, future nodes to be processed) scans all child nodes before moving to the next level. Thus, the level-order algorithm forms the basis of a _breadth-first search_.
 
