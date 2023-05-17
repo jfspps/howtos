@@ -195,4 +195,4 @@ which refers to the restriction of flow rate by the Subscriber. Above, the subsc
 is ready to receive more data (in a sense, data is pulled from the Publisher, not pushed). Some authors refer to the _upstream_ from Publisher
 to Subscriber and the _downstream_ from Subscriber to Publisher.
 
-Java 8 developers could enlist ```CompletableFutures``` to manage streams asynchronously but this is usually more difficult to work with.
+Java 8 developers could enlist ```CompletableFutures``` to manage computations asynchronously (i.e. "wait-free") but this is usually more difficult to work with.

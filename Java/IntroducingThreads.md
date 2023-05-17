@@ -6,7 +6,7 @@ parent: Intermediate Java
 
 # Threads in Java
 
-This project highlights the implementation of separate threads in Java, by either implementing the ```Runnable``` functional interface (generally more convenient)...
+This project highlights the implementation of separate threads ("threads of control") in Java, by either implementing the ```Runnable``` functional interface (generally more convenient)...
 
 ```java
 public class MyRunnable implements Runnable {

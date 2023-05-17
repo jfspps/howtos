@@ -63,8 +63,8 @@ public class MasterAbstractImpl extends DemoAbstract{
 }
 ```
 
-The abstract class can be instantiated through polymorphism as long as a valid concrete class
-is defined.
+The abstract class can be instantiated through polymorphism (an object of [concrete] type can also be viewed as an object of an [abstract] type, so the
+object can take on _many_ forms) as long as a valid concrete class is defined.
 
 ```java
 public class UseAbstract {
