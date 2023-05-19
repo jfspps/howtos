@@ -6,7 +6,8 @@ parent: Intermediate Java
 
 # Abstract classes and interfaces
 
-When to use an abstract class and when to use interfaces is sometimes not always clear since they both appear to offer the same features. Neither abstract classes nor interfaces can be instantiated. 
+When to use an abstract class and when to use interfaces is sometimes not always clear since they both appear to offer the same features. Neither abstract classes nor interfaces can be instantiated. Both 
+abstract classes and interfaces can be defined with generic data types. 
 
 This summary outlines the differences.
 
