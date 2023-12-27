@@ -46,7 +46,7 @@ Get into MySQL:
 sudo mysql
 ```
 
-Then enter precisely as shown to configure authentication by password (we will change the password later):
+Then enter precisely as shown to configure authentication by password (we will change the password [later](#the-sql-installation-script)):
 
 ```sql
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
@@ -66,7 +66,7 @@ To revert back to the Ubuntu installation default, enter the following:
 mysql -u root -p
 ```
 
-```SQL
+```sql
 ALTER USER 'root'@'localhost' IDENTIFIED WITH auth_socket;
 ```
 
