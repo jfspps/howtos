@@ -61,7 +61,7 @@ In memory, multidimensional arrays are stored linearly:
 A = { row1, row2, row3, ..., rowN };
 ```
 
-We can declare 2D arrays with pointers, this time the pointer is of type array[no_of_arrays]. For example, `int *A[3]` is a pointer to the first of three arrays `A`. __The address of the first array is given by `&A[1]`, where the index starts at one.__ The pointer *A[1] resides in the stack. 
+We can declare 2D arrays with pointers, this time the pointer is of type array[no_of_arrays]. For example, `int *A[3]` is a pointer to the first of three arrays `A`. __The address of the first array is given by `&A[1]`, where the index starts at one.__ The pointer *A[1] resides in the stack.
 
 When one initialises the elements in each array, one uses __zero-based indices__:
 

@@ -23,7 +23,7 @@ There are all sorts of approaches to software design so the following summary is
 
 ### Personas and user stories
 
-+ Think about the user types and what they want to acheive in using the software. Focus initially on the most important or most common user types.
++ Think about the user types and what they want to achieve in using the software. Focus initially on the most important or most common user types.
 + Write out the key user stories for each persona.
 
 A Department Head may want to get access to a list of ongoing jobs that his or her team is working on. The user story could be phrased as:
@@ -48,7 +48,6 @@ Designers will usually resort to pen and paper to start building basic outlines 
 
 There are prototyping tools that allow designers to quickly build mock-ups and wireframes of the interface, using their reference sketches. Here are a few (free) examples:
 
-+ [Pencil](https://pencil.evolus.vn/)
 + [PenPot](https://penpot.app/)
 + [Quant-UX](https://www.quant-ux.com/)
 + [Diagrams.net](https://app.diagrams.net/)

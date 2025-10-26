@@ -13,14 +13,14 @@ This article focuses primarily on software security, and in particular to softwa
 Software has various mechanisms by which it can protect data. An agent (a service that has a specific role and normally has full access to the system) oversees how actors (users) access the data and what they can do with/to the data. The functions available to an actor, without getting blocked by the agent, can be categorised as folows:
 
 + Read-access
-+ Write-acess
++ Write-access
 + Execute-access - actor can direct the agent to execute commands
 
 The above levels of access are independent of each other and can be assigned to an actor in any combination. The approach by which data is secured as described above is known as _access control_.
 
-As expected, when an actor is granted read-access to the data, then the data is not considered confidential to the actor. 
+As expected, when an actor is granted read-access to the data, then the data is not considered confidential to the actor.
 
-Access control is typically implemented and enforced with the aid of cryptopgraphy.
+Access control is typically implemented and enforced with the aid of cryptography.
 
 ## Cryptography
 
@@ -30,7 +30,7 @@ Data that has not been encrypted is referred to as _plaintext_. The same data th
 
 A mechanism that uses the same key for both encryption and decryption of data is known as _symmetric encryption_. The recommended standard of symmetric encryption to data is defined under the Advanced Encryption Standard or [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard).
 
-The mechanism by which a different key is used for encryption and deryption is known as _asymmetric encryption_.
+The mechanism by which a different key is used for encryption and decryption is known as _asymmetric encryption_.
 
 ## Data Integrity and hashing
 
@@ -38,7 +38,7 @@ Data integrity relates to data modification. If an actor has write-access to the
 
 Symmetric encryption can ensure that the plaintext data is not modified by unauthorised actors or adversaries. However, this approach does not necessarily prevent modification of the ciphertext. Doing so, would mean that the decryption of the ciphertext would result in modified (and perhaps incomprehenisible) plaintext.
 
-To get around this problem, one can use [_hashing_](https://en.wikipedia.org/wiki/Hash_function). Hashing is a process defined by a function that takes a fixed and randomly chosen section of the data (known as a _blob_) and encrypts (and in many cases compresses) it to yield a _hash_ (an encypted blob). This hash is almost always unique and depends on the data itself as well as the starting position and length of the blob. The process of encrypting the blob with the same algorithm and key would result in the same hash. The value of the hash is normally saved elsewhere and encrypted again.
+To get around this problem, one can use [_hashing_](https://en.wikipedia.org/wiki/Hash_function). Hashing is a process defined by a function that takes a fixed and randomly chosen section of the data (known as a _blob_) and encrypts (and in many cases compresses) it to yield a _hash_ (an encrypted blob). This hash is almost always unique and depends on the data itself as well as the starting position and length of the blob. The process of encrypting the blob with the same algorithm and key would result in the same hash. The value of the hash is normally saved elsewhere and encrypted again.
 
 If an adversary attempts to modify the original ciphertext or the data blob, then this would result in a different hash value. Hence, by taking the decrypted data, as plaintext, and then performing the hash function on the same data blob, one can determine if the ciphertext was modified or not. As the reader will note, __hashing is a one-way function__: it is largely impossible to convert a hash value to a data blob.
 
@@ -50,9 +50,9 @@ Symmetric encryption works well on a single system. However, across networks, sy
 
 If two actors want to shared encrypted data and keys, they must do this in potentially full view of adversaries. How do two actors send the ciphertexts and keys without said packets getting intercepted by adversaries?
 
-An answer is to use assymetric encryption instead. Here the file author encrypts there data using a _public key_ and then proceeds to send the data to the intended recipient as ciphertext. The recipient then uses a _private key_ to decrypt the ciphertext. Both actors would first have to agree on which public and private keys to use before passing ciphertexts.
+An answer is to use asymmetric encryption instead. Here the file author encrypts there data using a _public key_ and then proceeds to send the data to the intended recipient as ciphertext. The recipient then uses a _private key_ to decrypt the ciphertext. Both actors would first have to agree on which public and private keys to use before passing ciphertexts.
 
-Assymetric encryption is quite expensive and normally only performed on small files. Instead of encrypting and decrypting the data itself under assymetric encryption, the actors instead define a symmetric key for the transaction that will be applied to the data transmitted. 
+Asymmetric encryption is quite expensive and normally only performed on small files. Instead of encrypting and decrypting the data itself under asymmetric encryption, the actors instead define a symmetric key for the transaction that will be applied to the data transmitted.
 
 For example, an actor (as a client) would send their public key to a server and have their private key on their system. 
 
@@ -60,7 +60,7 @@ For example, an actor (as a client) would send their public key to a server and 
 
 When the client logs in to the server, they must first establish a symmetric key. 
 
-2. The server receives the request from the client to log in, generates a symmetric key and then uses the client public key (it received beforehand) to encypt the symmetric key. 
+2. The server receives the request from the client to log in, generates a symmetric key and then uses the client public key (it received beforehand) to encrypt the symmetric key. 
 3. The server sends the symmetric key as a ciphertext to the client.
 4. The client then decrypts the ciphertext with their private key.
 
@@ -70,13 +70,13 @@ Since adversaries would not know what the private key is they would not be able 
 
 A salt is a randomly generated sequence of characters that is used to introduce more barriers to adversaries who would otherwise eventually determine a secret e.g. a password.
 
-If an adversary knows the length of a password and what characeter set is used, then they will be able to build their own dictionary of plaintexts and ciphertexts. Clearly, the longer the password, the larger the dictionary and the longer it will take for the adversary to look up the plaintext password.
+If an adversary knows the length of a password and what character set is used, then they will be able to build their own dictionary of plaintexts and ciphertexts. Clearly, the longer the password, the larger the dictionary and the longer it will take for the adversary to look up the plaintext password.
 
 By concatenating the password with a salt, e.g. a 64-bit random number, it means that the adversaries dictionary will need to generate from or store ```2^64``` entries. Thus it reduces the likelihood that an adversary can get the password.
 
 Random numbers are actually quite difficult to generate from a deterministic computer system. Some random number generators take in values of current events e.g. surrounding temperature, fan speed etc., which are difficult to forsee ahead of time, and then build algorithms which take in said parameters in emulating randomness.
 
-## Exploting vulnerabilities with Malware
+## Exploiting vulnerabilities with Malware
 
 Software bugs crop up everywhere. Non-security related bugs affect user experience and functionality, whereas security related bugs affect the security of the system. These latter problems are known as _vulnerabilities_.
 

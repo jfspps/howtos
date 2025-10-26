@@ -10,7 +10,7 @@ There are two primary algorithms which enable a user to search for an element in
 
 ## Linear search
 
-This involves processing, at worst, all elements of an array to find a required element. Linear searching does not account for repeated occurrences of an element. 
+This involves processing, at worst, all elements of an array to find a required element. Linear searching does not account for repeated occurrences of an element.
 
 For a given array `A` of length `length`, a linear search algorithm for an element `key` of type `int` is:
 
@@ -37,7 +37,7 @@ If the same array is searched again for the same (or previously the same) elemen
 
 ## Binary search
 
-Binary searches only work on sorted arrays of `int` or `float` _etc_. The key procedure is to compare the magnitude of the middle element in an array or subsection of an array with the key element. 
+Binary searches only work on sorted arrays of `int` or `float` _etc_. The key procedure is to compare the magnitude of the middle element in an array or subsection of an array with the key element.
 
 In the case of an array of increasing integers, the key element is compared to the middle element. If they are unequal then the array is essentially halved, the present midpoint is ignored and a new midpoint is assigned dependent on the relative magnitude of the key element to the middle element. The halving process repeats until the number of elements in a subsection is zero.
 
@@ -45,9 +45,9 @@ One deduces the new midpoint as the floor value of `(low + high)/2`.
 
 ![](./images/binarySearch.svg)
 
-Note that binary search computes at most `log2 n` cycles, where n is the array length. This can be roughly shown by taking the maximum number of search attempts equal to the number of times the array is halved `m`: `length/2^m`. 
+Note that binary search computes at most `log2 n` cycles, where n is the array length. This can be roughly shown by taking the maximum number of search attempts equal to the number of times the array is halved `m`: `length/2^m`.
 
-The binary search method continues up until there is only one element targeted. This means that `length/2^m` is greater than or equal to 1. 
+The binary search method continues up until there is only one element targeted. This means that `length/2^m` is greater than or equal to 1.
 
 Hence, `2^m` less than or equal to `length`, which after taking log (base 2) yields `m = log2 length`. The worst case time complexity is therefore `O(log2 n)`.
 
@@ -59,7 +59,7 @@ The left-hand branch is followed if the key is less than the middle element. The
 
 The average time complexity is also `O(log2 n)`. 
 
-The sum of all possible searches is a finite series: `1 + 1*2 + 2*4 + 3*8 + ...` which simplifies to `1 + 1*2^1 + 2*2^2 + 3*2^3 + ...`, reducing to the sum of `i + 2^i`, where `i = log2 n`. 
+The sum of all possible searches is a finite series: `1 + 1*2 + 2*4 + 3*8 + ...` which simplifies to `1 + 1*2^1 + 2*2^2 + 3*2^3 + ...`, reducing to the sum of `i + 2^i`, where `i = log2 n`.
 
 Following this, the average time complexity `[log2 n + 2^(log2 n)]/n` then becomes `[log2 n + n^(log2 2)]/n`.
 

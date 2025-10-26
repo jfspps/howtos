@@ -77,7 +77,7 @@ Many of the ideas about 2-3 trees carry across to 2-3-4 trees. They are height b
 
 ![](./images/2-3-4_trees_insertion.svg)
 
-The operations for deletion for 2-3 trees are more or less appicable to 2-3-4 trees. Borrowing is permitted when a sibling has two or more keys (there is no requirement for a node to have a full three keys).
+The operations for deletion for 2-3 trees are more or less applicable to 2-3-4 trees. Borrowing is permitted when a sibling has two or more keys (there is no requirement for a node to have a full three keys).
 
 ## Red-black search trees
 

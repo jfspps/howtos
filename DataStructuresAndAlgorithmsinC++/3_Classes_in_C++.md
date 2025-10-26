@@ -42,13 +42,13 @@ class Rectangle{
  };
 ```
 
-Note that if the `private` and `public` access modifiers are ommitted from the class definition, then the class members will be assumed `private`.
+Note that if the `private` and `public` access modifiers are omitted from the class definition, then the class members will be assumed `private`.
 This has consequences for this class and all classes derived from it (see Inheritance).
 
 Note that garbage collection of the stack is automated in C++. The compiler will build a default destructor and call it when the object
 goes out of scope.
 
-To avoid memory leaks pertaining to the heap, one must define and then call a destructor. The destructor will release resources initialiased by
+To avoid memory leaks pertaining to the heap, one must define and then call a destructor. The destructor will release resources initialised by
 the constructor, such as releasing pointers through the `delete` keyword. More to follow below.
 
 ## Instantiation, members and constructors
@@ -100,7 +100,7 @@ Finally, one can use __initialisation lists__ in a defaults constructor to initi
    };
 ```
 
-Initialisation lists are needed in some cases when initialisating members of certain data types.
+Initialisation lists are needed in some cases when initialising members of certain data types.
 
 ## Scope resolution and inline methods
 
@@ -792,7 +792,7 @@ As with all parameters, one can also pass expressions which evaluate to the data
 
 ## Inheritance
 
-As with Java, C++ base classes can be extended. A dervied class does not inherit the base classes:
+As with Java, C++ base classes can be extended. A derived class does not inherit the base classes:
 
 + constructor
 + destructor
@@ -963,7 +963,7 @@ Overall, `protected` members straddle the boundary that is `private` and `public
 As mentioned above, the default access specifier is `private` so with the new `protected` member access specifier, one can now say
 that by default all derived `public` and `protected` base class members will be treated as `private` members in the derived class.
 
-To make base class `protected` members remain protected in the derived class, use the `protected` access specfier in the derived class
+To make base class `protected` members remain protected in the derived class, use the `protected` access specifier in the derived class
 definition:
 
 ```cpp
@@ -1102,7 +1102,7 @@ careful definition of the constructor.
 
 ## Friend classes
 
-A brief note about `friend` classes. As before, `friend` methods have acccess to all data members of the class they are declared in.
+A brief note about `friend` classes. As before, `friend` methods have access to all data members of the class they are declared in.
 
 ```cpp
 class WhatClass
@@ -1158,10 +1158,10 @@ class WhatClass
 }
 ```
 
-Note, however, that WhatClass does not have access to FriendsClass' members. It is not reciporacal.
+Note, however, that WhatClass does not have access to FriendsClass' members. It is not reciprocal.
 
 Furthermore, only FriendsClass has access to WhatClass' members. Derived classes of FriendsClass would not have access
-to WhatClass' members. Thus the scope of inheritence of `friend` classes is very limited, compared to traditional derived classes.
+to WhatClass' members. Thus the scope of inheritance of `friend` classes is very limited, compared to traditional derived classes.
 
 ## Early and Late Binding
 
@@ -1267,7 +1267,7 @@ derivedObject.CallCommonMethod();   // calls the DerivedClass definition of Comm
 ```
 
 If one wanted to force the compiler to call the base class definition of `CommonMethod()` then a full qualification
-with the scope resultion operator would be needed.
+with the scope resolution operator would be needed.
 
 ```cpp
 class BaseClass
@@ -1313,7 +1313,7 @@ Virtual functions provide C++ with a way to implement polymorphism.
 
 ### Pointers to derived class instances and casting
 
-This part of the discussion raises a number of new options for code design, as well as ptifalls to look out for.
+This part of the discussion raises a number of new options for code design, as well as pitfalls to look out for.
 
 A pointer to a base class instance can be reassigned to derived class instances. Furthermore, member functions
 using pointers and indirect member selection operator `->` on base class and derived class instances apply
@@ -1495,7 +1495,7 @@ Similar to Java, C++ also provides __nested classes__, which are represented as 
 Nested classes can be `public` or `private` and all have access to the enclosing class' members. The enclosing class can only access the `public` members of a `private` nested class
 (less common approach) and access to all members of a `public` nested class (more common approach).
 
-Nested classes declared `public` are accessible ouside the enclosing class but would need to be fully qualified using scope resolution operators.
+Nested classes declared `public` are accessible outside the enclosing class but would need to be fully qualified using scope resolution operators.
 
 ```cpp
 class EnclosingClass

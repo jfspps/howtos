@@ -187,7 +187,7 @@ With the above relationships, it is necessary to control what other related enti
 
 # Embedding Collections
 
-Previously Embeddable objects were given their own allocation in the database when the embedded object was persisted to a database. The above example focused on one entity.
+Previously embeddable objects were given their own allocation in the database when the embedded object was persisted to a database. The above example focused on one entity.
 
 To embed a Collection, annotate the field with ```@ElementCollection```. The HelperClass objects are not JDK entities. Generally all non-JDK entities are flagged with ```@ElementCollection```. This causes the provider to build a secondary table, where one column stores a reference to the Employee table and the remaining columns relate to the fields of the HelperClass.
 

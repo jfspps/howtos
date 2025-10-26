@@ -110,7 +110,7 @@ To retrieve entities which are not simple Java types (custom Beans) is also perf
   }
 ```
 
-Note here that the query is made from the point of view of SomeClass, not CustomObject. It is also possible to extract multiple fields from a custom entity by separating the reqeusted fields with commas. For example, ```@NamedQuery(name = SomeClass.GET_OBJ_name, query = "select d.customObject.name, d.customObject.date from SomeClass d")```. The return type in this case is ```Collection<Object[]>```, where each field (of the same type) is stored in its own Collection element. This also introduces _dynamic queries_ which, in contrast to named queries, are not initially identified by a name. They can be called by function. The entity manager call would be:
+Note here that the query is made from the point of view of SomeClass, not CustomObject. It is also possible to extract multiple fields from a custom entity by separating the requested fields with commas. For example, ```@NamedQuery(name = SomeClass.GET_OBJ_name, query = "select d.customObject.name, d.customObject.date from SomeClass d")```. The return type in this case is ```Collection<Object[]>```, here each field (of the same type) is stored in its own Collection element. This also introduces _dynamic queries_ which, in contrast to named queries, are not initially identified by a name. They can be called by function. The entity manager call would be:
 
 ```java
   public Collection<Object[]> getMixedFields() {
@@ -150,7 +150,7 @@ In this case, the all-args constructor of POJO is used as the return to the quer
   }
 ```
 
-More on the ```from EntityClass alias``` clause. The EntityClass, as shown, must be a JPA entity. The alias must be unique across the given expression. To extract from an entity referenced in the queried class (a collection) through a join expression use the following. 
+More on the ```from EntityClass alias``` clause. The EntityClass, as shown, must be a JPA entity. The alias must be unique across the given expression. To extract from an entity referenced in the queried class (a collection) through a join expression use the following.
 
 ```java
   @NamedQuery(name  = "", query = "select cl from Variable v join v.classes cl")
@@ -321,13 +321,13 @@ The returned entities can be sorted using "ORDER BY". By default sorting method 
 
 Aggregate functions are database optimised functions which perform grouped tasks.
 
-The ```sum()``` function sums a set of data. The Entity Manager query String would be something like ```select d.name, sum(e.value) from SomeClass d join d.collection e group by d.name```, where "collection" is a (Collection type) field of SomeClass. This return a list of the name and the sum of the "collection" entities' "value" field, and sorts them in ascending order by name. 
+The ```sum()``` function sums a set of data. The Entity Manager query String would be something like ```select d.name, sum(e.value) from SomeClass d join d.collection e group by d.name```, where "collection" is a (Collection type) field of SomeClass. This return a list of the name and the sum of the "collection" entities' "value" field, and sorts them in ascending order by name.
 
 The ```avg()``` and ```count()``` functions return the averaged result and number of rows (records), respectively. Both can be applied in a similar way to ```sum()```.
 
 The ```max()``` and ```min()``` functions return the largest and smallest values of a given field, respectively. Both can be applied as already outlined.
 
-The final aggregate function discussed here is the "having" expression. This (like "group by") is used in conjunction with an aggregate function and filters returns based on the output of an aggregate function. 
+The final aggregate function discussed here is the "having" expression. This (like "group by") is used in conjunction with an aggregate function and filters returns based on the output of an aggregate function.
 
 ```java
   public Collection<Object[]> getAllAbove(Integer minThreshold) {

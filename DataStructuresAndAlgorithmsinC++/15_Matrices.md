@@ -10,7 +10,7 @@ parent: ADTs and Algorithms in C++
 
 Define as matrix `M[i,j] = 0 if i != j`
 
-For space saving benefits, one uses a single-dimensioned array to store all diagonal elements. Arrays are zero based, whereas matrices covered here are one-based. 
+For space saving benefits, one uses a single-dimensioned array to store all diagonal elements. Arrays are zero based, whereas matrices covered here are one-based.
 
 The dimensions of the matrix `M` are given by m and n, and accessed by array `A` indices i and j.
 
@@ -161,7 +161,7 @@ This approach focuses on filling by column instead of row. With matrix M[i][j]:
 
 + the index of M[4][4] is [4 + 3 + 2] + 0
 
-The first part [] can br related to j as `[n + (n-1) + (n-2) + ... + (n-(j-2))]`. The second part is the difference `i-j`. The general forumla is the sum of these two parts, that is, the index in A[] of M[i][j] is 
+The first part [] can br related to j as `[n + (n-1) + (n-2) + ... + (n-(j-2))]`. The second part is the difference `i-j`. The general formula is the sum of these two parts, that is, the index in A[] of M[i][j] is
 
 + `[n + (n-1) + ... + (n-(j-2))] + i - j`
 

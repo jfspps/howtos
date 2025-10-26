@@ -43,7 +43,7 @@ public class AppProducers{
 
 The application container handles the lifetime of the entity manager. One then injects the entity manager into a class where the instance is required, without worrying about its lifecycle.
 
-An CRUD-style example of a service example is given below (this example will not compile at present as there are other required annotations missing). The injected QueryService bean is also defined below. 
+An CRUD-style example of a service example is given below (this example will not compile at present as there are other required annotations missing). The injected QueryService bean is also defined below.
 
 ```java
 @Stateless
@@ -152,7 +152,7 @@ public class QueryService {
 }
 ```
 
-Related entities can be made to persist automatically when the owning entity is persisted. For example, when an employee entity is saved (or furthermore, merged, detached, refreshed or removed), so too would their ParkingSpace entities. This automated form of operations is a referred to as _cascading_. 
+Related entities can be made to persist automatically when the owning entity is persisted. For example, when an employee entity is saved (or furthermore, merged, detached, refreshed or removed), so too would their ParkingSpace entities. This automated form of operations is a referred to as _cascading_.
 
 ```java
 public class Employee extends AbstractEntity {

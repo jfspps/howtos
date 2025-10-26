@@ -115,7 +115,7 @@ The choices available are stored in the HTTP "Accept" request header and so with
   }
 ```
 
-Note that option 1 is more hard-coded and limits the client to XML or JSON. Option 2 is usually more flexible and may expose more media types that are not previously known to the developer. 
+Note that option 1 is more hard-coded and limits the client to XML or JSON. Option 2 is usually more flexible and may expose more media types that are not previously known to the developer.
 
 # Uploading files to the server
 

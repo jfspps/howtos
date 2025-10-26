@@ -66,7 +66,7 @@ ClassName::staticFunction();
 int temp =  ClassName::staticIntMember;
 ```
 
-Of course, static methods can be called in reference to a specfic instance:
+Of course, static methods can be called in reference to a specific instance:
 
 ```cpp
 objectName::staticFunction();

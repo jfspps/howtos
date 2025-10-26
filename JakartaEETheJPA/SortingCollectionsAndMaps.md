@@ -83,4 +83,4 @@ public class SomeOtherClass {
 }
 ```
 
-One can in theory use Embeddable types as keys, however, their use is not recommended. This is largely because embeddable types do not have their own tables, and are only persisted with the embedded entity. If the embedded entity is not in the database then the embeddable entities are also absent; as a result, the querying of embeddable types is not guaranteed.
+One can in theory use embeddable types as keys, however, their use is not recommended. This is largely because embeddable types do not have their own tables, and are only persisted with the embedded entity. If the embedded entity is not in the database then the embeddable entities are also absent; as a result, the querying of embeddable types is not guaranteed.

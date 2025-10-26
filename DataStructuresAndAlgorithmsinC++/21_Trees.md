@@ -200,7 +200,7 @@ An alternative visual method with markings:
 
 Another involves pointing either left, up or right and move along the boundary similarly, and then record the node to which your finger or an arrow is pointing to the node. This method is appreciated with a good following of the previous method.
 
-Note that the first element of a pre-order travesal of a tree is always the same the last element of a post-order traversal.
+Note that the first element of a pre-order traversal of a tree is always the same the last element of a post-order traversal.
 
 ### Building a binary tree
 
@@ -337,7 +337,7 @@ In-order calls place precedence to the left-child before printing the new reside
 
 ### Post-order traversal
 
-The postn-order method block is essentially a different sequence of calls, this time with both child nodes handled first before the resident node.
+The post n-order method block is essentially a different sequence of calls, this time with both child nodes handled first before the resident node.
 
 ```cpp
 void postOrder(Node *t)

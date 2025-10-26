@@ -207,7 +207,7 @@ Note that any entity field not annotated with ```@FormParam()``` will not be ini
 
 # Other injection parameters
 
-The HTTP header contains much metadata and can be accessed by methods annotated with ```@HeaderParam()```. For example the referer (the entity or user that makes the request) URL stores the address of the page making the request. Lastly, one can extract HTTP header cookie values with ```@CookieParam()```.
+The HTTP header contains much metadata and can be accessed by methods annotated with ```@HeaderParam()```. For example the referrer (the entity or user that makes the request) URL stores the address of the page making the request. Lastly, one can extract HTTP header cookie values with ```@CookieParam()```.
 
 ```java
   public Response createSomething(@HeaderParam("Referer") String referer) {

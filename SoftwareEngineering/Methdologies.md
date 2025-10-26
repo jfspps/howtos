@@ -6,7 +6,7 @@ parent: Software Engineering
 
 # Software Development Methodolgies
 
-Software development is based on a model or set of principles which define the various roles and project stages involved. In this short brief, we explore the main ideas behind Software Development methodogies.
+Software development is based on a model or set of principles which define the various roles and project stages involved. In this short brief, we explore the main ideas behind Software Development methodologies.
 
 It is first important to note that models are usually not followed exclusively in any business, and that some aspects of two or more models will be applied. Overall, the business needs and team involved will dictate which aspects are followed.
 
@@ -21,7 +21,7 @@ In the earlier days of software development, projects were built according to a 
 5. Testing code
 6. Maintenance
 
-The main drawack with the waterfall approach is that it does not accommodate change. Sometimes the customer will not know from the beginning what they need and they may also change their mind as the project is worked on. Such change would then involve going back and revising the plans.
+The main drawback with the waterfall approach is that it does not accommodate change. Sometimes the customer will not know from the beginning what they need and they may also change their mind as the project is worked on. Such change would then involve going back and revising the plans.
 
 Along comes the _agile model_, which is broadly more effective than waterfall models, particularly for larger projects and teams. The [Agile Manifesto](https://agilemanifesto.org/) lists the principles behind Agile development.
 
@@ -34,7 +34,7 @@ Some of the roles are summarised below:
 + Product manager - business and technically-orientated leader of the project, who generally identifies business opportunities for the product and provides overall management of the product
 + Business analysts - individuals who work closely with the customers and the product manager to draw up detailed user (or business) requirements
 + UX and UI designers - individuals who study how end-users perceive and respond to an interface, and then proceed to design an experience that enables to users to make best use of the frontend
-+ Backend developers - individuals who work on aspects of the product that are not seen by the end-user but nonentheless drive the business logic, usually through web services, bespoke microservices and some sort of database
++ Backend developers - individuals who work on aspects of the product that are not seen by the end-user but nonetheless drive the business logic, usually through web services, bespoke microservices and some sort of database
 + Frontend developers - individuals who build web clients (with the aid of a framework or templating engine) that translate backend logic into a form that a web browser can render, implementing the aforementioned UX and UI designs
 + DevOps - development operations, individuals who focus on looking after the continuous integration of new software features and the continuous delivery of said features for testing or deployment to the company's datacentre or a hosted platform-as-a-service
 + Quality Assurance - individuals who perform manual and automated [testing](SoftwareTesting.md), working with all members of team to monitor user targets are met in a timely manner
@@ -68,7 +68,7 @@ In addition to the sprint planning meeting, each day (typically), the team meets
 
 Each sprint normally ends with a retrospective meeting, where the team analyses how well the sprint went. Any resultant _action points_, which are intended to improve some aspect of the backlog, are normally assigned to one or more team members, sometimes with a deadline, and made known to the whole team. The next retrospective meeting normally involves an evaluation of the progress made on previous action points.
 
-There are times when the team meets for _backlog grooming and refinement_ meetings. The former is mostly about identifying what items should be present on the backlog. The latter is about taking the time to analyse and possibly redfine or clarify existing backlog tasks.
+There are times when the team meets for _backlog grooming and refinement_ meetings. The former is mostly about identifying what items should be present on the backlog. The latter is about taking the time to analyse and possibly redefine or clarify existing backlog tasks.
 
 ### Task estimates
 
@@ -118,7 +118,7 @@ Kanban uses the concept of _cycle time_ instead of _velocity_ when establishing 
 
 Some teams also define _lead times_ which establish the time between task conception and task completion. This tends to be more useful or helpful for product managers. Knowing the task's cycle time and lead time allows the team to optimise subsequent project plans whenever they deem it necessary.
 
-The main restriction imposed on a Kanban approach is the number of tasks assigned to a particular column. When a task can be advanced to the next stage (from "To Do" to "Testing" or similar), it shows where the team as a whole is with respect the overall project development. If there are too few tasks in the "To Do" column, considering the number of team members available, the product manager can call a meeting and adjust the kanban baord. If a task is stuck in a column for a period longer than a typical cycle time, then the team can pitch in to help where needed.
+The main restriction imposed on a Kanban approach is the number of tasks assigned to a particular column. When a task can be advanced to the next stage (from "To Do" to "Testing" or similar), it shows where the team as a whole is with respect the overall project development. If there are too few tasks in the "To Do" column, considering the number of team members available, the product manager can call a meeting and adjust the kanban board. If a task is stuck in a column for a period longer than a typical cycle time, then the team can pitch in to help where needed.
 
 ## Issue trackers
 

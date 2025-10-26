@@ -402,7 +402,7 @@ Executing against different conditions is probably more convenient using lambdas
 
 ## The Function and BiFunction _functional_ interfaces
 
-```Function``` and ```BiFunction``` are Java 8 functional interfaces with ```apply()``` as the implementable method and ```andThen()``` as a ```default``` method used to funnnel output from one implemented ```Function``` or ```BiFunction``` method as an argument to another.
+```Function``` and ```BiFunction``` are Java 8 functional interfaces with ```apply()``` as the implementable method and ```andThen()``` as a ```default``` method used to funnel output from one implemented ```Function``` or ```BiFunction``` method as an argument to another.
 
 One can define the logic to ```apply()``` which receives one parameter (```Student```) and returns a value (a ```String```):
 
