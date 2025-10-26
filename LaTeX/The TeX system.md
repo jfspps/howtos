@@ -13,8 +13,8 @@ LaTeX is markup language, like HTML and Markdown. Authors enter both the documen
 
 One must install TeX, the _Computer Modern_ fonts and then LaTeX, with any LaTeX extensions (known as LaTeX _packages_). Most LaTeX installations these days do this automatically.
 
-+ (Tex Live)[https://tug.org/texlive/]
-+ (MiKTeX)[https://miktex.org/]
++ [Tex Live](https://tug.org/texlive/)
++ [MiKTeX](https://miktex.org/)
 
 ## A LaTeX project
 
