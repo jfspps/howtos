@@ -10,7 +10,7 @@ This section summarises the underlying machinery of some of the main ideas of Gi
 
 The ```working directory``` in Git is the project folder or directory. This directory contains the project files and also a hidden folder, (formally) the Git repository as ```.git```. 
 
-A Git respository stores changes to the project as snapshots. Note that Git does not save multiple versions of the project files; instead, project files are hashed (by SHA1 or more recently with SHA256). Since hashing functions yield the same hash value (even on different machines), Git can build up a database of file content changes with different hash values. We will return to this idea again.
+A Git respository stores changes to the project as snapshots. Note that Git does not save multiple versions of the project files; instead, project files are hashed (by SHA1 or more recently with SHA256). Since hashing functions yield the same hash value (even on different machines), Git can build up a database of file content changes with different hash values. Furthermore, SHA values are (effectively) globally unique, meaning that a commit on one local machine references the same project change as all other machines.
 
 ## Git Object store and Git Index
 
