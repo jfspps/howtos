@@ -98,3 +98,57 @@ If a situation arises whereby a commit would become unreachable, then in order t
 - get the commits over to an existing branch via a merge, before deleting the branch
 
 ![Deleting branches](./graphml/deleting_branches.png)
+
+# Commit graphs
+
+On the subject of branching, now seems appropriate to outline ```commit graphs```. These represent the relationship between each commit across branches. 
+
+The scheme is represented by a DAG diagram (highlighted by the section [Internals](Internals.md)), usually in a more simplified manner. Only the commit nodes are illustrated, the reader can then assume that the related trees, blobs and tags (where applicable) are in effect but hidden.
+
+![Commit Graphs](./graphml/commit_graphs.png)
+
+The above DAG diagram is often assumed to portray time from left to right, with the slant of the edge (from B to D in this case) attempting to show that commit D was created as the new branch ```dev```. Many DAG diagrams do not use arrow heads and therefore the parent commit of a given commit is implied.
+
+In the above scenario, the project state from the tip of ```dev``` only considers commits A, B,D and E. Similarly, the project state according to branch ```prod``` is defined by commits A, B and C only.
+
+Once can merge ```dev``` _with_ ```prod``` as shown below.
+
+![Merging](./graphml/commit_graphs_2.png)
+
+Now the ```prod``` branch is defined by all commits shown.
+
+## Commit ranges
+
+One can formalise methods to deduce where commit reside through a ```commit range``` operation. The operator is denoted by two periods ```..``` and written as:
+
+```
+notInThisBranch..inThisBranch
+```
+
+or sometimes as
+
+```
+start..end
+```
+
+To deduce this from a commit graph, simply start at the tip of branch ```start``` and work back to its parent commits, added each commit to a set.
+
+For example, the commit range of ```dev..prod``` for the following commit graph would be the set ```{C}```. Starting at commit E and noting the forward slant of the divergence of the ```dev``` branch, one should see that commit C is in ```prod``` but not in ```dev```:
+
+![Commit Graphs](./graphml/commit_graphs.png)
+
+Similarly, the commit range ```prod..dev``` is the set ```{D, E}```.
+
+This can also highlight that the edge between commits B and D is not part of the branch ```dev``. The ```dev``` branch effectively only has one edge, that between commits D and E.
+
+From a Git standpoint, one can show the commit logs (messages) of a given commit range with either command:
+
+```bash
+git log ^prod dev
+```
+
+```bash
+git log prod..dev
+```
+
+Basically, this lists commits logs (and clearly, commits) _not_ in ```prod``` but in ```dev```. This pattern may prove helpful when seeing what is yet to be merged from the ```dev``` branch (to the ```prod``` branch).

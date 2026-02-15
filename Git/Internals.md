@@ -34,5 +34,3 @@ A good conceptual model is given in the [Pro Git](https://git-scm.com/book/en/v2
 The following shows the relationship between different commits and how references to unmodified files (e.g. test.txt) are represented through a DAG diagram:
 
 ![](./data-model-3.png)
-
-
