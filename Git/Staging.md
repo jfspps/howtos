@@ -80,7 +80,7 @@ The table below summaries the globbing patterns.
 ||file1.b|
 |some.text|some.text|
 ||dir/some.text|
-||dir/**/text|dir/text|
+|dir/**/text|dir/text|
 ||dir/subdir/text|
 ||dir/subdir/subdiragain/text|
 |**/text|dir/text|
