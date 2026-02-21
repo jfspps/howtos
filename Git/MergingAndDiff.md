@@ -8,9 +8,11 @@ parent: Git
 
 Merging is the unification of two or more commit histories of branches. It can only take place within the same repository: branches (whether originating from this repository or some other repository) must be present beforehand before a merge can take place.
 
-To many, a merge is technically completed when a new commit is persisted. The resultant commit will have as many parent commits as there are branches.
+To many, a merge is technically only completed when a new commit is persisted. The resultant commit will have as many parent commits as there are branches.
 
-A merge always involves merging a _source_ branch _into_ the current, _target_ branch.
+A merge always involves merging a _source_ branch _into_ the current, _target_ branch. 
+
+Git looks for the latest common ancestor of both branches (a common ancestor is also known as a _merge base_) and proceeds to merge all changes according to the commit history up to the current current on the current branch.
 
 ```bash
 git merge sourceBranchName
@@ -20,7 +22,7 @@ In general, all developers are advised to perform merges with a clean working di
 
 ## Viewing merges
 
-One can use [```gitk```](https://git-scm.com/docs/gitk) (there are other viewers) to view commit graphs following a merge, or, in the case of constrained environments (e.g. a command line interface) the command:
+One can run [```gitk --all```](https://git-scm.com/docs/gitk) to view commit graphs following a merge (there are other viewers), or, in the case of constrained environments (e.g. a command line interface) the command:
 
 ```bash
 git log --graph --decorate --pretty=oneline --abbrev-commit
@@ -131,6 +133,12 @@ The MERGE_HEAD notation will become clear shortly. Note the introduction of the 
 
 Finally, developers should note that by updating the conflicting file and removing the markers, Git will _assume_ that this conflict is resolved and not list it again if the command ```git diff``` was re-run. This is helpful particularly if there are lots of conflicts to resolve and developers want to focus on what's conflicted only.
 
+### Git status and Git diff
+
+```git status``` detects differences at the project file level, at both the local and remote repositories.
+
+```git diff``` detects differences within a file for the local repository only.
+
 ### Conflict internals
 
 On conflict, Git records the SHA1 of the source commit in the file ```.git/MERGE_HEAD```.
@@ -142,7 +150,7 @@ Finally, Git tracks three files: (1) the conflicting file (the file that contain
 The numbers stated are actually ```stage numbers```:
 
 0. Any non-conflicted file
-1. Merge base (Git saves this new project file to the working directory on behalf of the user)
+1. New/updated project file (in the working directory) as a result of the merge
 2. Target file
 3. Source file
 
@@ -200,7 +208,9 @@ Git would have saved the original HEAD reference for cases like the above. Note 
 
 # Merge strategies
 
-Merge strategies come to the fore when merging more than two branches, though can still be applied in simpler two-branch merges.
+Merge strategies describe what Git has done following a merge command. Git tries one strategy, and failing that tries another.
+
+By default, Git attempts a ```degenerate``` merge strategy first, before trying a ```merge-ort``` strategy. Developers can force Git to attempt a specific strategy from the command line.
 
 ## Degenerate merges
 
@@ -225,3 +235,19 @@ Common examples of such merges occur when pulling (or indeed fetching) from a re
 If the developer hasn't made any local changes following commit B; hence, pulling from the (more up to date) remote repository need not involve saving a new commit locally (hence degenerate). Git only needs to move the HEAD to the tip of the branch after pulling from the remote repository.
 
 Fast foward merges are the inverse of Already up to date merges.
+
+## Resolve merges
+
+Resolve merges look for the common ancestor (merge base) and then following sequential processing from the common ancestor, produce a merge commit on the current branch. (The merge commit is strictly not part of the branch merged into the current branch.)
+
+Resolve merges only work on two branches.
+
+## Recursive merges
+
+The recursive merge is similar to the resolve merge strategy but one which can handle more than two branches.
+
+A more effecient rescursive strategy is the ```merge-ort``` strategy.
+
+## Octopus merges
+
+The octopus strategy (as implied) is designed to handle merges of more than two branches where no conflict exists.
