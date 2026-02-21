@@ -139,7 +139,7 @@ For example, the commit range of ```dev..prod``` for the following commit graph 
 
 Similarly, the commit range ```prod..dev``` is the set ```{D, E}```.
 
-This can also highlight that the edge between commits B and D is not part of the branch ```dev``. The ```dev``` branch effectively only has one edge, that between commits D and E.
+This can also highlight that the edge between commits B and D is not part of the branch ```dev```. The ```dev``` branch effectively only has one edge, that between commits D and E.
 
 From a Git standpoint, one can show the commit logs (messages) of a given commit range with either command:
 
