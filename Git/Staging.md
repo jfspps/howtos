@@ -1,10 +1,12 @@
 ---
-title: Staging and .gitignore
+title: Staging, .gitignore and diff
 nav_order: 6
 parent: Git
 ---
 
-# Staging and .gitignore
+# Staging, .gitignore and diff
+
+## Staging
 
 ## Adding changes to the index
 
@@ -60,7 +62,7 @@ Git provides a convenient method to rename files within the working directory:
 git mv oldName newName
 ```
 
-# The .gitignore file
+## The .gitignore file
 
 This file lists which files or subdirectories should be ignored (not tracked). 
 
@@ -90,3 +92,56 @@ The table below summaries the globbing patterns.
 In some cases, it may be necessary to declare a file that should never be ignored. This can be achieved by adding an exclamation mark ```!``` at the beginning of any of the above expressions. This effectively negates whatever comes next regarding file staging.
 
 For example, ```!dir/**/text|dir/text``` would instruct Git to _not_ ignore the file ```text``` in any subdirectory. This and all other directives can of course can be overridden by any _.gitignore_ file in a subdirectory.
+
+## Git diff
+
+```git diff``` compares the differences between the working directory and the index i.e. only local changes (contrast to ```git status``` which also looks for differences with origin).
+
+Git locates changes considering treelike objects:
+
++ any treee object in the commit graph
++ the working directory (_working tree_)
++ the index directory
+
+### Commands
+
+```git diff``` - reveals dirty changes
+
+```git diff --cached commitSHA``` - shows differences between stage changes (in the index) and the given commit
+
+```git diff commitSHA``` - shows differences between the working directory and given commit
+
+```git diff commit1SHA commit2SHA``` - shows differences between both commits provided
+
+On changing a project file, Git creates a virtual tree in the index that links/references: 
+
+- the previous commit blob
+- the working directory version
+- the staged update (blob) referenced by the index
+
+Staging an update simply updates the referenced blob
+
+### git diff of files
+
+One can get a summary of the differences between a (dirty) project file and the previous commit. This is also covered later when comparing the differences between commits (not between files; see [here](./MergingAndDiff.md#using-git-diff)).
+
+For example, running ```git diff filename``` generates the report in the form shown below:
+
+```
+diff --git a/fileName b/fileName
+index indexedFileAbbrevContentSHA..workDirAbbrevContentSHA 100644
+--- a/fileName
++++ b/fileName
+@@ oldFileChangerange newFileChangeRange @@
+-LineRemoved from oldFile
+-AnotherLineRemoved from oldFile
++NewLineAdded to newFile
+ ThisLineFoundInBothOldAndNew
+```
+
+Notes:
+
++ The marker ```a/FileName``` references the old file (signified by ```---``` in the log) with ```b/fileName``` referencing the new file.
++ The number 100644 is the file permissions, here showing the file is not executable (i.e. ```chmod 644```; executable files have the value 100755) 
++ The change range are usually expressed as line numbers: e.g. ```-1,5``` or ```+1,5``` meaning to start from line 1, with five lines thereafter changed. The ```+``` or ```-``` reference the aforementioned markers
++ The actual changes are listed last (in the ```diff hunk``` section

@@ -154,3 +154,5 @@ git log prod..dev
 Basically, this lists commits logs (and clearly, commits) _not_ in ```prod``` but in ```dev```. Put another way, ```prod..dev``` gives all commits that are reachable from the tip of ```dev``` but without any commit present in up to and including the tip of ```prod```.
 
 This pattern may prove helpful when seeing what is yet to be merged from the ```dev``` branch (to the ```prod``` branch).
+
+Commit ranges also find use when passed as parameters for ```git diff``` and ```git log``` commands.
