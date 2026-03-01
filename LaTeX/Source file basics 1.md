@@ -1,12 +1,18 @@
 ---
-title: Source file basics
+title: Source file basics part 1
 nav_order: 3
 parent: LaTeX
 ---
 
-# Source file basics
+# Source file basics part 1
 
 Below is the source file (.tex) demonstrating the basics of LaTeX.
+
++ Document classes
++ White space
++ Interword and intersentence spacing
++ Italicising, boldface and typewriter styling
++ Single and double quotes
 
 ```latex
 % (comment) First text note with sample.cls (this document class controls document formatting)
@@ -30,4 +36,4 @@ Single left and right quotes are handled be ` and ' respectively, `for example'.
 \end{document}
 ```
 
-The generated PDF is [here](./examples/example_1.pdf).
+The [source file](./examples/example_1.tex) and (required) [document class file](./examples/sample.cls) are included. A generated PDF can be found [here](./examples/example_1.pdf).
