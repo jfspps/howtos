@@ -30,4 +30,4 @@ Single left and right quotes are handled be ` and ' respectively, `for example'.
 \end{document}
 ```
 
-The generated PDF is [here](/LaTeX/examples/example_1.pdf).
+The generated PDF is [here](./examples/example_1.pdf).
