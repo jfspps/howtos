@@ -90,7 +90,13 @@ Eventually, any commits that are not tagged or part of a branch are disposed via
 
 This is typically done locally, when short-lived bug fix or feature branches (not expected to be part of the remote repository) are deleted.
 
-Revisiting the idea of unreachable commits again, Git safeguards users from deleting branches if it means that any commit is left unreachable. Some commits are part of more than one branch, so in such cases it is possible to delete one of the branches. In other cases, Git will be default prevent users from deleting branches.
+Revisiting the idea of unreachable commits again, Git safeguards users from deleting branches if it means that any commit is left unreachable. This is actioned if one runs:
+
+```bash
+git branch -d branchName
+```
+
+Some commits are part of more than one branch, so in such cases it is possible to delete one of the branches. In other cases, Git will by default prevent users from deleting branches.
 
 If a situation arises whereby a commit would become unreachable, then in order to delete the branch, one would need to either:
 
@@ -98,6 +104,12 @@ If a situation arises whereby a commit would become unreachable, then in order t
 - get the commits over to an existing branch via a merge, before deleting the branch
 
 ![Deleting branches](./graphml/deleting_branches.png)
+
+To force Git to delete a branch (knowing the consequences) then use:
+
+```bash
+git branch -D branchName
+```
 
 # Commit graphs
 

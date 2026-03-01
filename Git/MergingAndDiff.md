@@ -133,13 +133,13 @@ The MERGE_HEAD notation will become clear shortly. Note the introduction of the 
 
 Finally, developers should note that by updating the conflicting file and removing the markers, Git will _assume_ that this conflict is resolved and not list it again if the command ```git diff``` was re-run. This is helpful particularly if there are lots of conflicts to resolve and developers want to focus on what's conflicted only.
 
-### Git status and Git diff
+## Git status and Git diff
 
 ```git status``` detects differences at the project file level, at both the local and remote repositories.
 
 ```git diff``` detects differences within a file for the local repository only.
 
-### Conflict internals
+## Conflict internals
 
 On conflict, Git records the SHA1 of the source commit in the file ```.git/MERGE_HEAD```.
 
@@ -164,7 +164,7 @@ It is possible to apply all changes from one side (source or target) for a given
 git checkout --ours filename
 ```
 
-### Final checks and the diff of a merge
+## Final checks and the diff of a merge
 
 One can run ```git ls-files -s``` (instead of the parameter ```u```) to list all tracked files, conflicted or not.
 
