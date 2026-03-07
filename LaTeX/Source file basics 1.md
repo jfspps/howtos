@@ -24,15 +24,15 @@ LaTeX ignores blank/white spaces and justifies the document itself, placing \tex
 
 To force an interword space, use a lone backslash \textbackslash \textbackslash, so the following \ \ \ \ is four spaces away. 
 
-One can also use the tilde \~ character (this will attempt to keep the words on the same line. These~~words~~are~~forced~~to~~be~~separated~~by~~an~~extra~~space.
+One can also use the tilde \~\ character (this will attempt to keep the words on the same line). These~~words~~are~~forced~~to~~be~~separated~~by~~an~~extra~~space.
 
-In LaTeX, one can document (escape) special characters with backslash. For example, comments start with \% (use \textbackslash \% to document the back slash and \%).
+In LaTeX, one can document (escape) special characters with backslash. For example, comments start with \% (use \textbackslash textbackslash \% to document the back slash and \%).
 
-LaTeX utilises standard commands, some with parameters. To document to command use the escape sequence \textbackslash command. To invoke a command, e.g. start a new paragraph, use \textbackslash par. (Alternatively, authors can start a new paragraph with two carriage returns.)
+LaTeX utilises standard commands, some with parameters. To document to command use the escape sequence \textbackslash command. To invoke a command, e.g. start a new paragraph, use \textbackslash par. (Alternatively, start a new paragraph with two carriage returns.)
 
 Some common comands with parameters: \textbackslash textit\{\} for \textit{italicising}, \textbackslash textbf\{\} for \textbf{boldface} and \textbackslash texttt\{\} for \texttt{typewriter style} text.
 
-Single left and right quotes are handled be ` and ' respectively, `for example'. Double quotes are handled by two left-single ` quotes  and then two right-single quotes (apostrophes) ', ``for example''.
+Single left and right quotes are handled by ` and ' respectively, `for example'. Double quotes are handled by two left-single ` quotes  and then two right-single quotes (apostrophes) ', ``for example''.
 \end{document}
 ```
 
