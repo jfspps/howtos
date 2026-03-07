@@ -13,6 +13,7 @@ Below is the source file (.tex) demonstrating the basics of LaTeX.
 + Interword and intersentence spacing
 + Italicising, boldface and typewriter styling
 + Single and double quotes
++ Document justification
 
 ```latex
 % (comment) First text note with sample.cls (this document class controls document formatting)
@@ -24,7 +25,7 @@ LaTeX ignores blank/white spaces and justifies the document itself, placing \tex
 
 To force an interword space, use a lone backslash \textbackslash \textbackslash, so the following \ \ \ \ is four spaces away. 
 
-One can also introduce whitespace with the tilde \~\ character (this will attempt to keep the words on the same line). These~~words~~are~~forced~~to~~be~~separated~~by~~an~~extra~~space.
+One can also introduce whitespace with the tilde \~{} character (this will attempt to keep the words on the same line). These~~words~~are~~forced~~to~~be~~separated~~by~~an~~extra~~space.
 
 In LaTeX, one can document (escape) special characters with backslash. For example, comments start with \% (use \textbackslash textbackslash \% to document the back slash and \%).
 
@@ -33,6 +34,18 @@ LaTeX utilises standard commands, some with parameters. To document to command u
 Some common comands with parameters: \textbackslash textit\{\} for \textit{italicising}, \textbackslash textbf\{\} for \textbf{boldface} and \textbackslash texttt\{\} for \texttt{typewriter style} text.
 
 Single left and right quotes are handled by ` and ' respectively, `for example'. Double quotes are handled by two left-single ` quotes  and then two right-single quotes (apostrophes) ', ``for example''.
+
+\begin{flushleft}
+This text is left-justified with \texttt{flushleft} 
+\end{flushleft}
+
+\begin{flushright}
+This text is right-justified with \texttt{rightflush} 
+\end{flushright}
+
+\begin{center}
+This text is right-justified with \texttt{center} 
+\end{center}
 \end{document}
 ```
 

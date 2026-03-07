@@ -8,15 +8,54 @@ parent: LaTeX
 
 Below is the source file (.tex) demonstrating the basics of LaTeX.
 
-+ Formualas
-+ How to typset < > and |
++ How to typset special characters
++ Inline and displayed formulas
 
 ```latex
 \documentclass{sample}
 \begin{document}
+The following characters can be used for typing the source file:
+\begin{center}
+a-z
+
+A-Z
+
+0-9
+
++ = * / ( ) [ ]
+
+, ; . ? ! : ` ' -
+\end{center}
+
+The following are used by LaTeX commands and therefore reserved:
+
+\begin{center}
+\# \$ \% \& \~ \_ \^{} \textbackslash \{ \} @ '' \textbar \textless \textgreater
+\end{center}
+
 In some cases, it may be necesary to enter text with \textbackslash text \{someText\} in order to build the correct layout. This is demonstrated in the next line.
 
-Inline formulas are enclosed with \textbackslash \$, for example typing \textbackslash \$2 \textless\textbar\text{x}\textbar\textgreater y\textbackslash \$ yields $2 < |x| > y$.
+\emph{Inline formulas} are enclosed with \textbackslash \$, for example typing:
+
+\begin{center}
+\textbackslash \$2\textbackslash textless \textbackslash textbar x \textbackslash textbar \textbackslash textgreater y\textbackslash \$
+\end{center}
+
+yields $2 < |x| > y$.
+
+\emph{Displayed formulas} are enclosed in \textbackslash [ and \textbackslash ], as typsetted below:
+\[
+\lim_{x \to a} \frac{f(x) - f(a)}{x-a}
+\]
+
+Math symbols are invoked by command, e.g. \textbackslash infty and \textbackslash to: as $x \to \infty$. Many require arguments to produce:
+\[
+\frac{\sqrt{3}+7}{x + r}
+\]
+
+Note from this source that there are no blank lines before a displayed formula, only after. Formulas are styled according to the document class. Whitespace within a math environment (as denoted above) is mostly ignored. 
+
+One can temporarily revert to regular text in a math environment with \textbackslash text\{something\}, for example $a + b \text{ is not the same as } a - b$. Again, check how spaces are not ignored in regular text (in the source) and therefore the extra space is required.
 \end{document}
 ```
 
