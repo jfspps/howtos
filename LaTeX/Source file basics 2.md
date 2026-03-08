@@ -4,7 +4,7 @@ nav_order: 4
 parent: LaTeX
 ---
 
-# Source file basics part 1
+# Source file basics part 2
 
 Below is the source file (.tex) demonstrating the basics of LaTeX.
 
