@@ -1,0 +1,53 @@
+\documentclass{sample}
+\begin{document}
+More on displayed formulas with LaTeX. Authors can typset displayed formulas with \textbackslash \{equation\} (known as an equation environment), and furthermore number with \textbackslash begin\{equation\} and internally label (reference) equations with \textbackslash label\{E:uniqueReference\}, as shown below:
+\begin{equation}\label{E:integralOne}
+\int_0^{\pi} \sin x \, dx = 2
+\end{equation}
+
+The reference in the typsetted document can be demonstrated with \textbackslash ref and \textbackslash pageref: 
+
+``Please refer to~(\ref{E:integralOne}) on page~\pageref{E:integralOne}.''
+
+Note that the source file will need to be typset \textbf{twice} in order to get the references updated. The use of \texttt{E:} is only a convention for \textbf{E}quations.
+
+It is possible to build equations without numbering by introducing an asterisk, as \textbackslash begin\{equation\textasteriskcentered\}. This would be equivalent to \textbackslash [. Indeed, it may prove more useful to do this for documents with a large number of equations, where the author then decides which to number and which not to, by deleting the asterisk.
+
+The above equation numbers are updated automatically by LaTeX, as \textit{relative} numbering. It is also possible to assign an \textit{absolute} numbering, as a tag, with \textbackslash tag\{absoluteId\}:
+\begin{equation}
+\int_0^{\pi} \sin x \, dx = 2 \tag{intOne}
+\end{equation}
+
+The alignment of equations for derivations can be realised with \textbackslash begin\{align\} (known as the align environment). The \textit{alignment point} is applied with \& and the line separator is given by two backslashes.
+\begin{align*} 
+2x - 5y &=  8 \\ 
+3x + 9y &=  -12
+\end{align*}
+
+Removing the asterisks will yield numbered equations:
+\begin{align} 
+2x - 5y &=  8 \\ 
+3x + 9y &=  -12
+\end{align}
+
+Finally, leave out numbering for select equations with \textbackslash notag:
+\begin{align} 
+2x - 5y &=  8 \notag \\ 
+3x + 9y &=  -12
+\end{align}
+
+To annotate a line with two ampersands (e.g. for working):
+\begin{align}
+x &= x \wedge (y \vee z) &&\text{(by distributivity)}
+\end{align}
+
+Cases can be typset like a matrix with \textbackslash begin\{cases\} inside an equation or align environment as follows:
+\[
+f(x)=
+\begin{cases}
+-x^2, &\text{if $x < 0$;}\\
+\alpha + x, &\text{if $0 \leq x \leq 1$;}\\
+x^2, &\text{otherwise.}
+\end{cases}
+\]
+\end{document}
