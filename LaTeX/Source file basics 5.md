@@ -8,8 +8,9 @@ parent: LaTeX
 
 Below is the source file (.tex) demonstrating the basics of LaTeX.
 
-+ Document structure and layout
-+ Adding images with ```ggraphicx```
++ Document structure and layout with the ```amsart``` class
++ Adding images with ```graphicx```
++ Optional arguments with [] (see ```\includegraphics```)
 
 ```latex
 \documentclass{amsart}
