@@ -1,3 +1,17 @@
+---
+title: Source file basics part 7
+nav_order: 8
+parent: LaTeX
+---
+
+# Source file basics part 7
+
+Below is the source file (.tex) demonstrating the basics of LaTeX.
+
++ European accents
++ Text symbols
+
+```latex
 \documentclass{sample}
 \usepackage{booktabs}
 \begin{document}
@@ -108,3 +122,6 @@ Finally, Table \ref{ta:symbols} shows the commands reuqired to typeset text symb
 \end{center}
 \end{table}
 \end{document}
+```
+
+The [source file](./examples/example_7.tex) and (required) [document class file](./examples/sample.cls) are included. A generated PDF can be found [here](./examples/example_7.pdf).
