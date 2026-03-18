@@ -1,0 +1,358 @@
+---
+title: Source file basics part 8
+nav_order: 9
+parent: LaTeX
+---
+
+# Source file basics part 8
+
+Below is the source file (.tex) demonstrating the basics of LaTeX.
+
++ Greek letters
++ Operators
++ Multiline subscripts and superscripts
++ Math accents
++ Stretchable braces, bars and arrows
++ STIX 
+
+```latex
+\documentclass{sample}
+\usepackage{booktabs}
+\usepackage{caption}
+\begin{document}
+\section{Greek letters}
+Uppercase and lowercase Greek letters are a common symbology. These letters must be typed in math environments.
+
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Name & Typeset \\
+	\midrule
+	alpha & $\alpha$\\
+	beta & $\beta$\\
+	gamma & $\gamma$\\
+	delta & $\delta$\\
+	epsilon & $\epsilon$\\
+	zeta & $\zeta$\\
+	eta & $\eta$\\
+	theta & $\theta$\\
+	iota & $\iota$\\
+	kappa & $\kappa$\\
+	lambda & $\lambda$\\
+	mu & $\mu$\\
+	nu & $\nu$\\
+	xi & $\xi$\\
+	pi & $\pi$\\
+	rho & $\rho$\\
+	sigma & $\sigma$\\
+	tau & $\tau$\\
+	upsilon & $\upsilon$\\
+	phi & $\phi$\\
+	chi & $\chi$\\
+	psi & $\psi$\\
+	omega & $\omega$\\
+	varepsilon & $\varepsilon$\\
+	vartheta & $\vartheta$\\
+	varpi & $\varpi$\\
+	varrho & $\varrho$\\
+	varsigma & $\varsigma$\\
+	varphi & $\varphi$\\
+	digamma & $\digamma$\\
+	varkappa & $\varkappa$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Lowercase Greek letters (see source for type or command)}
+	\label{Ta:lowgreek}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Name & Typeset & Typeset \\
+	\midrule
+	alpha & A (just type A)\\
+	gamma & $\Gamma$\\
+	delta & $\Delta$\\
+	theta & $\Theta$\\
+	lambda & $\Lambda$\\
+	xi & $\Xi$\\
+	pi & $\Pi$\\
+	sigma & $\Sigma$\\
+	upsilon & $\Upsilon$\\
+	phi & $\Phi$\\
+	psi & $\Psi$\\
+	omega & $\Omega$\\
+	vargamma & $\varGamma$\\
+	vardelta & $\varDelta$\\
+	vartheta & $\varTheta$\\
+	varlambda & $\varLambda$\\
+	varxi & $\varXi$\\
+	varpi & $\varPi$\\
+	varsigma & $\varSigma$\\
+	varupsilon & $\varUpsilon$\\
+	varphi & $\varPhi$\\
+	varpsi & $\varPsi$\\
+	varomega & $\varOmega$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Uppercase Greek letters (see source for type or command)}
+	\label{Ta:uppgreek2}
+\end{center}
+\newpage
+\section{Delimiters}
+Delimiters enclose expressions.Like Greek letters, delimiters always go inside math environments.
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Name & Typeset \\
+	\midrule
+	left parenthesis & $($\\
+	right parenthesis & $)$\\
+	left bracket & $[$\\
+	right bracket & $]$\\
+	left brace & $\{$\\
+	right brace & $\}$\\
+	backslash & $\backslash$\\
+	forward slash & $/$\\
+	left angle bracket & $\langle$\\
+	right angle bracket & $\rangle$\\
+	vertical line & $|$\\
+	double vertical line (note this one) & $\|$\\
+	left floor & $\lfloor$\\
+	right floor & $\rfloor$\\
+	left ceiling & $\lceil$\\
+	right ceiling & $\rceil$\\
+	upward & $\uparrow$\\
+	double upward & $\Uparrow$\\
+	downward & $\downarrow$\\
+	double downward & $\Downarrow$\\
+	up-and-down & $\updownarrow$\\
+	double up-and-down & $\Updownarrow$\\
+	upper-left corner & $\ulcorner$\\
+	upper-right corner & $\urcorner$\\
+	lower-left corner & $\llcorner$\\
+	lower-right corner & $\lrcorner$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Delimiters (see source for type or command)}
+	\label{Ta:delimiters}
+\end{center}
+With the exception of the corner delimiters, it is possible to stretch delimiters with \textbackslash left and \textbackslash right, in the form \textbackslash left \textit{delim1} \textbackslash right \textit{delim2}.
+
+For example:
+\[
+\left|\frac{a+b}{2}\right|
+\]
+
+Note that the slightly modified command \textbackslash left. introduces a blank delimiter (as does the right counterpart) and is needed when stretching sible delimiters.
+\[
+\left. F(x) \right|_{a}^{b}\text{ note how this stretches the F to match the vertical bar}
+\]
+
+\section{Operators}
+LaTeX defines e.g. trigonometric functions and mathematical limits as operators. The former does not involve limits while the latter can.
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Typeset\\
+	\midrule
+	$\arccos$\\
+	$\arcsin$\\
+	$\arctan$\\
+	$\arg$\\
+	$\cos$\\
+	$\cosh$\\
+	$\cot$\\
+	$\coth$\\
+	$\csc$\\
+	$\deg$\\
+	$\dim$\\
+	$\exp$\\
+	$\hom$\\
+	$\ker$\\
+	$\lg$\\
+	$\ln$\\
+	$\log$\\
+	$\sec$\\
+	$\sin$\\
+	$\sinh$\\
+	$\tan$\\
+	$\tanh$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Operators without limits (see source for type or command)}
+	\label{Ta:opsnolimit}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Typeset\\
+	\midrule
+	$\det$\\
+	$\gcd$\\
+	$\inf$\\
+	$\lim$\\
+	$\liminf$\\
+	$\injlim$\\
+	$\varliminf$\\
+	$\varinjlim$\\
+	$\limsup$\\
+	$\max$\\
+	$\min$\\
+	$\Pr$\\
+	$\sup$\\
+	$\projlim$\\
+	$\varlimsup$\\
+	$\varprojlim$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Operators with limits (see source for type or command)}
+	\label{Ta:opsnolimit}
+\end{center}
+
+The limits to the operators are passed as parameters, for example:
+\[
+\projlim_{x \to 0}
+\]
+
+One can force limits in the subscript position with command \textbackslash nolimits:
+\[
+\projlim\nolimits_{x \to 0}
+\]
+
+\section{Multiline subscripts and superscripts}
+It is also possible to apply multiline subscripts and superscripts, with \textbackslash substack. Each line is delimited with double backslashes:
+\[
+\sum_{\substack{i < n\\i \text{even}}}x_{i}^2
+\]
+
+To place the subscripts and superscripts flushed-left, use \textbackslash subarray instead of \textbackslash substack:
+\[
+\sum_{
+\begin{subarray}{1}
+i < n\\i \text{even}
+\end{subarray}}
+x_{i}^2
+\]
+\newpage
+\section{Math accents}
+Like text accents, these typically require a letter to accent but must be used within math environments.
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Typeset\\
+	\midrule
+	$\acute{a}$\\
+	$\bar{a}$\\
+	$\breve{a}$\\
+	$\check{a}$\\
+	$\dot{a}$\\
+	$\ddot{a}$\\
+	$\dddot{a}$\\
+	$\ddddot{a}$\\
+	$\grave{a}$\\
+	$\hat{a}$\\
+	$\widehat{a}$\\
+	$\mathring{a}$\\
+	$\tilde{a}$\\
+	$\widetilde{a}$\\
+	$\vec{a}$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Math accents (see source for type or command)}
+	\label{Ta:mathaccents}
+\end{center}
+\newpage
+\section{Stretchable horizontal lines}
+Three types in LaTeX: braces, bars and arrows.
+
+Braces are typset with \textbackslash overbrace. A superscripts is optional. For example:
+\[
+\overbrace{a + b + \dots + n}^{m}
+\]
+
+Similarly, \textbackslash underbrace and optional subscripts are possible:
+\[
+\underbrace{a + b + \dots + n}_{m}
+\]
+
+Both braces can be nested.
+
+Bars are typset with \textbackslash underline and \textbackslash overline as required, here shown as nested lines:
+\[
+\overline{
+\overline{X} \cup \overline{\overline{X}}
+} = \overline{\overline{X}}
+\]
+
+Arrows are either over or under and left, leftright or right, and have the same sort of features as braces and bars. Some examples:
+\begin{gather*}
+\overleftarrow{a}\\
+\overrightarrow{ab}\\
+\overleftrightarrow{abc}
+\end{gather*}
+
+The environment denoted by \texttt{gather} is used to gather single line formulae, in this case without numbering (as denoted by the asterisk).
+\end{document}
+```
+
+The [source file](./examples/example_8.tex) and (required) [document class file](./examples/sample.cls) are included. A generated PDF can be found [here](./examples/example_8.pdf).
+
+## STIX - Scientific and Technical Information Exchange
+
+This package can be added to LaTeX as shown next: 
+```latex 
+\documentclass{sample}
+\usepackage{stix}
+\usepackage{booktabs}
+\usepackage{caption}
+\begin{document}
+\section{Greek letters with STIX}
+Uppercase and lowercase Greek letters are a common symbology. These letters must be typed in math environments.
+
+\begin{center}
+	\begin{tabular}{llc}
+	\toprule
+	Name & Typeset \\
+	\midrule
+	alpha & $\alpha$\\
+	beta & $\beta$\\
+	gamma & $\gamma$\\
+	delta & $\delta$\\
+	epsilon & $\epsilon$\\
+	zeta & $\zeta$\\
+	eta & $\eta$\\
+	theta & $\theta$\\
+	iota & $\iota$\\
+	kappa & $\kappa$\\
+	lambda & $\lambda$\\
+	mu & $\mu$\\
+	nu & $\nu$\\
+	xi & $\xi$\\
+	pi & $\pi$\\
+	rho & $\rho$\\
+	sigma & $\sigma$\\
+	tau & $\tau$\\
+	upsilon & $\upsilon$\\
+	phi & $\phi$\\
+	chi & $\chi$\\
+	psi & $\psi$\\
+	omega & $\omega$\\
+	varepsilon & $\varepsilon$\\
+	vartheta & $\vartheta$\\
+	varpi & $\varpi$\\
+	varrho & $\varrho$\\
+	varsigma & $\varsigma$\\
+	varphi & $\varphi$\\
+	digamma & $\digamma$\\
+	varkappa & $\varkappa$\\
+	\bottomrule
+	\end{tabular}
+	\captionof{table}{Lowercase Greek letters (see source for type or command)}
+	\label{Ta:lowgreek}
+\end{center}
+\end{document}
+```
+
+STIX comes with all manner of symbols for scientific journals with its own set of fonts. Go [here](https://www.stixfonts.org/) for more on STIX fonts. The fonts come with most TeX installations from 2014 or later, including Tex Live, as shown [here](./examples/example_8_stix.pdf)
