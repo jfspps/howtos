@@ -12,7 +12,12 @@ occur is housed within a `try` block. If an error condition is met then an excep
 Unlike Java, C++ does not use the `finally` block. This is essentially due to the difference in approach regarding how resources are freed in Java and C++. From the Bjarne's book:
 
 ```quote
-Because C++ supports an alternative that is almost always better: The "resource acquisition is initialization" technique (TC++PL3 section 14.4). The basic idea is to represent a resource by a local object, so that the local object's destructor will release the resource. That way, the programmer cannot forget to release the resource.
+Because C++ supports an alternative that is almost always 
+better: The "resource acquisition is initialization" technique 
+(TC++PL3 section 14.4). The basic idea is to represent a 
+resource by a local object, so that the local object's 
+destructor will release the resource. That way, the 
+programmer cannot forget to release the resource.
 ```
 
 For more detailed info, look up deterministic destructors and _Resource acquisition is initialization (RAII)_.
