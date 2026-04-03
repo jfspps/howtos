@@ -114,7 +114,7 @@ _Structures_ are collections of data types under one name and remain pervasive, 
   };
 
  void main(){
-  struct Rectangle r; //places r in the stack
+  Rectangle r; //places r in the stack
   r = {10, 5};  //initialises r
   
   r.length = 10;
@@ -123,7 +123,7 @@ _Structures_ are collections of data types under one name and remain pervasive, 
   printf('Area of rectangle is %d/n', r.length*r.breadth);
   
   //declaring an array of structs
-  struct Rectangle rectangles[5];
+  Rectangle rectangles[5];
 
   rectangles[0].length = 30; //etc...
  }

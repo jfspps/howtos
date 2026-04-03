@@ -1,22 +1,35 @@
 ---
-title: Utilising data structures in memory
+title: Data structures in memory
 nav_order: 2
 parent: ADTs and Algorithms in C++
 ---
 
-# Utilising data structures in memory
+# Data structures in memory
 
-Memory addresses are zero-based. Memory is partitioned into code, stack and heap sections.
+## Storage duration and scope
 
-# The stack
+All variables have a _storage duration_:
 
-At compile-time, variables local to `main()` are allocated statically (known, fixed amount of data). Other function calls are allocated a portion of the _stack_ (called the stack frame or activation record) on a LIFO basis.
++ Automatic storage duration
++ Static storage duration
++ Dynamic storage duration
 
-The term stack relates to how functions stack on top of each other as they are called. When a function returns, its stack frame is cleared automatically.
+Which part of the application over which a variable name is valid is known as _scope_. Any reference to the variable that is legal is phrased as __in scope__, at which point the variable can be used in an expression.
 
-# The heap (The Free Store)
+Memory addresses are zero-based. Memory is partitioned into code, __stack__ (stack frame or activation record) and __heap__ (free store) sections.
 
-The _heap_ is a randomly arranged portion of memory where data resides in randomly allocated heaps. Data which utilises the heap must be allocated and de-allocated (to prevent memory leaks).
+Variables declared in a block (of curly braces) are __automatic variables__ (have automatic storage duration), and are in scope when they are declared up to the end of the closing brace. Such variables are stored on the stack. Systems are given a default stack size, typically of the
+order of megabytes. Variables out of scope are automatically removed from the stack, so any reference to them will cause a runtime error. An automatic variable can be declared with the keyword _auto_ but this is not necessary as it is implied.
+
+Other function calls that declare variables are allocated a portion of the stack on a LIFO basis. The term stack relates to how functions stack on top of each other as they are called. When a function returns, its stack frame is cleared automatically.
+
+Variables declared in ```main()``` have global scope (or file scope) and are classed as __static variables__ (have static storage duration). Such variables are also placed on the stack. It is also possible to declare __any__ variable as static with the keyword _static_, which means
+the variable will be in scope for the entire duration of the application.
+
+Variables that may or may not have definite size (e.g. arrays) are handled as __dynamic variables__ and are handled with dynamic storage duration. For many applications, having control over memory usage is preferred. Dynamic variables are located on the heap and referred to by pointers, which themselves reside on the stack.
+The heap is a randomly arranged portion of memory where data resides in randomly allocated heaps. Data which utilises the heap must be allocated and de-allocated (to prevent memory leaks).
+
+## Pointers
 
 Programs do not access heap memory directly. They can access them with pointers indirectly.
 
@@ -34,10 +47,6 @@ void main(){
   p = NULL;        // reset the pointer
  }
 ```
-
-# Working with the heap
-
-## Pointers
 
 Grant access to stack and heap resources, by address. Functions called are stored in the stack, along with their local variables
 
