@@ -321,7 +321,7 @@ int main()
 	char buffer[MAX];
 	const int MAX_STRINGS = 2;
 	
-	char stringList[2][MAX];
+	char stringList[MAX_STRINGS][MAX];
 
 	int count = 0;
 
