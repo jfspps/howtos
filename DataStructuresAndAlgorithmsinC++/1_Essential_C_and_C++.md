@@ -187,6 +187,76 @@ unionInstance.intId = 12;
 unionInstance.charId = 'D';
 ```
 
+### Arrays
+
+Arrays in C_ and C++ are zero-based.
+
+```cpp
+// array declaration
+long numbers[7];
+
+// array initialisation; the final and third element would be initialised with zero
+long moreNumber[3] = {34, 12};
+
+std::cout << "moreNumber second element: " << moreNumber[1]; // prints 12
+```
+
+Arrays are always blocked in sequence in memory from the first to the last element. 
+
+The literal ```moreNumber[1]``` is actually a pointer to the beginning of the array and then 1 block after. Since 
+the compiler knows the data type of the array and therefore the size of the type, it can automatically navigate to the location of the second element. Furthermore, the array itself
+is stored dynamically, and is located on the heap (or free store) in memory. Pointers and the heap are outlined [later](./2_Stack_and_Heap.md#data-structures-in-memory).
+
+Strings, via raw arrays, are arrays of characters. A list of strings can be handled with a multidimensional (two-dimensional) array of characters.
+
+Examples of string features are given here for completeness, though most developers will find the standard library String class (```#include<string>```) much easier to use.
+
+```cpp
+#include <iostream>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::fill;
+using std::copy;
+
+int main()
+{
+	const int MAX = 80;
+	char buffer[MAX];
+	const int MAX_STRINGS = 2;
+	
+	char stringList[2][MAX];
+
+	int count = 0;
+
+	for (int z = 1; z < MAX_STRINGS + 1; z++)
+	{
+		cout << "Enter string " << z << " with a max of " << MAX << " characters:" << endl;
+
+		// read a string until a new line
+		cin.getline(buffer, MAX, '\n');
+
+		copy(buffer, buffer + MAX, stringList[z-1]);
+
+		cout << "Filled array with string " << z << endl;
+		
+		// no direct way to clear an array, so we use std::fill
+		fill(buffer, buffer + MAX, 0);
+	}
+
+	cout << endl;
+	
+	for (int j = 0; j < MAX_STRINGS; j++)
+	{
+		cout << "String " << j + 1 << ": " << stringList[j];
+		cout << endl;
+	}
+
+	return 0;
+}
+```
+
 ## Namespaces (C++)
 
 Variables and functions with the same name (e.g. ```value``` below) in one library can often be used and therefore conflict with other variables and functions in another. To get around this,
@@ -252,7 +322,7 @@ int main()
 Note however that _using directives_ (to other libraries) allows developers to use all variables and functions in the namespace, and thus limits what 
 can be declared in the current project, thus defeating the purpose of namespaces.
 
-Instead, a more selective approach is to use _using declarations_ instead of _using directives_.
+Instead, a more selective and mostly preferred approach is to use _using declarations_ instead of _using directives_.
 
 ```cpp
 #include <iostream>
