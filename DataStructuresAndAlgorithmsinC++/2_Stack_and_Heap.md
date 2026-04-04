@@ -248,7 +248,7 @@ char aChar = *(*(someArrayOfStrings + 1) + 3);
 
 Generally, `anArray[i][j]` is equivalent to `*(*(anArray + i) + j))`. One could combine array and pointer notation but this then gets a bit unwieldy.
 
-## References (C++ only)
+## References (C++)
 
 References are aliases to variables, and not part of C. They do not create copies of variables they reference to in any function call (other than `main()`). Unlike pointers, __references are immutable__ and so must be assigned as an alias to one variable for the program's entire lifecycle.
 

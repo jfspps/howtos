@@ -284,7 +284,7 @@ It is possible to define multiple namespaces in a given file.
 
 ## Arrays and strings
 
-Arrays in C_ and C++ are zero-based.
+Arrays in C and C++ are zero-based.
 
 ```cpp
 // array declaration
@@ -327,7 +327,8 @@ int main()
 
 	for (int z = 1; z < MAX_STRINGS + 1; z++)
 	{
-		cout << "Enter string " << z << " with a max of " << MAX << " characters:" << endl;
+		cout << "Enter string " << z << " with a max of " 
+      << MAX << " characters:" << endl;
 
 		// read a string until a new line
 		cin.getline(buffer, MAX, '\n');
@@ -351,3 +352,5 @@ int main()
 	return 0;
 }
 ```
+
+Arrays are discussed in more detail later, in regard to [general features](./10_Array_representations.md) and [operations](./11_Array_operations.md).
