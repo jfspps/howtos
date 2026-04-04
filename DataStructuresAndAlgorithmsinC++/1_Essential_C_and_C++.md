@@ -39,9 +39,9 @@ for non-standard libraries.
 |unsigned int|4|0 to 4,294,967,295|```unsigned int evenBigger = 12546865U;```|
 |long|4|same as int, above|```long longer = 24l;```|
 |unsigned long|4|same as unsigned int, above|```unsigned long twoFour = 24lu;``` or ```unsigned long twoFour = 24ul;```|
-|float|4|$\pm$ 3.4x10<sup>$\pm$ 38</sup> precision of 6-7 d.p.|```float someFloat = 110.0f;``` or ```float someExp = 1.88E10f;```|
-|double|8|$\pm$ 1.7x10<sup>$\pm$ 308</sup> precision of 15 d.p.|```double someDouble = 3.14;``` or ```float someDouble = 3.14;``` see below|
-|long double|8|$\pm$ 1.7x10<sup>$\pm$ 308</sup> precision of 19 d.p.|```long double someLongDouble = 3.13E-24l;```|
+|float|4|&#177;3.4x10<sup>&#177;38</sup> precision of 6-7 d.p.|```float someFloat = 110.0f;``` or ```float someExp = 1.88E10f;```|
+|double|8|&#177;1.7x10<sup>&#177;308</sup> precision of 15 d.p.|```double someDouble = 3.14;``` or ```float someDouble = 3.14;``` see below|
+|long double|8|&#177;1.7x10<sup>&#177;308</sup> precision of 19 d.p.|```long double someLongDouble = 3.13E-24l;```|
 
 _Wide characters_: this can be confusing if applied to different environments. On Windows, wide characters are typically UTF16 (2 bytes) while
 on other machines are UTF32 (4 bytes).
