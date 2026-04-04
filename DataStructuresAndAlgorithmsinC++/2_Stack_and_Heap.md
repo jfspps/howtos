@@ -6,7 +6,9 @@ parent: ADTs and Algorithms in C++
 
 # Data structures in memory
 
-## Storage duration and scope
+## Storage classes: storage duration and scope
+
+All variables are characterised by _storage classes_, which describes a variables lifetime (through storage duration, below), linkage (visibility in or out of the file) and memory location (CPU register, or memory stack or heap).
 
 All variables have a _storage duration_:
 
@@ -24,7 +26,7 @@ order of megabytes. Variables out of scope are automatically removed from the st
 Other function calls that declare variables are allocated a portion of the stack on a LIFO basis. The term stack relates to how functions stack on top of each other as they are called. When a function returns, its stack frame is cleared automatically.
 
 Variables declared in ```main()``` have global scope (or file scope) and are classed as __static variables__ (have static storage duration). Such variables are also placed on the stack. It is also possible to declare __any__ variable as static with the keyword _static_, which means
-the variable will be in scope for the entire duration of the application.
+the variable will be in scope for the entire duration of the application. Static variables will always be initialised a value (the type's equivalent of ```0```) if none are provided.
 
 Variables that may or may not have definite size (e.g. arrays) are handled as __dynamic variables__ and are handled with dynamic storage duration. For many applications, having control over memory usage is preferred. Dynamic variables are located on the heap and referred to by pointers, which themselves reside on the stack.
 The heap is a randomly arranged portion of memory where data resides in randomly allocated heaps. Data which utilises the heap must be allocated and de-allocated (to prevent memory leaks).

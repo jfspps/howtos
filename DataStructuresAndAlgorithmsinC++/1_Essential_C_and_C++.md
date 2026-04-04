@@ -6,6 +6,24 @@ parent: ADTs and Algorithms in C++
 
 # Essential C and C++
 
+## Preprocessor directives
+
+__Directives__ direct the compiler to do something. _Preprocessor directives_ specifically direct preprocessor actions before compilation to object code.
+
+```cpp
+// insert the input-output stream header (definitions)
+#include <iostream>
+```
+
+Within brackets, the preprocessor searches for a header file (with the name given) along a predefined path (a system file defined as an environment variable). Within double quotes, the preprocessor looks for the header file by filename first (in the same folder of the file that the directive is called), before trying the predefined path. The latter therefore tends to be used 
+for non-standard libraries.
+
+```cpp
+// insert the input-output stream header (definitions)
+#include <iostream>
+#include "myLibraryHeader.h"
+```
+
 ## Fundamental types
 
 |__Type__|__Size (byte)__|__Range of values__|__Types with literals__|
@@ -168,3 +186,98 @@ unionInstance.intId = 12;
 // change of circumstance, set charId; override (clear) intId
 unionInstance.charId = 'D';
 ```
+
+## Namespaces (C++)
+
+Variables and functions with the same name (e.g. ```value``` below) in one library can often be used and therefore conflict with other variables and functions in another. To get around this,
+C++ introduces the idea of _namespaces_ which act as a container, setting a prefix to each variable or function listed within the namespace.
+
+```cpp
+namespace someNamespace
+{
+  int value = 0;
+}
+```
+
+When referring to said variables and functions outside of the library, developers can use a fully qualified identifier with the scope resolution operator (::) as follows:
+
+```cpp
+#include <iostream>
+
+namespace someNamespace
+{
+  int value = 0;
+  int value2 = 2;
+}
+
+// perfectly legal; value here is a different variable (with value 1) compared to value in the namespace
+int value = 1;
+
+int main()
+{
+	std::cout << "Coming at you from the standard library namespace, std\n";
+	std::cout << "someNamespace: " << someNamespace::value << '\n'; // prints 0
+	std::cout << "Global namespace scope: " << value << '\n'; // prints 1
+	return 0;
+}
+```
+
+Using fully qualified names can get verbose, so instead one can apply the _using directive_ which indicate __all__ variables and functions of a given namespace that can be referred to more concisely:
+
+```cpp
+#include <iostream>
+
+namespace someNamespace
+{
+  int value = 0;
+  int value2 = 2;
+}
+
+// using directives
+using namespace std;
+using namespace someNamespace;
+
+// won't build anymore, as reference to value is ambiguous with using directive
+int value = 1;
+
+int main()
+{
+	cout << "Coming at you from the standard library namespace, std\n";
+	cout << "someNamespace: " << value << '\n'; // prints 0
+	cout << "Global namespace scope: " << value << '\n'; // prints 1
+	return 0;
+}
+```
+
+Note however that _using directives_ (to other libraries) allows developers to use all variables and functions in the namespace, and thus limits what 
+can be declared in the current project, thus defeating the purpose of namespaces.
+
+Instead, a more selective approach is to use _using declarations_ instead of _using directives_.
+
+```cpp
+#include <iostream>
+
+namespace someNamespace
+{
+  int value = 0;
+  int value2 = 2;
+}
+
+// using directives
+using namespace std;
+using someNamespace::value;
+
+// perfectly legal, since we can still refer to value2 from someNamespace if we fully qualify
+int value2 = 1;
+
+int main()
+{
+	cout << "Coming at you from the standard library namespace, std\n";
+	cout << "someNamespace value: " << value << '\n'; // prints 0
+	cout << "Global namespace scope: " << value2 << '\n'; // prints 1
+	cout << "someNamespace value2: " << someNamespace::value2 << '\n'; // prints 2
+	return 0;
+}
+```
+
+It is possible to define multiple namespaces in a given file.
