@@ -485,7 +485,7 @@ rvalue = rvalue ^ lvalue; // or rvalue ^= lvalue; rvalue becomes 0100 0001
 lvalue = lvalue ^ rvalue  // lvalue becomes 0101 1010
 ```
 
-The final result (following all three operations) is ```lvalue is 0101 1010``` and ```rvalue is 0001 1011``.
+The final result (following all three operations) is ```lvalue is 0101 1010``` and ```rvalue is 0001 1011```.
 
 ### Bitwise left and right shift
 
