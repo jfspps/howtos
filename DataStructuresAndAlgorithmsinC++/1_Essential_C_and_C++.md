@@ -477,7 +477,7 @@ XOR 0000 0011 (decimal 3)
   = 0000 0110 (decimal 6)
 ```
 
-The XOR operation can be used to swap bit sequences between two variables e.g. ```lvalue is 0100 0001``` and ```rvalue is 0101 1010``, if the following is carried out:
+The XOR operation can be used to swap bit sequences between two variables e.g. ```lvalue is 0100 0001``` and ```rvalue is 0101 1010```, if the following is carried out:
 
 ```cpp
 lvalue = lvalue ^ rvalue; // or lvalue ^= rvalue; lvalue becomes 0001 1011
