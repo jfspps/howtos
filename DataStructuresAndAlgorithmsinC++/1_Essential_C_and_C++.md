@@ -43,8 +43,54 @@ for non-standard libraries.
 |double|8|&#177;1.7x10<sup>&#177;308</sup> precision of 15 d.p.|```double someDouble = 3.14;``` or ```float someDouble = 3.14;``` see below|
 |long double|8|&#177;1.7x10<sup>&#177;308</sup> precision of 19 d.p.|```long double someLongDouble = 3.13E-24l;```|
 
+### The comma operator
+
+It is possible to assignment multiple variables with the _comma operator_:
+
+```cpp
+long alpha = 0, beta = 1, gamma = 2;
+```
+
+When a variable is assigned a value with a comma operator, then it takes the rightmost value:
+
+```cpp
+// unknown = 2; all other variables as stated
+long unknown = (alpha = 0, beta = 1, gamma = 2);
+```
+
+### Characters
+
+Take note of integer assignments to characters.
+
+```cpp
+// ASCII decimal 65, therefore 'A'
+char letA = 65;
+
+// ASCII octal prefixed with 0. 065 is decimal 53, therefore '5'
+char letB = 065;
+
+// ASCII hexadecimal prefixed with 0x (or 0X). 41 is decimal 65, therefore 'A'
+char letC = 0x41;
+char letD = 0X41;
+```
+
 _Wide characters_: this can be confusing if applied to different environments. On Windows, wide characters are typically UTF16 (2 bytes) while
 on other machines are UTF32 (4 bytes).
+
+Below are example escape sequences:
+
+|Escape sequence|Description|
+|-|-|
+|```\a```| beeping sound|
+|```\n```|newline|
+|```\'```|single quote|
+|```\\```|backslash|
+|```\b```|backspace|
+|```\t```|tab|
+|```\"```|double quote|
+|```\?```|question mark|
+
+### Unsigned and float postfixes
 
 Unsigned variables must be appended with U or u. Long variables must be appended with l or L.
 
@@ -65,7 +111,7 @@ BigInt someNumber = 10L;
 // long int someNumber = 10L;
 ```
 
-### Enumerations
+### Enumerations and static casting
 
 Enumerations are collections of related constants. They indexed by integers by default but can be indexed with characters instead.
 
