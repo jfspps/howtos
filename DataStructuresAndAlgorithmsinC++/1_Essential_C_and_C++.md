@@ -140,7 +140,7 @@ Enumerations are collections of related constants. They indexed by integers by d
   WeekDay someWeekDay = Monday;
   WeekDayNum someWeekDayNum = MondayN;
 
-  // use a more modern form of type-casting
+  // << is known as a stream operator; use a more modern form of type-casting
   cout << "The current weekday set is: " << static_cast<char>(someWeekDay) << endl;
   cout << "The current weekday (num) set is: " << someWeekDayNum << endl;
 
@@ -400,3 +400,114 @@ int main()
 ```
 
 Arrays are discussed in more detail later, in regard to [general features](./10_Array_representations.md) and [operations](./11_Array_operations.md).
+
+## Bitwise operations
+
+Bitwise operations work on integers and chars only (up to 4 bytes or 32 bits in size), and tend to useful when setting the state of devices (usually hardware) as a collection of bits.
+
+In terminology, _bitwise_ operators operate on bits, whereas _logical_ operators (e.g. ```&& || !```) operate on high-level scalar types. _Unary_ operators require one operand, _binary_ operators require two operands.
+
+|C and C++ operator|Operation|Examples|
+|-|-|-|
+|```&```|binary, AND|1 & 1 = 1, 0 + 0 = 1, 0 + 1 = 0|
+|```\|```|binary, inclusive OR|1 \| 1 = 1, 0 \| 0 = 0, 0 \| 1 = 1|
+|```\|```|binary, exclusive OR|1 ^ 1 = 0, 0 ^ 0 = 0, 0 ^ 1 = 1|
+|```~```|unary, NOT|inverts bits, so ```~1``` becomes ```0```, or ```~0``` becomes ```1```|
+|```<<```|binary, left-shift|shifts all bits to the left by n-bits|
+|```>>```|binary, right-shift|shifts all bits to the right by n-bits|
+
+Developers can use more concise representation of the bitwise operators:
+
+```cpp
+letter = letter & 0x0F; // equivalent to letter &= 0xOF;
+number = number | otherNumber; // equivalent to number |= otherNumber;
+figure = figure ^ otherFigure; // equivalent to figure ^= otherFigure;
+```
+
+The next subsections explore more examples.
+
+### Bitwise AND
+
+This generates a new value following evaluation of all bits e.g. int ```5 & 3 = 1```:
+
+```text
+    0000 0101 (decimal 5)
+AND 0000 0011 (decimal 3)
+  = 0000 0001 (decimal 1)
+```
+
+The bitwise AND operation can be useful in _masking_ a specific group of bits, to yield a bit sequence which ignores the masked bits and preserves
+the other (unmasked) bits.
+
+The bits to be masked are ADDed to zero, which always produces 0. The unmasked bits are ADDed to one, which preserves their original state.
+
+```text
+    0110 0101
+AND 0000 1111
+  = 0000 0101
+```
+
+In the above example, the last five bits are masked with zeros (are eliminated), and the first four bits are preserved.
+
+### Bitwise inclusive OR
+
+This generates a new value following evaluation of all bits e.g. int ```5 | 3 = 7```:
+
+```text
+   0000 0101 (decimal 5)
+OR 0000 0011 (decimal 3)
+ = 0000 0111 (decimal 7)
+```
+
+This operation is useful when switching individual bits "on" (e.g. bit 6 below), ORing with ones, leaving all others in their present state.
+
+```text
+    0000 0101 
+OR  0010 0000 
+  = 0010 0101 
+```
+
+### Bitwise exclusive OR: XOR
+
+This generates a new value following evaluation of all bits e.g. int ```5 ^ 3 = 6```:
+
+```text
+    0000 0101 (decimal 5)
+XOR 0000 0011 (decimal 3)
+  = 0000 0110 (decimal 6)
+```
+
+The XOR operation can be used to swap bit sequences between two variables e.g. ```lvalue is 0100 0001``` and ```rvalue is 0101 1010``, if the following is carried out:
+
+```cpp
+lvalue = lvalue ^ rvalue; // or lvalue ^= rvalue; lvalue becomes 0001 1011
+rvalue = rvalue ^ lvalue; // or rvalue ^= lvalue; rvalue becomes 0100 0001
+lvalue = lvalue ^ rvalue  // lvalue becomes 0101 1010
+```
+
+The final result (following all three operations) is ```lvalue is 0101 1010``` and ```rvalue is 0001 1011``.
+
+### Bitwise left and right shift
+
+These operations shift each bit n-places to the left (or right). Bits that are ejected at the terminus are lost and new bits introduced are padded with zero.
+
+For example, bitwise shift left by two bits e.g.
+
+```cpp
+// decimal 23
+unsigned int someNumber = 23u;
+
+// decimal 92
+someNumber <<= 2;
+```
+
+```text
+   0001 0111 (decimal +23) left-shift by two bits
+=  0101 1100 (decimal +92)
+```
+
+In some contexts, it may be necessary to clarify when a stream operator is required versus a bitwise shift operator by including parentheses:
+
+```cpp
+std::cout (number << 2);
+```
