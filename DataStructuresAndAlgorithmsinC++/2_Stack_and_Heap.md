@@ -61,7 +61,9 @@ Grant access to stack and heap resources, by address. Functions called are store
   
   int t = *p; //dereferences p then assigns the value (not the address)
 
-  // change the value "a" through its pointer
+  // since pointer p now stores the address to a, any
+  // operation on pointer p also changes the value of a;
+  // the following changes the value "a" through its pointer
   *p = 20;
  }
  ```
@@ -70,7 +72,9 @@ Note that C++ pointers to the left of the assignment operator are declarations (
 
 ### Storing data on the heap with pointers in C and C++
 
-In C, data is stored in the heap using `malloc()`. In C++, use the keyword `new`. Below is a comparison. In C:
+In C, data is stored (dynamically) in the heap using `malloc()`. In C++, use the keyword `new`. Below is a comparison.
+
+In C:
 
 ```cpp
  #include<stdlib.c>
@@ -102,27 +106,19 @@ A pointer to an array can be expressed in the form:
  int someArray[arraySize];
 ```
 
-In this case, `ptr` is an array of pointers to integers. In comparison, the literal `someArray` represents an array of integers.
-
-The array name or literal is essentially a pointer to the first element. The expression `*ptr` deferences the pointer `ptr` i.e. refers to the _value_ of the first element of the array and is equivalent to `ptr[0]`. The expression `*(ptr + 1)` is equivalent to `ptr[1]`.
+The array name or literal is essentially a pointer to the first element. When written to the right of an assignment operator, the expression `*ptr` dereferences the pointer `ptr` i.e. refers to the _value_ of the first element of the array and so is equivalent to `ptr[0]`. Under the same circumstances, the expression `*(ptr + 1)` is equivalent to `ptr[1]` (the __indirection operator__ `*` takes precedence over `+`, so parentheses are used to override this precedence).
 
 If `ptr[1]` is written to the left of an assignment operator, then the element is assigned the value, whereas if `ptr[1]` is written to the right, then its value is returned. The same can be said for pointer notation:
 
 ```cpp
 // assign the second element a value 5
 ptr[1] = 5;
-
-// same result
 *(ptr + 1) = 5;
 
 // assign the value of the third element to the second element
 ptr[1] = ptr[2];
-
-// same result
 *(ptr + 1) = *(ptr + 2)
 ```
-
-A pointer on the right-hand side of the assignment means dereference the pointer, whereas when on the left means update the address to point to the new value.
 
 In general, `*(ptr + n)` is equivalent to `ptr[n]` and are examples of 'pointer arithmetic'.
 
