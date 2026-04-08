@@ -74,6 +74,7 @@ In C, data is stored in the heap using `malloc()`. In C++, use the keyword `new`
 
 ```cpp
  #include<stdlib.c>
+
  int main(){
   int *p;
   malloc(5*sizeof(int)); //allocates space in the heap
@@ -84,7 +85,9 @@ In C, data is stored in the heap using `malloc()`. In C++, use the keyword `new`
 In C++:
 
 ```cpp
- p = new int[5];
+// pointer p resides on the stack, and points to an array (of int)
+// that resides in the heap
+int *p = new int[5];
 ```
 
 ### Pointers, Arrays and Pointer Arithmetic
@@ -92,16 +95,36 @@ In C++:
 A pointer to an array can be expressed in the form:
 
 ```cpp
- // array of pointers to integers
+ // array of pointers to integers (read the expression from right to left)
  int *ptr[arraySize];
 
- // used for comparison:
+ // used for comparison, an array of integers
  int someArray[arraySize];
 ```
 
 In this case, `ptr` is an array of pointers to integers. In comparison, the literal `someArray` represents an array of integers.
 
-The array name or literal is essentially a pointer to the first element. The expression `*ptr` refers to the _value_ of the first element of the array and is equivalent to `ptr[0]`. The expression `*(ptr + 1)` is equivalent to `ptr[1]` and all are examples of 'pointer arithmetic'.
+The array name or literal is essentially a pointer to the first element. The expression `*ptr` deferences the pointer `ptr` i.e. refers to the _value_ of the first element of the array and is equivalent to `ptr[0]`. The expression `*(ptr + 1)` is equivalent to `ptr[1]`.
+
+If `ptr[1]` is written to the left of an assignment operator, then the element is assigned the value, whereas if `ptr[1]` is written to the right, then its value is returned. The same can be said for pointer notation:
+
+```cpp
+// assign the second element a value 5
+ptr[1] = 5;
+
+// same result
+*(ptr + 1) = 5;
+
+// assign the value of the third element to the second element
+ptr[1] = ptr[2];
+
+// same result
+*(ptr + 1) = *(ptr + 2)
+```
+
+A pointer on the right-hand side of the assignment means dereference the pointer, whereas when on the left means update the address to point to the new value.
+
+In general, `*(ptr + n)` is equivalent to `ptr[n]` and are examples of 'pointer arithmetic'.
 
 This next example shows some examples about pointer arithmetic and how to free arrays in heap.
 
@@ -116,14 +139,13 @@ This next example shows some examples about pointer arithmetic and how to free a
 
   int arraySize = 5;
 
-  // assign the int pointer to a new array of int, which resides in the heap;
+  // assign the int pointer (which resides on the stack) 
+  // to a new array of int (which resides in the heap);
   // note that both int declarations must match
   int *arrayOne = new int[arraySize];
-  int*tempArray;
+  int *tempArray;
 
-  // use this to mark the actual number of elements present
   int added = 0;
-
   int heapIndex = 0;
   int answer = 0;
 
@@ -134,18 +156,13 @@ This next example shows some examples about pointer arithmetic and how to free a
    // using the int equivalent of the input would also work here
    cin >> answer;
 
-   if (answer == 0 || answer == 0){
+   if (answer == 0){
     cout << "Terminating input...";
     break;
    }
 
    added++;
    arrayOne[heapIndex++] = answer;
-   // the array name is the same as a pointer pointing to the first element,
-   // i.e. int someInt = *arrayOne is the same as int someInt = arrayOne[0]
-   // then int someInt =*(arrayOne + 2) is the same as int someInt = arrayOne[2]
-   // and hence *(arrayOne + 2) =*(arrayOne + 3) assigns the third element
-   // value to the second
 
    // if the last element was assigned,
    if (heapIndex == arraySize){
@@ -154,16 +171,24 @@ This next example shows some examples about pointer arithmetic and how to free a
     arraySize += 5;
     cout << "New array size: " << arraySize << endl;
 
+    // tempArray points to a new larger array (of int)
     tempArray = new int[arraySize];
+
     for (int j = 0; j < added; j++){
-     tempArray[j] = arrayOne[j];
+      // get everything from the smaller array to the newer, larger array 
+      tempArray[j] = arrayOne[j];
     }
 
-    // remove the current arrayOne elements from the heap
+    // clear the heap of the smaller array's elements; note that arrayOne 
+    // is itself a pointer (to an int) that resides on the stack: this 
+    // operation does not remove arrayOne
     delete[] arrayOne;
 
-    // pointers (unlike references) are mutable so reassign arrayOne
+    // pointers (unlike C++ references) are mutable so reassign arrayOne
     arrayOne = tempArray;
+
+    // arrayOne refers to a larger array, so reset the address stored
+    // by tempArray
     tempArray = 0;
    }
   }
@@ -180,6 +205,7 @@ This next example shows some examples about pointer arithmetic and how to free a
    cout << arrayOne[i] << " ";
    sum += arrayOne[i];
 
+   // process the sum and average of each group of five
    if ((i + 1) % 5 == 0){
     cout << "sum: " << sum << " and average: " <<  
        static_cast<double>(sum/5) << endl;
@@ -188,7 +214,7 @@ This next example shows some examples about pointer arithmetic and how to free a
    }
   }
 
-  // handle the trailing elements
+  // handle the remaining elements (not part of a complete group of five)
   if (!groupDoneYet)
    cout << "sum: " << sum << " and average: " <<
        static_cast<double>(sum/(i%5)) << endl;
