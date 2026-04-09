@@ -68,8 +68,6 @@ Grant access to stack and heap resources, by address. Functions called are store
  }
  ```
 
-Note that C++ pointers to the left of the assignment operator are declarations (and initialisations) of pointers. Pointers to the right of the assignment operator are dereferencing right-hand variables.
-
 ### Storing data on the heap with pointers in C and C++
 
 In C, data is stored (dynamically) in the heap using `malloc()`. In C++, use the keyword `new`. Below is a comparison.
@@ -106,11 +104,25 @@ A pointer to an array can be expressed in the form:
  int someArray[arraySize];
 ```
 
-The array name or literal is essentially a pointer to the first element. When written to the right of an assignment operator, the expression `*ptr` dereferences the pointer `ptr` i.e. refers to the _value_ of the first element of the array and so is equivalent to `ptr[0]`. Under the same circumstances, the expression `*(ptr + 1)` is equivalent to `ptr[1]` (the __indirection operator__ `*` takes precedence over `+`, so parentheses are used to override this precedence).
+The array name or literal is essentially a pointer to the first element. When written to the right of an assignment operator, the expression `*ptr` dereferences
+the pointer `ptr` i.e. refers to the _value_ of the _first_ element of the array and so is equivalent to `ptr[0]`. Under the same circumstances,
+the expression `*(ptr + 1)` refers the value of the _second_ element, and is equivalent to `ptr[1]` (the __indirection operator__ `*` takes precedence over `+`, so parentheses are used to override this precedence).
 
 If `ptr[1]` is written to the left of an assignment operator, then the element is assigned the value, whereas if `ptr[1]` is written to the right, then its value is returned. The same can be said for pointer notation:
 
 ```cpp
+// these are equivalent
+ptr[0] = 8;
+*ptr = 8;
+
+// note both of the following, without the indirection operator, will nullify the pointer
+// (all variables have non-zero addresses, so zero is undefined i.e. null)
+ptr = 0;
+ptr = NULL;
+
+// this would be invalid
+ptr = 8;
+
 // assign the second element a value 5
 ptr[1] = 5;
 *(ptr + 1) = 5;
@@ -220,7 +232,7 @@ This next example shows some examples about pointer arithmetic and how to free a
   // release all heap memory
   delete[] arrayOne;
 
-  // remove the address
+  // remove the address (set arrayOne to NULL)
   arrayOne = 0;
 
   return 0;
