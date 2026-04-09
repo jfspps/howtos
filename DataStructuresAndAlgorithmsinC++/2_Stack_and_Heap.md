@@ -53,7 +53,8 @@ void main(){
 Grant access to stack and heap resources, by address. Functions called are stored in the stack, along with their local variables
 
 ```cpp
-//general form of decalring pointers is: type * identifier
+// general form of declaring pointers is: type * identifier
+
  main(){
   int a = 10;
   int *p; //NULL pointer, assign ASAP
@@ -68,7 +69,57 @@ Grant access to stack and heap resources, by address. Functions called are store
  }
  ```
 
-### Storing data on the heap with pointers in C and C++
+### Pointers, Arrays and Pointer Arithmetic
+
+A pointer to an array can be expressed in the form:
+
+```cpp
+ // array of pointers to integers (read the expression from right to left)
+ int *ptr[arraySize];
+
+ // used for comparison, an array of integers
+ int someArray[arraySize];
+```
+
+The array name or literal is essentially a pointer to the first element. When written to
+the right of an assignment operator, the expression `*ptr` dereferences
+the pointer `ptr` i.e. refers to the _value_ of the _first_ element of the array and so
+is equivalent to `ptr[0]`. Under the same circumstances,
+the expression `*(ptr + 1)` refers the value of the _second_ element, and is equivalent
+to `ptr[1]` (the __indirection operator__ `*` takes precedence over `+`, so parentheses
+are used to override this precedence).
+
+If `ptr[1]` is written to the left of an assignment operator, then the element is assigned
+the value, whereas if `ptr[1]` is written to the right, then its value is returned.
+The same can be said for pointer notation:
+
+```cpp
+int *ptr[6];
+
+// these are equivalent
+ptr[0] = 8;
+*ptr = 8;
+
+// this would be invalid
+ptr = 8;
+
+// note both of the following, without the indirection operator, will nullify the pointer
+// (all variables have non-zero addresses, so zero is undefined i.e. null)
+ptr = 0;
+ptr = NULL;
+
+// assign the second element a value 5
+ptr[1] = 5;
+*(ptr + 1) = 5;
+
+// assign the value of the third element to the second element
+ptr[1] = ptr[2];
+*(ptr + 1) = *(ptr + 2)
+```
+
+In general, `*(ptr + n)` is equivalent to `ptr[n]` and are examples of 'pointer arithmetic'. This is revisited later re. pointers to strings.
+
+### Storing data on the heap in C++ with `new` and `delete`
 
 In C, data is stored (dynamically) in the heap using `malloc()`. In C++, use the keyword `new`. Below is a comparison.
 
@@ -91,48 +142,6 @@ In C++:
 // that resides in the heap
 int *p = new int[5];
 ```
-
-### Pointers, Arrays and Pointer Arithmetic
-
-A pointer to an array can be expressed in the form:
-
-```cpp
- // array of pointers to integers (read the expression from right to left)
- int *ptr[arraySize];
-
- // used for comparison, an array of integers
- int someArray[arraySize];
-```
-
-The array name or literal is essentially a pointer to the first element. When written to the right of an assignment operator, the expression `*ptr` dereferences
-the pointer `ptr` i.e. refers to the _value_ of the _first_ element of the array and so is equivalent to `ptr[0]`. Under the same circumstances,
-the expression `*(ptr + 1)` refers the value of the _second_ element, and is equivalent to `ptr[1]` (the __indirection operator__ `*` takes precedence over `+`, so parentheses are used to override this precedence).
-
-If `ptr[1]` is written to the left of an assignment operator, then the element is assigned the value, whereas if `ptr[1]` is written to the right, then its value is returned. The same can be said for pointer notation:
-
-```cpp
-// these are equivalent
-ptr[0] = 8;
-*ptr = 8;
-
-// note both of the following, without the indirection operator, will nullify the pointer
-// (all variables have non-zero addresses, so zero is undefined i.e. null)
-ptr = 0;
-ptr = NULL;
-
-// this would be invalid
-ptr = 8;
-
-// assign the second element a value 5
-ptr[1] = 5;
-*(ptr + 1) = 5;
-
-// assign the value of the third element to the second element
-ptr[1] = ptr[2];
-*(ptr + 1) = *(ptr + 2)
-```
-
-In general, `*(ptr + n)` is equivalent to `ptr[n]` and are examples of 'pointer arithmetic'.
 
 This next example shows some examples about pointer arithmetic and how to free arrays in heap.
 
@@ -241,25 +250,46 @@ This next example shows some examples about pointer arithmetic and how to free a
 
 ### Pointers to char
 
-Pointers to a `char` are somewhat unique compared to other types (e.g. int or long). One can initialise the value the pointer points to directly with a string literal:
+Despite the syntax, there are no pointers to a single `char` but there are pointers to an array of characters, i.e strings.
+One can initialise the value the pointer points to directly with a string literal:
 
 ```cpp
-char* someString = "Welcome to the world of C++ pointers";
+// a bit misleading, someString is actually pointing to an array of characters
+char *someString = "Welcome to the world of C++ pointers";
 
 // compare this to pointers to other types
 double someDouble = 2.2;
-double* ptrDouble = &someDouble;
+double *ptrDouble = &someDouble;
 
 *ptrDouble = 5.5;
 ```
 
-The string is a sequence of characters with a terminating `null` character `/0`. The string itself is immutable, though the pointer is mutable. To effectively change the string
-one would re-assign the pointer to a new string literal.
+A string is a sequence of characters with a terminating `null` character `/0`. The string itself is
+immutable, though the pointer is mutable. To effectively change the string
+one would re-assign the pointer to a new string literal. (Variables of type `char` do not have an additional terminating
+null character.)
 
-There are no pointers to a single `char`, only pointers to an array of characters. This means that an array of pointers to a `char` are in fact an array of pointers to strings.
+To get the first character of a pointer to an array of characters, one would use the indirection operator twice:
 
 ```cpp
-char* someArrayOfStrings[2];
+// the string literal resides on the heap
+char *someString = "Welcome to the world of C++ pointers";
+char someStringAgain[] = "Welcome to the world of C++ pointers again";
+
+char firstChar = *(*someString);
+char firstCharAgain = someStringAgain[0];
+
+char secondChar = *(*someString + 1);
+char secondCharAgain = someStringAgain[1];
+```
+
+### Arrays of pointers to char
+
+Since there are only pointers to an array of characters, i.e. pointers to strings, it is also true that
+an array of pointers to a `char` is in fact an array of pointers to strings.
+
+```cpp
+char *someArrayOfStrings[2];
 
 // assign the first element
 *someArrayOfStrings = "First element";
@@ -284,7 +314,9 @@ Generally, `anArray[i][j]` is equivalent to `*(*(anArray + i) + j))`. One could 
 
 ## References (C++)
 
-References are aliases to variables, and not part of C. They do not create copies of variables they reference to in any function call (other than `main()`). Unlike pointers, __references are immutable__ and so must be assigned as an alias to one variable for the program's entire lifecycle.
+References are aliases to variables, and not part of C. They do not create copies of variables they reference
+to in any function call (other than `main()`). Unlike pointers, __references are immutable__ and so must be
+assigned as an alias to one variable for the program's entire lifecycle.
 
 Functions which handle the references do not reside in separate stack frames and instead are part of the `main()` stack frame.
 
@@ -296,9 +328,11 @@ Functions which handle the references do not reside in separate stack frames and
  }
 ```
 
-References do not need dereferencing and their identifier (i.e. `r`) automatically provides the value it points to. The address the reference points to is given by `&r`.
+References do not need dereferencing and their identifier (i.e. `r`) automatically provides the value it points to.
+The address the reference points to is given by `&r`.
 
-The address of `a` and `r` are the same, so any operations on `a` and `r`are the same. So `r++` is equivalent to `a++`. The tokens `&r` to the left of the assignment operator assign a reference `r` to some variable.
+The address of `a` and `r` are the same, so any operations on `a` and `r`are the same. So `r++` is equivalent to `a++`.
+The tokens `&r` to the left of the assignment operator assign a reference `r` to some variable.
 
 Tokens `&r` to the right of the assignment operator return the address the reference points to. For example:
 
@@ -330,11 +364,14 @@ Alternatively, one can use the indirect member operator (->) instead of (*p). Th
 
 ## Functions and parameter passing
 
-Passing by value assigns a variable, local to the function, with the parameter. The variable passed as the parameter resides in a different part of memory. Only a copy of the variable is handled by the function: hence the original variable cannot be changed. To change a parameter passed as a variable, send its address in the form of a reference or a pointer.
+Passing by value assigns a variable, local to the function, with the parameter. The variable passed as the parameter resides in a
+different part of memory. Only a copy of the variable is handled by the function: hence the original variable cannot be changed.
+To change a parameter passed as a variable, send its address in the form of a reference or a pointer.
 
 ### Passing pointers and function overloading
 
-From the given block (quite often `main()`), the address of parameter(s) can be sent to a function so as to allow the parameter values to change. The following function call passes the address of the variables `a` and `b`.
+From the given block (quite often `main()`), the address of parameter(s) can be sent to a function so as to allow the parameter
+values to change. The following function call passes the address of the variables `a` and `b`.
 
 ```cpp
  swap(&a, &b);
@@ -346,7 +383,8 @@ It is also possible to send pointers directly instead of addresses of variables.
  swap(pointerA, pointerB);
 ```
 
-The corresponding function prototype (or _declaration_, that is, the function signature: function return and parameter types, and, the function name), one then needs to have formal parameters as pointers, for example:
+The corresponding function prototype (or _declaration_, that is, the function signature: function return and parameter types,
+and, the function name), one then needs to have formal parameters as pointers, for example:
 
 ```cpp
  void swap(int *x, int *y);
@@ -356,9 +394,11 @@ The corresponding function prototype (or _declaration_, that is, the function si
  void swap(double *x, double *y);
 ```
 
-The above definition expects pointers, which are then referred to as `x` and `y` in the `swap()`. The function body would then need to dereference `x` and `y` (using `*x` and `*y`) in order to access the values of `a` and `b`.
+The above definition expects pointers, which are then referred to as `x` and `y` in the `swap()`. The function body would
+then need to dereference `x` and `y` (using `*x` and `*y`) in order to access the values of `a` and `b`.
 
-Function overloading permits a more readable code base, particularly when the only difference between all functions is the parameter list. If function overloading becomes excessive then consider using _function templates_ instead.
+Function overloading permits a more readable code base, particularly when the only difference between all functions is the
+parameter list. If function overloading becomes excessive then consider using _function templates_ instead.
 
 ### The main() method
 
@@ -370,7 +410,9 @@ The `main()` method can have arguments defined which end up representing command
  }
 ```
 
-The first argument `argc` represents the number of arguments and the second argument `argv` is an array of pointers to strings (recall above ideas). Each character pointer points to the first character of the string. The first element of `argv` is always the program name and so `argc` is always at least 1.
+The first argument `argc` represents the number of arguments and the second argument `argv` is an array of pointers to strings
+(recall above ideas). Each character pointer points to the first character of the string. The first element of `argv` is
+always the program name and so `argc` is always at least 1.
 
 ### Passing by reference (C++ only)
 
@@ -380,7 +422,9 @@ Instead of passing by value or pointer, one can use references to the values and
  swap(int &x, int &y);
 ```
 
-The above call assigns x and y as references to the function-local parameters `a` and `b`. Thus, the function call `swap(a, b)` can change the values of the actual-parameters. This provides an alternative to the pointer approach above. The function prototype would take the form of:
+The above call assigns x and y as references to the function-local parameters `a` and `b`. Thus, the function call `swap(a, b)`
+can change the values of the actual-parameters. This provides an alternative to the pointer approach above.
+The function prototype would take the form of:
 
 ```cpp
  void swap(int &x, int &y);
@@ -388,7 +432,8 @@ The above call assigns x and y as references to the function-local parameters `a
 
 ### Passing arrays
 
-Recall that arrays can be thought of as pointers to the first element of an array. The type of the array and number of elements present indicates how much storage space is required.
+Recall that arrays can be thought of as pointers to the first element of an array. The type of the array and number of elements
+present indicates how much storage space is required.
 
 Passing arrays is equivalent to passing pointers.
 
@@ -410,7 +455,8 @@ The function prototype would be something like:
 
 ### Passing read-only addresses
 
-It is possible to force the compiler to prevent the function from editing the address of variable by using the `const` keyword in the function prototype:
+It is possible to force the compiler to prevent the function from editing the address of variable by using the `const` keyword
+in the function prototype:
 
 ```cpp
  void swap(const int &x, int &y);
@@ -420,7 +466,8 @@ In this case, the reference corresponding to x cannot be changed, however, that 
 
 ### Passing structures
 
-One can pass structures as values, references and pointers. Here is an example of a function definition involving references and pointers to structures. Both approaches allow one to change the actual-parameter passed.
+One can pass structures as values, references and pointers. Here is an example of a function definition involving references
+and pointers to structures. Both approaches allow one to change the actual-parameter passed.
 
 ```cpp
  int area(struct Rectangle &z){
@@ -437,11 +484,14 @@ One can pass structures as values, references and pointers. Here is an example o
 
 ## Static variables
 
-The keyword `static` declares variables (as well as objects and functions) which are initialised once (all subsequent initialisations are ignored) and retain their value for the duration of the function call, including `main()`.
+The keyword `static` declares variables (as well as objects and functions) which are initialised once (all subsequent initialisations
+are ignored) and retain their value for the duration of the function call, including `main()`.
 
 ## Returning pointers and references
 
-In all cases, do not return the address (by pointer or reference) of local variables to the function. This is because the local variable is freed once the function termiantes and so the pointer or reference will be pointing to an undefined region of memory. Instead, build a new pointer to the local variable in the heap with `new` and return the pointer.
+In all cases, do not return the address (by pointer or reference) of local variables to the function. This is because the local
+variable is freed once the function termiantes and so the pointer or reference will be pointing to an undefined region of memory.
+Instead, build a new pointer to the local variable in the heap with `new` and return the pointer.
 
 The first snippet will not work but the second will:
 
@@ -466,7 +516,8 @@ Returning references is also similarly fraught with errors. Additionally, avoid 
  }
 ```
 
-Here the function is defined such that it returns a reference to the third element of `someArray`.  Note that using `&someArray[2]` would return the address (pointer) of the result, which is not an alias to the result.
+Here the function is defined such that it returns a reference to the third element of `someArray`.  Note that using `&someArray[2]`
+would return the address (pointer) of the result, which is not an alias to the result.
 
 Overall, `someArray[]` was initialised before `someFunc3` was called.
 
@@ -498,7 +549,8 @@ In relation to the syntax for returning pointers, it is also possible to build p
  double (*someOtherFunc)(double, char*) = specificFunc2;
 ```
 
-In the above case, the function name is `someFunc` and has two arguments, one of type double and the second of type pointer to char. The pointer `someFunc` can be assigned to any function with the same signature.
+In the above case, the function name is `someFunc` and has two arguments, one of type double and the second of type pointer
+to char. The pointer `someFunc` can be assigned to any function with the same signature.
 
 The pointer can then be used in place of the function.
 
@@ -513,7 +565,8 @@ someFunc(someDouble, charPointer);
 
 ## Functions as arguments of other functions
 
-With the pointer to a function, one can define a function argument list where at least one argument is a pointer to a function. This provides a way for the calling function to invoke other functions via the pointer.
+With the pointer to a function, one can define a function argument list where at least one argument is a pointer to a
+function. This provides a way for the calling function to invoke other functions via the pointer.
 
 ```cpp
 // these would normally be defined after main()
@@ -545,7 +598,8 @@ Note that someFunc is assigned to randomFunc without params so that it is called
 double newDouble =  callingFunc(array, randomFunc(3));
 ```
 
-The above executes randomFunc(3) before callingFunc() and so callingFunc does not call randomFunc within the body. Assign someFunc to randomFunc by passing randomFunc as a parameter and let callingFunc use the pointer.
+The above executes randomFunc(3) before callingFunc() and so callingFunc does not call randomFunc within the body.
+Assign someFunc to randomFunc by passing randomFunc as a parameter and let callingFunc use the pointer.
 
 ## Array of pointers to functions
 
@@ -564,7 +618,8 @@ char someChar = pointerArrayFunc[1];
 
 ## Default arguments
 
-Default arguments amount to constant arguments which are assumed if the function call does not pass a required parameter. The default argument must be included in the function prototype.
+Default arguments amount to constant arguments which are assumed if the function call does not pass a required parameter.
+The default argument must be included in the function prototype.
 
 ```cpp
 #include <iostream>
