@@ -532,7 +532,7 @@ are ignored) and retain their value for the duration of the function call, inclu
 ## Returning pointers and references
 
 In all cases, do not return the address (by pointer or reference) of local variables to the function. This is because the local
-variable is freed once the function termiantes and so the pointer or reference will be pointing to an undefined region of memory.
+variable is freed once the function terminates and so the pointer or reference will be pointing to an undefined region of memory.
 Instead, build a new pointer to the local variable in the heap with `new` and return the pointer.
 
 The first snippet will not work but the second will:
@@ -540,10 +540,12 @@ The first snippet will not work but the second will:
 ```cpp
  double* someFunc(double data){
   double someData = 3*data;
+  // not good: someData will be on the stack and go out of scope
   return &someData;
  }
 
  double* someFunc2(double data){
+  // okay: the heap has a new double, which is remains in scope on exit
   double* something = new double(3*data);
   return something;
  }
@@ -579,69 +581,93 @@ In relation to the syntax for returning pointers, it is also possible to build p
  double specificFunc2(double NumA, char* charPointerB);
 
 // declares a pointer to a function, returning a double
- double (*someFunc)(double, char*);
+ double (*pSomeFunc)(double, char*);
 
  // assign the pointer to a function with same signature
- someFunc = specificFunc;
+ pSomeFunc = specificFunc;
 
- // pointers are mutable so one can re-assign
- someFunc = specificFunc2;
+ // pointers are mutable so one can re-assign (sometimes useful to 
+ // call different functions with the same pointer in a block; see next section)
+ pSomeFunc = specificFunc2;
 
  // or declare and assign in one go...
- double (*someOtherFunc)(double, char*) = specificFunc2;
+ double (*pSomeOtherFunc)(double, char*) = specificFunc2;
 ```
 
 In the above case, the function name is `someFunc` and has two arguments, one of type double and the second of type pointer
-to char. The pointer `someFunc` can be assigned to any function with the same signature.
+to char. The pointer `pSomeFunc` can be assigned to any function with the same signature.
 
 The pointer can then be used in place of the function.
 
 ```cpp
+// continuing from the above...
+
 double someDouble = 3.3;
 
 char someChar = 'E';
 char* charPointer = &someChar;
 
-someFunc(someDouble, charPointer);
+pSomeFunc(someDouble, charPointer);
 ```
 
 ## Functions as arguments of other functions
 
 With the pointer to a function, one can define a function argument list where at least one argument is a pointer to a
-function. This provides a way for the calling function to invoke other functions via the pointer.
+function. This provides a way for the calling function to invoke _other_ functions via the pointer.
 
 ```cpp
+#include <iostream>
+
 // these would normally be defined after main()
-double callingFunc(double anArray[], double (*someFunc)(int));
-double randomFunc(int value);
+double callingFunc(double anArray[], double (*pSomeFunc)(int));
+double callingFunc2(double anArray[], double (*pSomeFunc)(int));
+double intToDouble(int value);
 
 int main(){
   double array[] = {1.1, 2.2};
 
-  // call randomFunc with callingFunc
-  double newDouble =  callingFunc(array, randomFunc);
+  // intToDouble is executed first in the context of callingFunc then 
+  // callingFunc2, before both respective functions are called
+  double newDouble =  callingFunc(array, intToDouble);
+  double newDouble2 =  callingFunc2(array, intToDouble);
+
+  // returns 5
+  std::cout << "newDouble returned: " << newDouble << " " << std::endl;
+
+  // returns 10
+  std::cout << "newDouble returned: " << newDouble2 << " " << std::endl;
 }
 
-double randomFunc(int value){
+double intToDouble(int value){
+  std::cout << "intToDouble: " << static_cast<double>(value) << std::endl;
   return static_cast<double>(value);
 }
 
-double callingFunc(double anArray[], double (*someFunc)(int){
-  if (anArray[5] == 0){
-    return someFunc(5);
+double callingFunc(double anArray[], double (*pSomeFunc)(int)){
+  if (anArray[1] == 2.2){
+    return pSomeFunc(5);
+  }
+  return 0.5;
+}
+
+double callingFunc2(double anArray[], double (*pSomeFunc)(int)){
+  if (anArray[0] == 1.1){
+    return pSomeFunc(10);
   }
   return 0.5;
 }
 ```
 
-Note that someFunc is assigned to randomFunc without params so that it is called within the calling function, i.e. not
+Note that `pSomeFunc` is assigned to `intToDouble` without params so that it is called within the calling function, i.e. not
 
 ```cpp
-double newDouble =  callingFunc(array, randomFunc(3));
+double newDouble =  callingFunc(array, intToDouble(5));
 ```
 
-The above executes randomFunc(3) before callingFunc() and so callingFunc does not call randomFunc within the body.
-Assign someFunc to randomFunc by passing randomFunc as a parameter and let callingFunc use the pointer.
+Technically, ```intToDouble(5)``` is executed before ```callingFunc()```, i.e. ```callingFunc``` does not call ```intToDouble``` within the body.
+One assigns ```pSomeFunc``` to ```intToDouble``` by passing ```intToDouble``` as a parameter and let ```callingFunc``` use the pointer.
+
+![Function pointers](../ProgrammingC%2B%2B/MSVC2005/function_pointers.PNG)
 
 ## Array of pointers to functions
 
@@ -652,10 +678,10 @@ One can also declare an array of pointers to functions and call a specific eleme
 char charFunc(char);
 char charFuncAgain(char);
 
-char (*pointerArrayFunc[2])(char) = { charFunc, charFuncAgain};
+char (*pArrayFunc[2])(char) = {charFunc, charFuncAgain};
 
 // call the second function element
-char someChar = pointerArrayFunc[1];
+char someChar = pArrayFunc[1];
 ```
 
 ## Default arguments
