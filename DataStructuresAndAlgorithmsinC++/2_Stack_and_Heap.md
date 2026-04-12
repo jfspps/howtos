@@ -667,7 +667,7 @@ double newDouble =  callingFunc(array, intToDouble(5));
 Technically, ```intToDouble(5)``` is executed before ```callingFunc()```, i.e. ```callingFunc``` does not call ```intToDouble``` within the body.
 One assigns ```pSomeFunc``` to ```intToDouble``` by passing ```intToDouble``` as a parameter and let ```callingFunc``` use the pointer.
 
-![](../ProgrammingC%2B%2B/MSVC2005/function_pointers.PNG)
+![](../ProgrammingC++/MSVC2005/function_pointers.PNG)
 
 ## Array of pointers to functions
 
