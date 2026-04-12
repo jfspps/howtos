@@ -8,7 +8,8 @@ parent: ADTs and Algorithms in C++
 
 ## Storage classes: storage duration and scope
 
-All variables are characterised by _storage classes_, which describes a variables lifetime (through storage duration, below), linkage (visibility in or out of the file) and memory location (CPU register, or memory stack or heap).
+All variables are characterised by _storage classes_, which describes a variables lifetime (through
+storage duration, below), linkage (visibility in or out of the file) and memory location (CPU register, or memory stack or heap).
 
 All variables have a _storage duration_:
 
@@ -16,60 +17,54 @@ All variables have a _storage duration_:
 + Static storage duration
 + Dynamic storage duration
 
-Which part of the application over which a variable name is valid is known as _scope_. Any reference to the variable that is legal is phrased as __in scope__, at which point the variable can be used in an expression.
+Which part of the application over which a variable name is valid is known as _scope_. Any reference
+to the variable that is legal is phrased as __in scope__, at which point the variable can be used in an expression.
 
-Memory addresses are zero-based. Memory is partitioned into code, __stack__ (stack frame or activation record) and __heap__ (free store) sections.
+Memory addresses are zero-based. Memory is partitioned into code, __stack__ (stack frame or activation record)
+and __heap__ (free store) sections.
 
-Variables declared in a block (of curly braces) are __automatic variables__ (have automatic storage duration), and are in scope when they are declared up to the end of the closing brace. Such variables are stored on the stack. Systems are given a default stack size, typically of the
-order of megabytes. Variables out of scope are automatically removed from the stack, so any reference to them will cause a runtime error. An automatic variable can be declared with the keyword _auto_ but this is not necessary as it is implied.
+Variables declared in a block (of curly braces) are __automatic variables__ (have automatic storage duration)
+and are in scope when they are declared up to the end of the closing brace. Such variables are stored on the
+stack. Systems are given a default stack size, typically of the order of megabytes. Variables out of scope are
+automatically removed from the stack, so any reference to them will cause a runtime error.
+An automatic variable can be declared with the keyword _auto_ but this is not necessary as it is implied.
 
-Other function calls that declare variables are allocated a portion of the stack on a LIFO basis. The term stack relates to how functions stack on top of each other as they are called. When a function returns, its stack frame is cleared automatically.
+Other function calls that declare variables are allocated a portion of the stack on a LIFO basis.
+The term stack relates to how functions stack on top of each other as they are called. When a function returns,
+its stack frame is cleared automatically.
 
-Variables declared in ```main()``` have global scope (or file scope) and are classed as __static variables__ (have static storage duration). Such variables are also placed on the stack. It is also possible to declare __any__ variable as static with the keyword _static_, which means
-the variable will be in scope for the entire duration of the application. Static variables will always be initialised a value (the type's equivalent of ```0```) if none are provided.
+Variables declared in ```main()``` have global scope (or file scope) and are classed
+as __static variables__ (have static storage duration). Such variables are also placed on the stack.
+It is also possible to declare __any__ variable as static with the keyword _static_, which means
+the variable will be in scope for the entire duration of the application. Static variables will
+always be initialised a value (the type's equivalent of ```0```) if none are provided.
 
-Variables that may or may not have definite size (e.g. arrays) are handled as __dynamic variables__ and are handled with dynamic storage duration. For many applications, having control over memory usage is preferred. Dynamic variables are located on the heap and referred to by pointers, which themselves reside on the stack.
-The heap is a randomly arranged portion of memory where data resides in randomly allocated heaps. Data which utilises the heap must be allocated and de-allocated (to prevent memory leaks).
+Variables that may or may not have definite size (e.g. arrays) are handled as __dynamic variables__ and
+are handled with dynamic storage duration. For many applications, having control over memory usage is preferred.
+Dynamic variables are located on the heap and referred to by pointers, which themselves reside on the stack.
+The heap is a randomly arranged portion of memory where data resides in randomly allocated heaps.
+Data which utilises the heap must be allocated and de-allocated (to prevent memory leaks).
 
-## Pointers
+## Pointers, Arrays and Pointer Arithmetic
 
-Programs do not access heap memory directly. They can access them with pointers indirectly.
+Pointers assigned to a variable (as such) can be used to update
+the variable. Some conventions prefix a pointer name with `p`.
 
 ```cpp
-void main(){
-  int *p;
-  p = new int[5];  // this allocated 5*size of int in the heap, somewhere
+long someLong = 20L;
+// general form of declaring pointers is: type *identifier
+long *pSomeLong = &someLong;
 
-  //the C based version of new assuming int's are 2 bytes long
-  //p = (int *)malloc(2 * 5);
-  
-  //do stuff to p...
+// assign a value by dereferencing
+long anotherLong = *pSomeLong;
 
-  delete[] p;      // clear the heap (do this before resetting the pointer!)
-  p = NULL;        // reset the pointer
- }
+// update the assigned value, to 30 then 31
+*pSomeLong = 30L;
+*pSomeLong++;
 ```
 
-Grant access to stack and heap resources, by address. Functions called are stored in the stack, along with their local variables
-
-```cpp
-// general form of declaring pointers is: type * identifier
-
- main(){
-  int a = 10;
-  int *p; //NULL pointer, assign ASAP
-  p = &a; //pointer p references int a (both in the stack)
-  
-  int t = *p; //dereferences p then assigns the value (not the address)
-
-  // since pointer p now stores the address to a, any
-  // operation on pointer p also changes the value of a;
-  // the following changes the value "a" through its pointer
-  *p = 20;
- }
- ```
-
-### Pointers, Arrays and Pointer Arithmetic
+Assuming the above are not declared in the main block (have automatic storage duration), then both the variable and pointer
+would reside on the stack.
 
 A pointer to an array can be expressed in the form:
 
@@ -77,7 +72,7 @@ A pointer to an array can be expressed in the form:
  // array of pointers to integers (read the expression from right to left)
  int *ptr[arraySize];
 
- // used for comparison, an array of integers
+ // for comparison, an array of integers
  int someArray[arraySize];
 ```
 
@@ -96,7 +91,7 @@ The same can be said for pointer notation:
 ```cpp
 int *ptr[6];
 
-// these are equivalent
+// array names can be used as pointers, so these are equivalent
 ptr[0] = 8;
 *ptr = 8;
 
@@ -115,27 +110,74 @@ ptr[1] = 5;
 // assign the value of the third element to the second element
 ptr[1] = ptr[2];
 *(ptr + 1) = *(ptr + 2)
+
+// this assign the address of the third element of ptr to a 
+// new pointer, otherPtr
+int *otherPtr;
+otherPtr = &ptr[2];
+
+// post-increment operator increments the address of otherPtr by 4 bytes (int)
+// i.e. the next int element
+otherPtr++;
+int fourthElement = *otherPtr;
 ```
 
 In general, `*(ptr + n)` is equivalent to `ptr[n]` and are examples of 'pointer arithmetic'. This is revisited later re. pointers to strings.
 
-### Storing data on the heap in C++ with `new` and `delete`
-
-In C, data is stored (dynamically) in the heap using `malloc()`. In C++, use the keyword `new`. Below is a comparison.
-
-In C:
+In the context of ```main()```:
 
 ```cpp
- #include<stdlib.c>
+int main(){
+  int a = 10;
+  int *p; // NULL pointer, assign ASAP
+  p = &a; // pointer p references int a (both in the stack)
+  
+  // dereferences p then assigns the value (not the address)
+  int t = *p; 
 
- int main(){
+  // since pointer p now stores the address to a, any
+  // operation on pointer p also changes the value of a;
+  // the following changes the value "a" through its pointer
+  *p = 20;
+}
+```
+
+## C and C++ pointers and the heap
+
+Pointers are required in order to manage variables on the heap (free store). In short:
+
+```cpp
+int main(){
+  int *p;
+  p = new int[5];  // this allocated 5*size of int in the heap, somewhere
+
+  // the C based version of new assuming int's are 2 bytes long
+  //p = (int *)malloc(2 * 5);
+  
+  // do stuff to p...
+
+  delete[] p;      // clear the heap (do this before resetting the pointer!)
+  p = NULL;        // reset the pointer
+}
+```
+
+Grant access to stack and heap resources, by address. Functions called are stored in the stack, along with their local variables
+
+### Storing data on the heap in C++ with `new` and `delete`
+
+In C, data is stored (dynamically) in the heap using `malloc()`.
+
+```cpp
+#include<stdlib.c>
+
+int main(){
   int *p;
   malloc(5*sizeof(int)); //allocates space in the heap
-  p = (int*)(malloc(5*sizeof(int));
- }
- ```
+  p = (int*)(malloc(5*sizeof(int)));
+}
+```
 
-In C++:
+In C++, use the keyword `new`.
 
 ```cpp
 // pointer p resides on the stack, and points to an array (of int)
