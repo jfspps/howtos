@@ -222,6 +222,7 @@ This next example shows some examples about pointer arithmetic and how to free a
 
    added++;
    arrayOne[heapIndex++] = answer;
+   // or similarly, use *(arrayOne + heapIndex++) = answer;
 
    // if the last element was assigned,
    if (heapIndex == arraySize){
@@ -575,9 +576,8 @@ In relation to the syntax for returning pointers, it is also possible to build p
   // do stuff
  }
 
- // a standard function delarations
+ // standard function delarations
  double specificFunc(double Num1, char* charPointer);
-
  double specificFunc2(double NumA, char* charPointerB);
 
 // declares a pointer to a function, returning a double
@@ -626,8 +626,9 @@ double intToDouble(int value);
 int main(){
   double array[] = {1.1, 2.2};
 
-  // intToDouble is executed first in the context of callingFunc then 
-  // callingFunc2, before both respective functions are called
+  // intToDouble is executed, in the context of both callingFunc and 
+  // callingFunc2, before the latter functions (almost like the application
+  // is establishing return values to both calls to intToDouble)
   double newDouble =  callingFunc(array, intToDouble);
   double newDouble2 =  callingFunc2(array, intToDouble);
 
@@ -664,7 +665,7 @@ Note that `pSomeFunc` is assigned to `intToDouble` without params so that it is 
 double newDouble =  callingFunc(array, intToDouble(5));
 ```
 
-Technically, ```intToDouble(5)``` is executed before ```callingFunc()```, i.e. ```callingFunc``` does not call ```intToDouble``` within the body.
+As mentioned, ```intToDouble(5)``` is executed before ```callingFunc()```, i.e. ```callingFunc``` does not call ```intToDouble``` within the body.
 One assigns ```pSomeFunc``` to ```intToDouble``` by passing ```intToDouble``` as a parameter and let ```callingFunc``` use the pointer.
 
 ![](../ProgrammingC++/MSVC2005/function_pointers.PNG)
