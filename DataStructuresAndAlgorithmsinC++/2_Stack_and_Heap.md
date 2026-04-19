@@ -583,7 +583,9 @@ In relation to the syntax for returning pointers, it is also possible to build p
 // declares a pointer to a function, returning a double
  double (*pSomeFunc)(double, char*);
 
- // assign the pointer to a function with same signature
+ // assign the pointer to a function with same signature;
+ // note the syntax does not refer to the address of the function (as one would
+ // for initialising pointers to variables)
  pSomeFunc = specificFunc;
 
  // pointers are mutable so one can re-assign (sometimes useful to 
