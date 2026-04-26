@@ -525,8 +525,68 @@ Functions with the same name but different parameter list are examples of functi
  void swap(double *x, double *y);
 ```
 
-Function overloading permits a more readable code base, particularly when the only difference between all functions is the
-parameter list. If function overloading becomes excessive then consider using _function templates_ instead.
+Function overloading permits a more readable code base, 
+particularly when the only difference between all functions is the
+parameter list. If function overloading becomes excessive 
+then consider using _function templates_ instead.
+
+### Function templates
+
+Function templates are somewhat similar syntactically to 
+Java generics. A general identifier ```T``` is used to represent
+a variable of unknown type and found throughout the template defintion.
+
+```cpp
+#include<iostream>
+
+// template function prototype (could also bring the template 
+// definition up here before it is called [by main()])
+template<typename T> void swap(T *pVarA, T *pVarB);
+
+int main(){
+	int intA = 12;
+	int intB = 15;
+
+	int *pIntA = &intA;
+	int *pIntB = &intB;
+
+	std::cout << "Integer A is " << intA << std::endl;
+	std::cout << "Integer B is " << intB << std::endl;
+
+	swap(pIntA, pIntB);
+
+	std::cout << "Integer A is now " << intA << std::endl;
+	std::cout << "Integer B is now " << intB << std::endl;
+	std::cout << std::endl;
+
+	double dblA = 12.2;
+	double dblB = 13.3;
+
+	std::cout << "Double A is " << dblA << std::endl;
+	std::cout << "Double B is " << dblB << std::endl;
+
+	swap(&dblA, &dblB);
+
+	std::cout << "Double A is now " << dblA << std::endl;
+	std::cout << "Double B is now " << dblB << std::endl;
+}
+
+// could also write template<class T> but some programmers prefer
+// not to confuse this notation with real C++ classes; typename is
+// more neutral
+template<typename T> void swap(T *pVarA, T *pVarB){
+	if (pVarA != NULL && pVarB != NULL){
+		T pTempVar = *pVarA;
+		
+		*pVarA = *pVarB;
+		*pVarB = pTempVar;
+		std::cout << "Variables swapped..." << std::endl;
+		return;
+	}
+
+	std::cout << "Looks like a null pointer was passed" << std::endl;
+}
+```
 
 ### The main() method
 
