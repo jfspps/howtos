@@ -414,20 +414,108 @@ To change a parameter passed as a variable, send its address in the form of a re
 ### Passing pointers and function overloading
 
 From the given block (quite often `main()`), the address of parameter(s) can be sent to a function so as to allow the parameter
-values to change. The following function call passes the address of the variables `a` and `b`.
+values to change. 
 
 ```cpp
- swap(&a, &b);
+#include<iostream>
+
+void swap(int *pIntA, int *pIntB){
+	if (pIntA != NULL && pIntB != NULL){
+		int pTempInt = *pIntA;
+		
+		*pIntA = *pIntB;
+		*pIntB = pTempInt;
+		std::cout << "Integers swapped..." << std::endl;
+		return;
+	}
+
+	std::cout << "Looks like a null pointer was passed" << std::endl;
+}
+
+int main(){
+	int intA = 12;
+	int intB = 15;
+
+	int *pIntA = &intA;
+	int *pIntB = &intB;
+
+	std::cout << "Integer A is " << intA << std::endl;
+	std::cout << "Integer B is " << intB << std::endl;
+
+	swap(pIntA, pIntB);
+
+	std::cout << "Integer A is now " << intA << std::endl;
+	std::cout << "Integer B is now " << intB << std::endl;
+
+	// swap them back again but without pointer variables
+	swap(&intA, &intB);
+
+	std::cout << "Integer A is back to " << intA << std::endl;
+	std::cout << "Integer B is back to " << intB << std::endl;
+}
 ```
 
-It is also possible to send pointers directly instead of addresses of variables.
+The above case compiles because the compiler is aware of ```swap()```. 
+The _function header_ (the expression ```void swap(int *pIntA, int *pIntB)```) 
+is accompanied with the _function body_ (the function definition enclosed in curly braces). 
+
+In most real-world programs, it is generally best to first declare 
+to the compiler which functions it can expect to build from. 
+This is achieved through _function prototyping_. In this case, 
+the function name and parameter list are listed near the top of the source file, before ```main()```.
 
 ```cpp
- swap(pointerA, pointerB);
+#include<iostream>
+
+// function prototype (since swap() is defined after it is 
+// called [by main()] it must be represented by a prototype before the call)
+void swap(int *pIntA, int *pIntB);
+
+int main(){
+	int intA = 12;
+	int intB = 15;
+
+	int *pIntA = &intA;
+	int *pIntB = &intB;
+
+	std::cout << "Integer A is " << intA << std::endl;
+	std::cout << "Integer B is " << intB << std::endl;
+
+	swap(pIntA, pIntB);
+
+	std::cout << "Integer A is now " << intA << std::endl;
+	std::cout << "Integer B is now " << intB << std::endl;
+
+	// swap them back again but without pointer variables
+	swap(&intA, &intB);
+
+	std::cout << "Integer A is back to " << intA << std::endl;
+	std::cout << "Integer B is back to " << intB << std::endl;
+}
+
+void swap(int *pIntA, int *pIntB){
+	if (pIntA != NULL && pIntB != NULL){
+		int pTempInt = *pIntA;
+		
+		*pIntA = *pIntB;
+		*pIntB = pTempInt;
+		std::cout << "Integers swapped..." << std::endl;
+		return;
+	}
+
+	std::cout << "Looks like a null pointer was passed" << std::endl;
+}
 ```
 
-The corresponding function prototype (or _declaration_, that is, the function signature: function return and parameter types,
-and, the function name), one then needs to have formal parameters as pointers, for example:
+The parameters declared in the function prototype and function 
+function header need not be identical. It is also possible to omit names in the 
+function prototype if preferred.
+
+```cpp
+void swap(int*, int*);
+```
+
+Functions with the same name but different parameter list are examples of function overloading.
 
 ```cpp
  void swap(int *x, int *y);
@@ -436,9 +524,6 @@ and, the function name), one then needs to have formal parameters as pointers, f
  // a separate function definition)
  void swap(double *x, double *y);
 ```
-
-The above definition expects pointers, which are then referred to as `x` and `y` in the `swap()`. The function body would
-then need to dereference `x` and `y` (using `*x` and `*y`) in order to access the values of `a` and `b`.
 
 Function overloading permits a more readable code base, particularly when the only difference between all functions is the
 parameter list. If function overloading becomes excessive then consider using _function templates_ instead.
