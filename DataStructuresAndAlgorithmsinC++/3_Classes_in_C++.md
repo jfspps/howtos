@@ -225,7 +225,7 @@ class DoStuff{
 };
 
 // compiler assumes this is not an inline method
-int DoStuff::RepeatCharacter(DoStuff object)
+int RepeatCharacter(DoStuff object)
 {
   // CharToInt is hypothetical here but is sent the value to a private member
   return CharToIntobject(value);
@@ -358,10 +358,13 @@ SomeClass::SomeClass(const SomeClass& initObj){
 
 ## Destructors
 
-Objects of a class are freed by the compiler by the use of a default destructor. If the object is referenced via a pointer then the object resides in the heap. The
-`delete` keyword is used to release data from the heap referenced by a pointer and, as explained below, also invokes the destructor should it be applied to an object.
+Objects of a class are freed by the compiler by the use of a default destructor. 
+If the object is referenced via a pointer then the object resides in the heap.
+The `delete` keyword is used to release data from the heap referenced by a 
+pointer and, as explained below, also invokes the destructor should it be applied to an object.
 
-Note, however, that the `delete` keyword does not remove the pointer variable from memory. This is handled once the function goes out of scope.
+Note, however, that the `delete` keyword does not remove the pointer variable from memory. 
+This is handled once the function goes out of scope.
 
 ```cpp
 class SomeClass
@@ -401,7 +404,8 @@ SomeClass::~SomeClass()
 }
 ```
 
-The `delete` keyword removes the data from the heap that a pointer points to. If the pointer is pointing to a (class) object then
+The `delete` keyword removes the data from the heap that a pointer points to. 
+If the pointer is pointing to a (class) object then
 `delete` also calls the defined destructor.
 
 ```cpp
@@ -501,6 +505,164 @@ SomeClass(const SomeClass& copyOf)
 Note that the copy constructor is not the same as the assignment operator. The assignment operator works on objects that have already be instantiated
 and only performs a direct mapping of the member values from one instance to the other. Note that the assignment operator is fine for situations where
 the members are saved to the stack. If, however, members are dynamically assigned on the heap then it is advisable to overload the assignment operator.
+
+## Combined class example - IntegerStack
+
+```cpp
+#include<iostream>
+
+class IntegerStack {
+private:
+	int *p;
+	int size;
+	int count;
+
+public:
+	IntegerStack(int initSize = 1);
+	IntegerStack(const IntegerStack &origStack);
+	int pop();
+	void push(int value);
+	~IntegerStack();
+	
+friend void printStack(IntegerStack object);
+};
+
+IntegerStack::IntegerStack(int initSize){
+	this->size = initSize;
+	this->count = 0;
+	this->p = new int[size];
+}
+
+IntegerStack::IntegerStack(const IntegerStack &origObj){
+	std::cout << "Copy constructor called" << std::endl;
+	this->size = origObj.size;
+	this->count = origObj.count;
+
+	// this allows us to allocate free store space for members
+	// independently, without borrowing the original objects references
+	// which may get updated later
+	this->p = new int[origObj.size];
+
+	for (int i = 0; i < this->count; i++){
+		*(this->p + i) = *(origObj.p + i);
+	}
+}
+
+IntegerStack::~IntegerStack(){
+	std::cout << "Destructor called" << std::endl;
+}
+
+void printStack(IntegerStack object){
+	if (object.count > 0){
+		std::cout << "Stack content: [ ";
+
+		for (int i = 0; i < object.count; i++){
+			std::cout << object.p[i] << " ";
+		}
+
+		std::cout << "]" << std::endl;
+	} else
+		std::cout << "Nothing in the stack" << std::endl;
+
+	// here the destructor is called to delete
+	// the copy created (object)
+}
+
+int IntegerStack::pop(){
+	// note that this is a pointer, so we use the indirection operator
+	// to refer to class members
+	if (this->count > 0){
+		int popped = *this->p;
+		for (int j = 1; j < this->size; j++){
+			if (*(this->p + j) != NULL){
+				*(this->p + j - 1) = *(this->p + j);
+			} else
+				break;
+		}
+
+		this->count--;
+		return popped;
+	}
+	
+	return NULL;
+}
+
+void IntegerStack::push(int addMe){
+	if (addMe != NULL){
+		int *pTemp;
+
+		if (this->count == this->size){
+			// build a larger array
+			pTemp = new int[this->size + 5];
+			*pTemp = addMe;
+			int tempCount = 1;
+
+			for (int k = 0; k < this->count; k++){
+				*(pTemp + k + 1) = *(this->p + k);
+				tempCount++;
+			}
+
+			// free up the old array elements
+			delete[] this->p;
+			std::cout << "Freed memory occupied by dynamic (larger) array" << std::endl;
+
+			this->p = pTemp;
+			this->size += 5;
+			pTemp = 0;
+			this->count = tempCount;
+			return;
+		}
+
+		pTemp = new int[this->size];
+		pTemp[0] = addMe;
+		int tempCount = 1;
+
+		for (int k = 0; k < this->count; k++){
+			pTemp[k + 1] = this->p[k];
+			tempCount++;
+		}
+
+		// free up the old array elements
+		delete[] this->p;
+		std::cout << "Freed memory occupied by dynamic array" << std::endl;
+
+		this->p = pTemp;
+		pTemp = 0;
+		this->count = tempCount;
+		return;
+	}
+
+	std::cout << "Cannot push NULL onto stack" << std::endl;
+}
+
+int main(){
+	// instance resides in the stack
+	IntegerStack instance(5);
+
+	// a copy of instance is instantiated with the custom copy constructor,
+	// recommended here when passing objects (with pointer members) by value,
+	// and then deleted with the destructor
+	printStack(instance);
+
+	instance.push(2);
+	instance.push(3);
+	instance.push(5);
+
+	std::cout << "Finished pushing values to stack..." << std::endl;
+
+	// another copy of instance is instantiated and deleted
+	printStack(instance);
+
+	std::cout << "Now deleting instance..." << std::endl;
+
+	// this is called twice at this point
+	instance.~IntegerStack();
+}
+```
+
+The above example produces the following output:
+
+![](./images/integer_stack.PNG)
 
 ## Operator overloading
 
