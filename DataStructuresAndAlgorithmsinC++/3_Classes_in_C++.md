@@ -31,13 +31,16 @@ class Rectangle{
    // default constructor (without arguments)
    Rectangle()
    {
-     // no-args constructor need not be empty, for example, the following is valid
+     // no-args constructor need not be empty, for example, 
+     // the following is valid
      std::cout << "Default constructor called" << std::endl;
    };
 
-   //other public methods, including setters and getters for private member access
+   // other public methods, including setters and getters for 
+   // private member access
 
-   // destructors are needed in C++ if objects reside in the heap (not required for the stack)
+   // destructors are needed in C++ if objects reside in 
+   // the heap (not required for the stack)
    ~Rectangle();
  };
 ```
@@ -63,7 +66,8 @@ data on the heap).
 ```cpp
 Rectangle aRectangle;
 
-// initialise public members directly (assumes length and lengthTwo are public) 
+// initialise public members directly (assumes length and 
+// lengthTwo are public) 
 aRectangle.length = 10;
 aRectangle.lengthTwo = 2;
 aRectangle.CalculateArea();
@@ -227,7 +231,8 @@ class DoStuff{
 // compiler assumes this is not an inline method
 int RepeatCharacter(DoStuff object)
 {
-  // CharToInt is hypothetical here but is sent the value to a private member
+  // CharToInt is hypothetical here but is sent the value 
+  // to a private member
   return CharToIntobject(value);
 }
 ```
@@ -331,7 +336,8 @@ SomeClass example;
 
 SomeClass& objectRef = example;
 
-// no need to dereference the object first; accessing the data member directly...
+// no need to dereference the object first; accessing the data 
+// member directly...
 std::cout << objectRef.someField << std::endl;
 ```
 
@@ -477,7 +483,8 @@ void main()
 {
   SomeClass class1;
 
-  // instantiate classCopy with the references to class1's member values; this invokes the copy constructor
+  // instantiate classCopy with the references to class1's member 
+  // values; this invokes the copy constructor
   SomeClass classCopy(class1);
 
   // classCopy has the reference to the same string defined in ptrMessage
@@ -497,11 +504,13 @@ The general solution to this is to:
 members
 
 ```cpp
-// define the copy constructor outside of the class and copy members when building a copy of the object
+// define the copy constructor outside of the class and copy members 
+// when building a copy of the object
 SomeClass(const SomeClass& copyOf)
 {
   // set the pointer to the member at an independent location of the heap;
-  // this not only has a different string literal but is also linked to the copy and not the original, copyOf
+  // this not only has a different string literal but is also linked 
+  // to the copy and not the original, copyOf
   ptrMessage = "Copy of SomeClass";
 }
 ```
@@ -609,7 +618,8 @@ void IntegerStack::push(int addMe){
 
 			// free up the old array elements
 			delete[] this->p;
-			std::cout << "Freed memory occupied by dynamic (larger) array" << std::endl;
+			std::cout << "Freed memory occupied by dynamic (larger) array" 
+        << std::endl;
 
 			this->p = pTemp;
 			this->size += 5;
@@ -629,7 +639,8 @@ void IntegerStack::push(int addMe){
 
 		// free up the old array elements
 		delete[] this->p;
-		std::cout << "Freed memory occupied by dynamic array" << std::endl;
+		std::cout << "Freed memory occupied by dynamic array" 
+      << std::endl;
 
 		this->p = pTemp;
 		pTemp = 0;
@@ -671,7 +682,8 @@ of scope.
 
 ## Operator overloading
 
-Operator overloading allows one to re-define many (not all) C++ operators so that they perform tasks tailored for a specific class.
+Operator overloading allows one to re-define many (not all) C++ 
+operators so that they perform tasks tailored for a specific class.
 
 ```cpp
 SomeClass anObject;
@@ -685,7 +697,8 @@ if (anObject == 4.4){
 return anObject > 3;
 ```
 
-Operator overloading can be an involving prospect. Some operands appear on the left, others on the right. There are also other types and classes to consider.
+Operator overloading can be an involving prospect. Some operands appear 
+on the left, others on the right. There are also other types and classes to consider.
 
 The following operators cannot be overloaded:
 
@@ -777,9 +790,11 @@ bool SomeClass::operator new (const SomeClass &anObject, const double &aDouble)
 }
 ```
 
-As alluded to in the previous section on assignment operators vs. copy constructors, whenever a class uses dynamically allocated members it
-is quite possible that the assignment operator will grant the recipient object the same reference (pointer) as the source object. Subsequently,
-when the recipient object goes out of scope, it invokes the destructor and releases the dynamically allocated members. Consequently, the source
+As alluded to in the previous section on assignment operators vs. copy constructors, 
+whenever a class uses dynamically allocated members it is quite possible that the 
+assignment operator will grant the recipient object the same reference (pointer) 
+as the source object. Subsequently, when the recipient object goes out of scope, 
+it invokes the destructor and releases the dynamically allocated members. Consequently, the source
 object will have members that are pointing to memory used by something else.
 
 ```cpp
@@ -799,27 +814,33 @@ class SomeClass
   // copy constructor
   SomeClass(const SomeClass& copyFromThis);
 
-  // a reference is returned to accommodate the different uses under which the assignment operator applies
+  // a reference is returned to accommodate the different uses under 
+  // which the assignment operator applies
   // e.g. object1 = object2, or object1 = object2 = object3;
-  // note that the return value is an lvalue not an rvalue, so the parameter refers to the rvalue, the source object
+  // note that the return value is an lvalue not an rvalue, so 
+  // the parameter refers to the rvalue, the source object
   SomeClass& operator = (const SomeClass &rhsOperand)
   {
-    // if the assignment operator is used to compare to itself, then return the reference to itself
-    // (otherwise this overloaded operator would end up deleting its own dynamically allocated members!)
+    // if the assignment operator is used to compare to itself, 
+    // then return the reference to itself (otherwise this 
+    // overloaded operator would end up deleting its own 
+    // dynamically allocated members!)
     if (this == &rhsOperand)
     {
       std::cout << "Trying to copy to itself..." << std::endl;
       return *this;
     }
 
-    // for the left hand operand (implied through "this" pointer though not needed here), free ptrMessage
+    // for the left hand operand (implied through "this" 
+    // pointer though not needed here), free ptrMessage
     delete ptrMessage;
     
     ptrMessage = new char[strlen(rhsOperand.ptrMessage) + 1];
 
     strcpy(this->ptrMessage, rhsOperand.ptrMessage);
 
-    // note that "this" is a pointer variable, so dereference it to get the address reference
+    // note that "this" is a pointer variable, so dereference 
+    // it to get the address reference
     return *this;
   }
 
@@ -846,17 +867,21 @@ void main()
 
 Unary operators such as the prefix operator and postfix operators need some thought here when overloading them.
 
-For the prefix operators (e.g. --object), there are no parameters in the prototype or definition. For postfix operators (e.g. object++), there is one parameter. However,
-the parameter is merely a differentiator for the compiler. There is no need to provide the name, only the data type, in the list. The function definition would not use the parameter -
+For the prefix operators (e.g. --object), there are no parameters in the prototype 
+or definition. For postfix operators (e.g. object++), there is one parameter. However,
+the parameter is merely a differentiator for the compiler. There is no need to
+ provide the name, only the data type, in the list. The function definition would not use the parameter -
 no need since the operation is unary not binary.
 
 ```cpp
 // assume Length is a class with a private member of type int
 
-// postfix - need to "pass by value", make a copy, increment and finally return the resultant Length object 
+// postfix - need to "pass by value", make a copy, increment 
+// and finally return the resultant Length object 
 const Length operator ++ (int);
 
-// prefix - need to work on the current (with "this") and return a reference to the new value
+// prefix - need to work on the current (with "this") and 
+// return a reference to the new value
 Length& operator ++();
 ```
 
@@ -864,14 +889,16 @@ Length& operator ++();
 
 ### Function templates
 
-Function templates are particularly useful when function overloading becomes excessive, i.e. a function prototype is declared
-one too many times.
+Function templates are particularly useful when function overloading becomes 
+excessive, i.e. a function prototype is declared one too many times.
 
-There are two keywords one can use to define a function template: `class` and `typename`. The latter is considered more generic
-while the former is used specifically for class templates (see next section). These keywords are interchangeable in this section.
+There are two keywords one can use to define a function template: `class` 
+and `typename`. The latter is considered more generic while the former is used 
+specifically for class templates (see next section). These keywords are interchangeable in this section.
 
 ```cpp
-// assume here that an array of int's, double's or long's is involved...
+// assume here that an array of int's, double's or long's 
+// is involved...
 template<typename T> 
 T somePopularFunction(T generalArray[], int index, T generalQuantity)
 {
@@ -911,11 +938,12 @@ int main(){
 
 ### Class templates
 
-Templates in C++ are equivalent to generic classes in Java. The instantiation of a template with chosen types through the
-constructor causes other methods to follow the same type used.
+Templates in C++ are equivalent to generic classes in Java. The instantiation 
+of a template with chosen types through the constructor causes other methods 
+to follow the same type used.
 
 ```cpp
-template<class T>   // this token is similar in function to @someProperty annotation in Java
+template<class T>   
  class Arithmetic
  {
   private:
@@ -927,7 +955,7 @@ template<class T>   // this token is similar in function to @someProperty annota
    T add();
  }
 
- template<class T>   // needed again since } closed previous class block
+ template<class T>   // needed again(this is a new class)
  Arithmetic::Arithmetic(T a, T b)
  {
   this.a = a;        // right-hand a is parameter value passed
@@ -951,7 +979,8 @@ Arithmetic<int> integerObject(2, 3);
 
 Arithmetic<double> doubleObject(0.9, 1.1);
 
-// note here that the template function add() is only created if it is called (this applies to all methods and objects)
+// note here that the template function add() is only 
+// created if it is called (this applies to all methods and objects)
 int sum = integerObject.add();
 ```
 
@@ -999,8 +1028,8 @@ Now derive `BaseClass` in another header file. Note the way in which the identif
 // add BaseClass.h (mandatory here)
 #include "BaseClass.h"
 
-// this DerivedClass to BaseClass 'access specifier' is assumed private, equivalent to
-// class DerivedClass : private BaseClass
+// this DerivedClass to BaseClass 'access specifier' is assumed 
+// private, equivalent to class DerivedClass : private BaseClass
 class DerivedClass : BaseClass
 {
   public:
@@ -1010,7 +1039,8 @@ class DerivedClass : BaseClass
     {
       someString = new char[strlen(stringArg) + 1];
 
-      // since stringArg resides on the heap, its source reference (its pointer) is needed
+      // since stringArg resides on the heap, its source reference 
+      // (its pointer) is needed
       strcpy_s(someString, strlen(stringArg) + 1, stringArg);
     }
 
@@ -1094,18 +1124,21 @@ as part of the initialisation list, along with the parameters (if needed) for th
 ```cpp
 // modify the DerivedClass
 
-// this makes all public base class members become public in the derived class (see notes above)
+// this makes all public base class members become public 
+// in the derived class (see notes above)
 class DerivedClass : public BaseClass
 {
   public:
     char* someString;
 
-    // assumes that BaseClass constructor with matching signature is established 
+    // assumes that BaseClass constructor with matching 
+    // signature is established 
     DerivedClass(double defDob, int defInt, char* stringArg = "Derived from BaseClass"): BaseClass(defDob, defInt)
     {
       someString = new char[strlen(stringArg) + 1];
 
-      // since stringArg resides on the heap, its source reference (its pointer) is needed
+      // since stringArg resides on the heap, its source 
+      // reference (its pointer) is needed
       strcpy_s(someString, strlen(stringArg) + 1, stringArg);
     }
 
@@ -1219,13 +1252,15 @@ class DerivedClass : public BaseClass
   public:
     char* someString;
 
-    // without the copy construtor: the base constructor is called explicitly
+    // without the copy construtor: the base constructor is 
+    // called explicitly
     DerivedClass(double devDouble, int devInt, char* stringArg = "Derived from BaseClass") :
       BaseClass(devDouble, devInt)
     {
       someString = new char[strlen(stringArg) + 1];
 
-      // since stringArg resides on the heap, its source reference (its pointer) is needed
+      // since stringArg resides on the heap, its source 
+      // reference (its pointer) is needed
       strcpy_s(someString, strlen(stringArg) + 1, stringArg);
     }
 
@@ -1237,7 +1272,8 @@ class DerivedClass : public BaseClass
       strcpy_s(someString, strlen(stringArg) + 1, stringArg);
     }
 
-    // when copying an object, the BaseClass copy constructor is called
+    // when copying an object, the BaseClass copy 
+    // constructor is called
     DerivedClass(const DerivedClass& devCopy): BaseClass(devCopy)
     {
       someString = new char[strlen(stringArg) + 1];
@@ -1285,7 +1321,8 @@ class WhatClass
       double privA;
       double privB;
 
-    // let a non-derived class access WhatClass' private members e.g. this copy constructor
+    // let a non-derived class access WhatClass' private 
+    // members e.g. this copy constructor
     friend FriendsClass::FriendsClass(const WhatClass& aWhatClass);
 }
 
@@ -1375,7 +1412,9 @@ Similarly, if DerivedClass was first instantiated then the derived class' `Commo
 BaseClass baseObject();
 DerivedClass derivedObject();
 
-derivedObject.CallCommonMethod();   // calls the BaseClass definition of CommonMethod() since baseObject was built first
+// calls the BaseClass definition of CommonMethod() 
+// since baseObject was built first
+derivedObject.CallCommonMethod();   
 ```
 
 This mechanism is referred to as `early binding`, i.e. first come first served in many ways.
@@ -1412,8 +1451,8 @@ class BaseClass
 class DerivedClass: public BaseClass
 {
   public:
-    // indicate to the compiler to apply dynamic linkage (this is optional, and helps
-    // make the code clearer)
+    // indicate to the compiler to apply dynamic linkage 
+    // (this is optional, and helps make the code clearer)
     virtual void CommonMethod() const
     {
       // DerivedClass' Common method definition...
@@ -1430,7 +1469,8 @@ Now the true intentions can be realised.
 BaseClass baseObject();
 DerivedClass derivedObject();
 
-derivedObject.CallCommonMethod();   // calls the DerivedClass definition of CommonMethod()
+// calls the DerivedClass definition of CommonMethod()
+derivedObject.CallCommonMethod();   
 ```
 
 If one wanted to force the compiler to call the base class definition of `CommonMethod()` then a full qualification
@@ -1442,7 +1482,8 @@ class BaseClass
   public:
     void CallCommonMethod() const
     {
-      // call to CommonMethod() is dynamically linked (based on the object type)
+      // call to CommonMethod() is dynamically linked 
+      // (based on the object type)
       CommonMethod();
     }
 
@@ -1493,11 +1534,14 @@ DerivedClass derivedObject();
 
 BaseClass* pInstance = 0;
 pInstance = &baseObject;
-pInstance->CallCommonMethod();  // calls the BaseClass definition of CommonMethod()
+
+// calls the BaseClass definition of CommonMethod()
+pInstance->CallCommonMethod();  
 
 
 pInstance = &derivedObject;
-pInstance->CallCommonMethod();  // calls the DerivedClass definition of CommonMethod()
+// calls the DerivedClass definition of CommonMethod()
+pInstance->CallCommonMethod();  
 
 delete pInstance;
 ```
@@ -1528,9 +1572,11 @@ main()
   BaseClass baseObject();
   DerivedClass derivedObject();
 
-  PassByRef(baseObject)   // calls the BaseClass definition of CommonMethod()
+  // calls the BaseClass definition of CommonMethod()
+  PassByRef(baseObject)   
 
-  PassByRef(derivedObject)   // calls the DerivedClass definition of CommonMethod()
+  // calls the DerivedClass definition of CommonMethod()
+  PassByRef(derivedObject)   
 }
 
 void PassByRef(const BaseClass& anObject)
@@ -1586,7 +1632,8 @@ class StillAnAbstractClass: public AbstractClass
       // do stuff here
     }
 
-    // the const version of PureVirtualFunction() applies to this class and is not defined here; hence this class is (still) abstract
+    // the const version of PureVirtualFunction() applies to 
+    // this class and is not defined here; hence this class is (still) abstract
 
     // define other data members (variables and methods)
 }
@@ -1608,7 +1655,8 @@ class ConcreteClass: public AbstractClass
       // do stuff here
     }
 
-    // define other data members (variables and methods), constructors and destructors
+    // define other data members (variables and methods), 
+    // constructors and destructors
 }
 
 // somewhere in main()
