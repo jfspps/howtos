@@ -358,7 +358,11 @@ SomeClass::SomeClass(const SomeClass& initObj){
 
 ## Destructors
 
-Objects of a class are freed by the compiler by the use of a default destructor. 
+Objects of a class are freed by the compiler by the use of a default destructor. Like 
+constructors and copy constructors, destructors are defined but generally not called
+explicitly. They are defined by the programmer for the application to call upon when needed.
+
+
 If the object is referenced via a pointer then the object resides in the heap.
 The `delete` keyword is used to release data from the heap referenced by a 
 pointer and, as explained below, also invokes the destructor should it be applied to an object.
@@ -550,6 +554,7 @@ IntegerStack::IntegerStack(const IntegerStack &origObj){
 
 IntegerStack::~IntegerStack(){
 	std::cout << "Destructor called" << std::endl;
+	delete [] this->p;
 }
 
 void printStack(IntegerStack object){
@@ -654,15 +659,15 @@ int main(){
 	printStack(instance);
 
 	std::cout << "Now deleting instance..." << std::endl;
-
-	// this is called twice at this point
-	instance.~IntegerStack();
 }
 ```
 
 The above example produces the following output:
 
 ![](./images/integer_stack.PNG)
+
+Notice how the destructor was called when the copied instances and ```main()``` instance went out 
+of scope.
 
 ## Operator overloading
 
