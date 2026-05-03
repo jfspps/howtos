@@ -343,24 +343,35 @@ std::cout << objectRef.someField << std::endl;
 
 ## The copy constructor
 
-Copy constructors build objects by initialising data members from an existing object, hence a copy. Passing an object (to be copied) by value would result in an endless loop.
-A copy constructor would need to build a copy of the object to pass as an argument and so the copy constructor would need a copy constructor in order to proceed.
+Copy constructors build objects by initialising data members from an
+existing object, hence a copy. Passing an object (to be copied) by
+value would result in an endless loop: the copy constructor would
+need to build a copy of the object to pass as an argument and so the
+copy constructor would need a copy constructor in order to proceed.
 
-Copy constructors therefore must use a pass-by-reference argument of the object that it is copying. The reference to an existing object does not require a copy constructor call.
+Copy constructors therefore must use a pass-by-reference argument of
+the object that it is copying. The reference to an existing object
+does not require a copy constructor call.
 
-Generally, one passes a `const` reference to the object to ensure that the copy constructor cannot change the reference to the object (to be copied). Other new objects may also
-want to apply the data members.
+Generally, one passes a `const` modifier to the object to ensure
+that the copy constructor cannot change the reference to the object
+(to be copied). Other new objects may also want to apply the data members.
 
 ```cpp
 // copy constructor prototype
 SomeClass(const SomeClass& copyFromThis);
 
 // the definition provided outside SomeClass
-SomeClass::SomeClass(const SomeClass& initObj){
+SomeClass::SomeClass(const SomeClass& originObj){
   // initialise the members of the newly created object 
-  // according to those provided by initObj
+  // according to those provided by originObj
 }
 ```
+
+Copy constructors are particularly needed when data members are initialised
+on the free store (heap), not so much if data members reside on the stack. As will
+be shown, in such cases, it is necessary to initialise a separate set of data members
+which reside on the heap, independent from the origin instances own data members.
 
 ## Destructors
 
@@ -368,10 +379,9 @@ Objects of a class are freed by the compiler by the use of a default destructor.
 constructors and copy constructors, destructors are defined but generally not called
 explicitly. They are defined by the programmer for the application to call upon when needed.
 
-
 If the object is referenced via a pointer then the object resides in the heap.
 The `delete` keyword is used to release data from the heap referenced by a 
-pointer and, as explained below, also invokes the destructor should it be applied to an object.
+pointer and, as explained below, will also invoke the destructor should it be applied to an object.
 
 Note, however, that the `delete` keyword does not remove the pointer variable from memory. 
 This is handled once the function goes out of scope.
@@ -493,15 +503,16 @@ void main()
 }
 ```
 
-The problem that the destructor is defined to free the member ptrMessage whenever an instance SomeClass is deleted. Hence, when the object copy `classCopy`
+The problem that the destructor is defined to free the member ptrMessage
+whenever an instance SomeClass is deleted. Hence, when the object copy `classCopy`
 is freed from the stack (e.g. the copy goes out of scope), then the member `ptrMessage` is also freed.
-This leaves the original `class1` object with a pointer that references an area on the heap that is now void of the string it previously had.
+This leaves the original `class1` object with a pointer that references an
+area on the heap that is now void of the string it previously had.
 
 The general solution to this is to:
 
 + define the destructor to free members on the heap (as is already outlined above)
-+ define a copy constructor which builds its own copy of all members (of the object copy) so that when the copy is freed, the original object still has valid
-members
++ define a copy constructor which builds its own copy of all members (of the object copy) so that when the copy is freed, the original object still has valid members
 
 ```cpp
 // define the copy constructor outside of the class and copy members 
@@ -515,11 +526,17 @@ SomeClass(const SomeClass& copyOf)
 }
 ```
 
-Note that the copy constructor is not the same as the assignment operator. The assignment operator works on objects that have already be instantiated
-and only performs a direct mapping of the member values from one instance to the other. Note that the assignment operator is fine for situations where
-the members are saved to the stack. If, however, members are dynamically assigned on the heap then it is advisable to overload the assignment operator.
+Note that the copy constructor is not the same as the assignment operator.
+The assignment operator works on objects that have already be instantiated
+and only performs a direct mapping of the member values from one instance
+to the other. Note that the assignment operator is fine for situations where
+the members are saved to the stack. If, however, members are dynamically
+assigned on the heap then it is advisable to overload the assignment operator.
 
 ## Combined class example - IntegerStack
+
+The following demo is available on GitHub
+[here](https://github.com/jfspps/VisualStudio2005Learning/tree/main/IntegerStack).
 
 ```cpp
 #include<iostream>
@@ -683,7 +700,9 @@ of scope.
 ## Operator overloading
 
 Operator overloading allows one to re-define many (not all) C++ 
-operators so that they perform tasks tailored for a specific class.
+operators so that they perform tasks tailored for specific objects.
+
+Consider the following operation on an object:
 
 ```cpp
 SomeClass anObject;
@@ -736,7 +755,7 @@ bool SomeClass::operator> (const SomeClass &anObject)
 {
   // this assumes that the left-hand operand is referenced by this and 
   // the right-hand operand is "anObject", the parameter
-  return this->someInt > anObject->someInt;
+  return this->someInt > anObject.someInt;
 }
 
 void main()
@@ -774,8 +793,7 @@ in the method definition.
 // use a space this time...
 bool SomeClass::operator > (const SomeClass &anObject, const double &aDouble)
 {
-  // no this pointer, this is more explicit
-  return anObject->someInt > aDouble;
+  return anObject.someInt > aDouble;
 }
 ```
 
@@ -785,17 +803,18 @@ To overload the `new` operator, for example, then a space is needed after the `o
 // use a space this time...
 bool SomeClass::operator new (const SomeClass &anObject, const double &aDouble)
 {
-  // no this pointer, this is more explicit
-  return anObject->someInt > aDouble;
+  return anObject.someInt > aDouble;
 }
 ```
+
+See [here](https://github.com/jfspps/VisualStudio2005Learning/tree/main/MultiFileProject) for an example of overloading the addition operator.
 
 As alluded to in the previous section on assignment operators vs. copy constructors, 
 whenever a class uses dynamically allocated members it is quite possible that the 
 assignment operator will grant the recipient object the same reference (pointer) 
-as the source object. Subsequently, when the recipient object goes out of scope, 
-it invokes the destructor and releases the dynamically allocated members. Consequently, the source
-object will have members that are pointing to memory used by something else.
+as the source object. Subsequently, when the _recipient_ object goes out of scope, 
+it invokes the destructor and releases the dynamically allocated members. Consequently, the _source_
+object will have members that are pointing to memory used by something else (i.e. undefined).
 
 ```cpp
 class SomeClass
@@ -870,13 +889,13 @@ Unary operators such as the prefix operator and postfix operators need some thou
 For the prefix operators (e.g. --object), there are no parameters in the prototype 
 or definition. For postfix operators (e.g. object++), there is one parameter. However,
 the parameter is merely a differentiator for the compiler. There is no need to
- provide the name, only the data type, in the list. The function definition would not use the parameter -
+provide the name, only the data type, in the list. The function definition would not use the parameter -
 no need since the operation is unary not binary.
 
 ```cpp
 // assume Length is a class with a private member of type int
 
-// postfix - need to "pass by value", make a copy, increment 
+// postfix - need to "pass by value" i.e. make a copy, increment 
 // and finally return the resultant Length object 
 const Length operator ++ (int);
 
@@ -889,7 +908,8 @@ Length& operator ++();
 
 ### Function templates
 
-Function templates are particularly useful when function overloading becomes 
+Function templates were introduced [previously](./2_Stack_and_Heap.md#function-templates).
+They are particularly useful when function overloading becomes 
 excessive, i.e. a function prototype is declared one too many times.
 
 There are two keywords one can use to define a function template: `class` 
@@ -986,9 +1006,9 @@ int sum = integerObject.add();
 
 As with all parameters, one can also pass expressions which evaluate to the data types that the method is expecting.
 
-## Inheritance
+## Multifile projects and Class Inheritance
 
-As with Java, C++ base classes can be extended. A derived class does not inherit the base classes:
+As with Java, C++ base classes can be extended. The resultant __derived class__, however, does _not_ inherit the base class':
 
 + constructor
 + destructor
@@ -998,6 +1018,7 @@ Objects of derived classes are instantiated first from the base class constructo
 derived classes before the constructor of the last, defining class is called.
 
 Classes are normally organised in their own header or source files, just as Java classes are defined in their own .java files.
+C++ project header and source files (in Visual Studio 2005) are covered [here](../ProgrammingC++/1_MicrosoftVisualStudio.md).
 
 ```cpp
 // inside BaseClass.h
@@ -1023,6 +1044,7 @@ Now derive `BaseClass` in another header file. Note the way in which the identif
 ```cpp
 // inside DerivedClass.h
 
+// Microsoft specific directive (do not include this header more than once)
 #pragma once
 
 // add BaseClass.h (mandatory here)
@@ -1072,7 +1094,7 @@ class DerivedClass : public BaseClass
 ```
 
 One should emphasise here that base class `private` members are __never__ accessible to any derived class methods, under any circumstances.
-They can only be accessed through public base class methods.
+Only public base class methods are accessible.
 
 ### Derived class objects
 
@@ -1150,7 +1172,7 @@ class DerivedClass : public BaseClass
 ```
 
 Destructors, on the other hand, are called in the reverse order to constructors. When a derived class destructor is called, the
-compiler calls the derived class destructor first before the base class(es) destructor(s).
+compiler calls the derived class destructor first before the base class' destructor(s).
 
 ## Protected members
 
