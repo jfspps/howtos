@@ -67,3 +67,69 @@ CLR and MFC projects in C++ can be accessed from the project types, as shown pre
 The .NET framework is a part of the operating system that makes it easier to build desktop and web applications. It implements the CLI and therefore provides greater collaboration with other programming languages that support it.
 
 Both CLR and .NET applications come with very minor performance penalties due to the added features.
+
+## Multifile projects
+
+This outlines how to build and manage header and source files with MVS. The following project is on GitHub [here](https://github.com/jfspps/VisualStudio2005Learning/tree/main/MultiFileProject).
+
+### Class view
+
+New (for example) Win32 console applications do not have classes by default, as shown by MVS Class viewer. To create 
+a class from the viewer, right-click the solution and select ```Add```, then ```Class...```. Select ```C++ Class```:
+
+![](./MSVC2005/new_class.PNG)
+
+Enter the details (convention applied here precedes the class name with a C; MVS then autofills the filenames):
+
+![](./MSVC2005/new_cpp_class.PNG)
+
+From the Solution Explorer, one can then see both header and source files created:
+
+![](./MSVC2005/header_and_source.PNG)
+
+The preprocessor directive ```#pragma once``` is a Microsoft-specific directive, preventing the compiler from including
+the current header file more than once in the source code. This is done since multiple header files can include other header files
+which also have the same class definitions. This is not allowed and would cause an compile-time error.
+
+An ISO/ANSI C++ equivalent to ```#pragma once``` is as follows:
+
+```cpp
+#ifndef CUSTOM_CLASS_DEF
+#define CUSTOM_CLASS_DEF
+class CDemoClass
+{
+public:
+	CDemoClass(void);
+	~CDemoClass(void);
+};
+#endif
+```
+
+The directive ```#ifndef``` can be read as if-not-defined i.e. if "CUSTOM_CLASS_DEF" is not defined elsewhere/previously
+then proceed with the following i.e. ```#define```. The directive ```#endif``` closes the if block.
+
+To add data members from the Class view, right-click the class and select ```Add``` then ```Add variable```. The option
+to add member functions can also be seen from the same list.
+
+![](./MSVC2005/new_data_member.PNG)
+
+The constructor, destructor, data and function members will be listed in the Class view:
+
+![](./MSVC2005/class_view_items.PNG)
+
+Changes applied (saved) to the header or source files will cause the Class view to update.
+
+To add global functions (i.e. operations on DemoClass objects that do not require access to private members), 
+from the Solution Explorer, right-click ```Source Files``` and add a C++ source file. Then from this file, include
+the header file:
+
+![](./MSVC2005/global_functions.PNG)
+
+The global functions will then be listed as shown above.
+
+The corresponding header file for the source file of global functions can be added similarly from the Solution Explorer,
+making the global functions available elsewhere in the project.
+
+![](./MSVC2005/global_functions_header.PNG)
+
+Right-clicking the function name will provide a dropdown to access the function definition.
