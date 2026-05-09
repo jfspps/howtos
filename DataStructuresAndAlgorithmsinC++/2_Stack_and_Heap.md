@@ -357,8 +357,10 @@ Generally, `anArray[i][j]` is equivalent to `*(*(anArray + i) + j))`. One could 
 
 ## References (C++)
 
-References are aliases to variables, and not part of C. They do not create copies of variables they reference
-to in any function call (other than `main()`). Unlike pointers, __references are immutable__ and so must be
+References are exclusive to C++ (not C) and can be viewed (syntactically) as aliases to variables. 
+
+They do not create copies of variables they reference to in any function call 
+(other than `main()`). Unlike pointers, __references are immutable__ and so must be
 assigned as an alias to one variable for the program's entire lifecycle.
 
 Functions which handle the references do not reside in separate stack frames and instead are part of the `main()` stack frame.
@@ -366,8 +368,11 @@ Functions which handle the references do not reside in separate stack frames and
 ```cpp
 //general form i: type & identifier
  int main(){
-  int a = 10;
-  int &r = a;
+  int aValue = 10;
+  int &rAValue = aValue;
+
+  // update the value of aValue via rAValue
+  rAValue = 12;
  }
 ```
 
@@ -383,7 +388,7 @@ Tokens `&r` to the right of the assignment operator return the address the refer
   int* intPtr = &r;
 ```
 
-All references MUST be initialised.
+All references MUST be initialised to some (address of a) variable.
 
 ## Pointers and Structures
 

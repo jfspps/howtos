@@ -317,7 +317,7 @@ int main(){
 
 ## Pointers and references to objects
 
-Passing by address is particularly useful with member access since some classes can get quite large.
+Passing by address (pointer) is particularly useful with member access since some classes can get quite large.
 
 ```cpp
 SomeClass example;
@@ -329,7 +329,7 @@ objectPtr = &example;
 std::cout << objectPtr->someField << std::endl;
 ```
 
-References can be assigned to objects using:
+References to objects can be also be used when managing objects, in much the same way references manage variables:
 
 ```cpp
 SomeClass example;
@@ -420,6 +420,7 @@ SomeClass::~SomeClass()
 {
   // when SomeClass is released, make sure all other resources are also freed
   // i.e. the array of char pointed to by ptrMessage
+  // (we are deleting members of an array, so the [] syntax is required)
   delete[] ptrMessage;
 }
 ```
@@ -886,8 +887,8 @@ void main()
 
 Unary operators such as the prefix operator and postfix operators need some thought here when overloading them.
 
-For the prefix operators (e.g. --object), there are no parameters in the prototype 
-or definition. For postfix operators (e.g. object++), there is one parameter. However,
+For the prefix operators (e.g. ```--object```), there are no parameters in the prototype 
+or definition. For postfix operators (e.g. ```object++```), there is one parameter. However,
 the parameter is merely a differentiator for the compiler. There is no need to
 provide the name, only the data type, in the list. The function definition would not use the parameter -
 no need since the operation is unary not binary.
@@ -917,11 +918,13 @@ and `typename`. The latter is considered more generic while the former is used
 specifically for class templates (see next section). These keywords are interchangeable in this section.
 
 ```cpp
-// assume here that an array of int's, double's or long's 
-// is involved...
+// while not always recommended, one could use "class" in place of 
+// "typename"
 template<typename T> 
 T somePopularFunction(T generalArray[], int index, T generalQuantity)
 {
+  // assume here that an array of int's, double's or long's 
+  // is involved...
   T localVar = generalArray[index];
 
   if (localVar > generalQuantity){
@@ -975,14 +978,15 @@ template<class T>
    T add();
  }
 
- template<class T>   // needed again(this is a new class)
+// template<class T> syntax needed each time a 
+// template class function is defined
+ template<class T>
  Arithmetic::Arithmetic(T a, T b)
  {
   this.a = a;        // right-hand a is parameter value passed
   this->b = b;       // alternative notation
  }
 
- // define a function template
  template<class T>
  T Arithmetic<T>::add()
  {
@@ -1086,6 +1090,8 @@ members are inherited as `public` members in the derived class and are accessibl
 #include "BaseClass.h"
 
 // all public members in BaseClass are now public in DerivedClass
+// (as outlined later, this actually means preserve the BaseClass access specifier in the 
+// DerivedClass)
 class DerivedClass : public BaseClass
 {
   public:
@@ -1123,7 +1129,7 @@ int main()
   cout  << "derObj and derObj2 are of equal size (respectively): " << sizeof derObj
         << " bytes compared to " << sizeof derObj2 << " bytes" << endl;
 
-  // one cannot change private members of BaseClass through DerivedClass
+  // one cannot change private members of BaseClass through DerivedClass e.g.
   // derObj.someInt = 200;
 
   return 0;
@@ -1176,16 +1182,22 @@ compiler calls the derived class destructor first before the base class' destruc
 
 ## Protected members
 
-Base class members marked `protected` are treated like `private` base class members. Such members are visible to the base class methods and friend functions of the class.
-More distinctly, they are accessible to derived class member functions, just as `public` member are. However, `protected` members are not accessible to classes which do not
+Base class members marked `protected` are treated like `private` base class 
+members. Such members are visible to the base class methods and friend functions of the class.
+More distinctly, they are accessible to derived class member functions, 
+just as `public` member are. However, `protected` members are not accessible to classes which do not
 derive from the base class.
 
-Overall, `protected` members straddle the boundary that is `private` and `public`. They are accessible to derived classes but not accessible to other non-derived classes.
+Overall, `protected` members straddle the boundary that is `private` and `public`. 
+They are accessible to derived classes but not accessible to other non-derived classes.
 
-As mentioned above, the default access specifier is `private` so with the new `protected` member access specifier, one can now say
-that by default all derived `public` and `protected` base class members will be treated as `private` members in the derived class.
+As mentioned above, the default access specifier is `private` so with 
+the new `protected` member access specifier, one can now say
+that by default all derived `public` and `protected` base class members 
+will be treated as `private` members in the derived class.
 
-To make base class `protected` members remain protected in the derived class, use the `protected` access specifier in the derived class
+To make base class `protected` members remain protected in the derived 
+class, use the `protected` access specifier in the derived class
 definition:
 
 ```cpp
@@ -1229,8 +1241,9 @@ class DerivedClass : public BaseClass
 
 ### Copy constructors in derived classes
 
-Copy constructors can be called explicitly or invoked as a default base class constructor in the derived class, with the reference to the base class instance as a parameter. In this
-snippet, one can also see `protected` members in use.
+Copy constructors can be called explicitly or invoked as a default base 
+class constructor in the derived class, with the reference to the base class 
+instance as a parameter. In this snippet, one can also see `protected` members in use.
 
 ```cpp
 // inside BaseClass.h
@@ -1256,7 +1269,7 @@ class BassClass
 };
 ```
 
-Then the derived class would initialise the base and derived members accordingly. What is different here is that
+The derived class would initialise the base and derived members accordingly. What is different here is that
 the base class copy constructor can take a reference to the derived class and only take in the base class member
 initialisation values. The base class constructor leaves out the derived class members, as it should.
 
@@ -1322,7 +1335,8 @@ The general sequence of constructor calls would be:
 3. BaseClass copy constructor is called to build a BaseClass object, as a portion from devCopy, of secondObj
 4. Derived class copy constructor called to start building the derived calls part of secondObj
 
-In general, one should always be aware of ensuring base class members are initialised in addition to the derived class members, through
+In general, one should always be aware of ensuring base class members 
+are initialised in addition to the derived class members, through
 careful definition of the constructor.
 
 ## Friend classes
@@ -1389,7 +1403,9 @@ Note, however, that WhatClass does not have access to FriendsClass' members. It 
 Furthermore, only FriendsClass has access to WhatClass' members. Derived classes of FriendsClass would not have access
 to WhatClass' members. Thus the scope of inheritance of `friend` classes is very limited, compared to traditional derived classes.
 
-## Early and Late Binding
+## Polymorphism
+
+### Early and Late Binding
 
 Suppose that a base class and a derived class make a call to member functions of the same signature. The method defined in the derived class
 is intended for derived class instances and the method defined in the base class is intended for base class instances.
@@ -1427,7 +1443,7 @@ class DerivedClass: public BaseClass
 
 The situation here is that when an instance of DerivedClass calls `CallCommonMethod()`, by default, the definition of `CommonMethod()` is 
 called based on how the program was compiled. If an instance of BaseClass was instantiated first, then the base class' `CommonMethod()` is called.
-Similarly, if DerivedClass was first instantiated then the derived class' `CommonMethod()` is called. 
+Similarly, if DerivedClass was first instantiated then the derived class' `CommonMethod()` is called.
 
 ```cpp
 // somewhere in main()
@@ -1440,14 +1456,14 @@ derivedObject.CallCommonMethod();
 ```
 
 This mechanism is referred to as `early binding`, i.e. first come first served in many ways.
-The function call is fixed prior to running, and so is termed `static resolution` (or `static linkage`).
+The function call is fixed prior at compile time, and so is termed `static resolution` (or `static linkage`).
 
 Ideally, the derived class definition of `CommonMethod()` should be applied to objects of the derived class. That is, one requires the compiler
 to call the appropriate method based on the object type, through `late binding` (also known as `dynamic linkage`).
 
-## Virtual functions and Polymorphism
+### Virtual functions
 
-This is where __virtual functions__ come in. Virtual functions are functions which, when defined as such, signal to the compiler to that it
+Late binding is enabled via __virtual functions__ come in. Virtual functions are functions which, when defined as such, signal to the compiler to that it
 should apply dynamic linkage to the method. Strictly speaking, the `virtual` keyword is only required in the base class.
 
 ```cpp
@@ -1461,6 +1477,8 @@ class BaseClass
     }
 
     // indicate to the compiler to apply dynamic linkage
+    // so instances of derived classes call their own defintion
+    // of CommonMethod
     virtual void CommonMethod() 
     {
       // BaseClass' Common method definition...
@@ -1495,8 +1513,8 @@ DerivedClass derivedObject();
 derivedObject.CallCommonMethod();   
 ```
 
-If one wanted to force the compiler to call the base class definition of `CommonMethod()` then a full qualification
-with the scope resolution operator would be needed.
+If one wanted to force the compiler to call the base class definition of `CommonMethod()` under the above circumstances
+then full qualification with the scope resolution operator would be needed.
 
 ```cpp
 class BaseClass
@@ -1529,7 +1547,7 @@ class DerivedClass: public BaseClass
 
     void BaseCommonCall() const
     {
-      // call BaseClass' CommonMethod()
+      // fully qualified resolution, to call BaseClass' CommonMethod()
       BaseClass::CommonMethod();
     }
 
@@ -1560,7 +1578,6 @@ pInstance = &baseObject;
 // calls the BaseClass definition of CommonMethod()
 pInstance->CallCommonMethod();  
 
-
 pInstance = &derivedObject;
 // calls the DerivedClass definition of CommonMethod()
 pInstance->CallCommonMethod();  
@@ -1572,6 +1589,9 @@ Since the pointer can accept either base class or derived class instances, it is
 the examples draw from `dynamic_cast<destination>(origin)` rather than `static_cast<destination>(origin)`.
 
 ```cpp
+// instance resides in the heap;
+// note, we can assign a base class pointer to a
+// derived class instance
 BaseClass* pBaseObject = new DerivedClass();
 
 // dynamically cast a base class pointer to a derived class pointer
@@ -1610,11 +1630,13 @@ void PassByRef(const BaseClass& anObject)
 
 ## Abstract Classes
 
-Similar to Java, C++ abstract classes provide a common starting point for other derived classes that provide more of the 'missing' implementation
-of member functions. Since it is often necessary to redefine derived class member functions via virtual functions, the base class must first set
-the tone with regard to virtual functions.
+Similar to Java, C++ abstract classes provide a common starting point for other derived
+classes that provide more of the 'missing' implementation of member functions.
+Since it is often necessary to redefine derived class member functions via virtual 
+functions, the base class must first set the tone with regard to virtual functions.
 
-There are cases where the definition of the base class (virtual) function is not known or needed. Instead they are defined in code as `pure virtual functions`
+There are cases where the definition of the base class (virtual) function is not known
+or needed. Instead they are defined in code as `pure virtual functions`
 which are essentially method prototypes of virtual functions.
 
 ```cpp
@@ -1625,11 +1647,12 @@ class AbstractClass
 }
 ```
 
-Note the assignment of zero above. This indicates to the compiler that the function is a pure virtual function. Any class with pure virtual functions
+Note the assignment of zero above. This indicates to the compiler that the function is
+a pure virtual function. Any class with pure virtual functions
 is subsequently known as an __abstract class__. All other derived classes must either
 
-a.  Redefine the base class virtual function as a pure virtual function (thus the derived class is also an abstract class)
-b.  Define the method body of the pure virtual function, preserving the `const` state accordingly
+- Redefine the base class virtual function as a pure virtual function (thus the derived class is also an abstract class)
+- Define the method body of the pure virtual function, preserving the `const` state accordingly, as shown below.
 
 ```cpp
 class NonAbstractClass: public AbstractClass
@@ -1642,26 +1665,30 @@ class NonAbstractClass: public AbstractClass
 }
 ```
 
-One can implement a non-`const` member function based on a `const` pure virtual function if required. This does mean, however, that the derived class is
-abstract because the developer did not provide implementation for the `const` pure virtual function.
+One can implement a non-`const` member function based on a `const` pure virtual function if required.
+This does mean, however, that the derived class is abstract because the developer did not
+provide implementation for the `const` pure virtual function.
 
 ```cpp
 class StillAnAbstractClass: public AbstractClass
 {
   public:
+    // this is actually a different function to the base class
+    // PureVirtualFunction, because "const" is not given here
     virtual int PureVirtualFunction()
     {
       // do stuff here
     }
 
     // the const version of PureVirtualFunction() applies to 
-    // this class and is not defined here; hence this class is (still) abstract
+    // this class but has not defined here; hence this class is (still) abstract
 
     // define other data members (variables and methods)
 }
 ```
 
-As is the case in Java, __C++ abstract classes cannot be instantiated__ and it would not be surprising to know that constructors and destructors are not normally
+As is the case in Java, __C++ abstract classes cannot be instantiated__ and 
+it would not be surprising to know that constructors and destructors are not normally
 present in an abstract class. Classes which are not abstract are known as __concrete classes__.
 
 One can use the previously discussed pointer notation to build an instance of a concrete (derived) class in reference to the abstract class.
@@ -1672,6 +1699,8 @@ an abstract class. The constructor identifier should make it clear, however, tha
 class ConcreteClass: public AbstractClass
 {
   public:
+    // now we have an implementation to a pure virtual function 
+    // and hence this class is concrete
     virtual int PureVirtualFunction() const
     {
       // do stuff here
@@ -1689,10 +1718,13 @@ anObject->PureVirtualFunction();
 delete anObject;
 ```
 
-Note that the pointer `anObject` can be assigned to any class that is derived from `AbstractClass` and subsequently assume that the compiler will call the corresponding
-virtual functions automatically.
+Note that the pointer `anObject` can be assigned to any class that is derived from `AbstractClass` 
+and subsequently assume that the compiler will call the corresponding virtual functions automatically.
 
-Finally, a derived class can be derived further. The base classes above would then represent the __indirect__ base class of the newly derived classes. That is, there would be
+### Direct and Indirect base classes
+
+Finally, a derived class can be derived further. The base classes above would then represent
+the __indirect__ base class of the newly derived classes. That is, there would be
 at least three levels of classes:
 
 ```java
@@ -1709,10 +1741,11 @@ As discussed with regard to destructors of derived classes, when order of callin
 1. Derived class destructor
 2. Base class destructor
 
-When calling destructors in an order that the static linkage policy (manipulated on the part of the developer) would work.
+Destructors are called as expected when static linkage is in place. When dynamic linkage is applied (i.e. virtual functions are defined), then 
+problems may arise.
 
 It becomes an issue when using pointers to handle base and derived class instances. Pointers can be re-assigned to some other direct or indirect
-class and therefore require a different destructor to free up the heap. Without any change the class definitions, the
+base class and therefore require a different destructor to free up the heap. Without any change the class definitions, the
 compiler only really knows about the base class destructor since this is common to the family of classes. That is, calling
 `delete` will only invoke the base class destructor. In many cases, this is a problem because it leaves the derived instance
 parts dangling in the heap.
@@ -1723,14 +1756,15 @@ Thankfully, the solution is simple: declare destructors as __virtual destructors
 virtual ~BaseClass();
 ```
 
-As with all virtual functions, it is recommended to also declare derived class destructors as virtual functions even though it is not strictly necessary.
+Declaring base class functions as virtual ensures that _all_ functions in the derived classes with the same name, parameter list and return type are also virtual. As with all virtual functions, it may help to clarify intentions by declaring derived class destructors as virtual functions even though it is not strictly necessary.
+
+Constructors cannot be virtual. These are always statically bound to the class they instantiate.
 
 ## Nested classes
 
-Similar to Java, C++ also provides __nested classes__, which are represented as Structures and/or classes. These are typically one-off uses within an enclosing class instance, rather than be utilised outside the enclosing class.
+Similar to Java, C++ also provides __nested classes__, as structures and/or classes. These are typically one-off uses within an enclosing class instance, rather than be utilised outside the enclosing class.
 
-Nested classes can be `public` or `private` and all have access to the enclosing class' members. The enclosing class can only access the `public` members of a `private` nested class
-(less common approach) and access to all members of a `public` nested class (more common approach).
+Nested classes can be `public` or `private` and all have access to the enclosing class' members. The enclosing class can only access the `public` members of a `private` nested class (less common approach) and access to all members of a `public` nested class (more common approach).
 
 Nested classes declared `public` are accessible outside the enclosing class but would need to be fully qualified using scope resolution operators.
 
