@@ -1470,7 +1470,9 @@ to call the appropriate method based on the object type, through `late binding` 
 ### Virtual functions
 
 Late binding is enabled via __virtual functions__ come in. Virtual functions are functions which, when defined as such, signal to the compiler to that it
-should apply dynamic linkage to the method. Strictly speaking, the `virtual` keyword is only required in the base class.
+should apply dynamic linkage to the method. The instance will access its own definition of the function, not any base class before it. 
+
+Strictly speaking, the `virtual` keyword is only required in the base class.
 
 ```cpp
 class BaseClass
@@ -1634,7 +1636,7 @@ void PassByRef(const BaseClass& anObject)
 }
 ```
 
-## Abstract Classes
+## Abstract Classes and Pure Virtual Functions
 
 Similar to Java, C++ abstract classes provide a common starting point for other derived
 classes that provide more of the 'missing' implementation of member functions.
@@ -1649,16 +1651,20 @@ which are essentially method prototypes of virtual functions.
 class AbstractClass
 {
   public:
+  // a pure virtual function
     virtual int PureVirtualFunction() const = 0;
 }
 ```
 
-Note the assignment of zero above. This indicates to the compiler that the function is
+Note the ```const``` assignment of zero above. This indicates to the compiler that the function is
 a pure virtual function. Any class with pure virtual functions
-is subsequently known as an __abstract class__. All other derived classes must either
+is subsequently known as an __abstract class__. 
 
-- Redefine the base class virtual function as a pure virtual function (thus the derived class is also an abstract class)
-- Define the method body of the pure virtual function, preserving the `const` state accordingly, as shown below.
+As is the case in Java, __C++ abstract classes cannot be instantiated__ and 
+it would not be surprising to know that constructors and destructors are not normally
+present in an abstract class. Classes which are not abstract are known as __concrete classes__.
+
+All derived classes can continue with the same pure virtual function declaration (in which case the derived classes would also be abstract) or can be made concrete by define the method body of the pure virtual function, preserving the `const` state accordingly, as shown below.
 
 ```cpp
 class NonAbstractClass: public AbstractClass
@@ -1671,9 +1677,8 @@ class NonAbstractClass: public AbstractClass
 }
 ```
 
-One can implement a non-`const` member function based on a `const` pure virtual function if required.
-This does mean, however, that the derived class is abstract because the developer did not
-provide implementation for the `const` pure virtual function.
+One can implement a non-`const` member function based on (in addition to) a `const` pure virtual function if required.
+This does not mean, however, that the derived class is concrete unless there is an implementation for all base class, pure virtual functions.
 
 ```cpp
 class StillAnAbstractClass: public AbstractClass
@@ -1692,10 +1697,6 @@ class StillAnAbstractClass: public AbstractClass
     // define other data members (variables and methods)
 }
 ```
-
-As is the case in Java, __C++ abstract classes cannot be instantiated__ and 
-it would not be surprising to know that constructors and destructors are not normally
-present in an abstract class. Classes which are not abstract are known as __concrete classes__.
 
 One can use the previously discussed pointer notation to build an instance of a concrete (derived) class in reference to the abstract class.
 Perhaps confusingly, the pointers to the derived class look like they reference objects of
