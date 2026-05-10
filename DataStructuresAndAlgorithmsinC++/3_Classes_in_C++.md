@@ -80,31 +80,37 @@ Constructors are not strictly required and the compiler will provide a default n
 Note that by adding a constructor with or without arguments indicates to the compiler that it will __not__ provide a default no-args
 constructor. This means that if a no-args constructor is needed (when at least one constructor is already defined), then one must be declared in the class.
 
-Default constructors can initialise defaults for members and are used when building arrays of objects, for example. The method call to such a method is the same as the no-args constructor. As a result,
-the compiler will not know which to call, the constructor with no-args or that with defaults. In this case, one could
-replace the no-args constructor with the defaults constructor:
+Constructors can initialise defaults for members, and would be the only to initialise private members, for example:
 
 ```cpp
    // default constructor (no arguments but with defaults)
-   Rectangle(int length = 1, int lengthTwo = 1){
-     std::cout << "Default constructor with defaults called" 
+   Rectangle(){
+      std::cout << "Default constructor called" 
         << std::endl;
-   };
+   }
+
+   Rectangle(int l1 = 1, int l2 = 1){
+    length = l1;
+    lengthTwo = l2;
+    std::cout << "Constructor with defaults called" 
+        << std::endl;
+   }
 ```
 
 Finally, one can use __initialisation lists__ in a defaults constructor to initialise members with identifiers that differ from member identifiers:
 
 ```cpp
-   // default constructor (no arguments but with defaults set by 
-   // initialisation lists)
-   Rectangle(int l1 = 1, int l2 = 1):length(l1), lengthTwo(l2)
+   Rectangle(int l1 = 1, int l2 = 1): length(l1), lengthTwo(l2)
    {
-     std::cout << "Default constructor with defaults called via an initialisation list" 
+    // note here, we don't ned to initial the (private) members
+     std::cout << "Constructor with defaults called via an initialisation list" 
         << std::endl;
    };
 ```
 
-Initialisation lists are needed in some cases when initialising members of certain data types.
+Each member forms a (what looks like) a function following the colon. 
+
+Initialisation lists can be used to initialise members of certain data types e.g. initialisation of base class instances when implementing derived class constructors (see later under [Derived Class Object](./3_Classes_in_C++.md#derived-class-objects)).
 
 ## Scope resolution and inline methods
 
@@ -1010,7 +1016,7 @@ int sum = integerObject.add();
 
 As with all parameters, one can also pass expressions which evaluate to the data types that the method is expecting.
 
-## Multifile projects and Class Inheritance
+## Class Inheritance and Multifile projects
 
 As with Java, C++ base classes can be extended. The resultant __derived class__, however, does _not_ inherit the base class':
 
