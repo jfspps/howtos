@@ -22,7 +22,7 @@ Some (not all) are tabulated below:
 |HANDLE|A 32-bit integer value that records the location of an object|
 |HBRUSH|A handle to a brush (a brush fills an area with colour)|
 |HCURSOR|A handle to a cursor|
-|HDC|A handle to a device context (an object enables a window to be drawn)|
+|HDC|A handle to a device context (an object that outputs data to a screen or printer)|
 |HINSTANCE|A handle to an instance (running application)|
 |LPARAM|A message parameter|
 |LPCSTR|A pointer to a constant null-terminated string of 8-bit characters|
@@ -118,9 +118,11 @@ windowClass.cbSize = sizeof(WNDCLASSEX);
 
 // determine behaviour e.g. when the window should
 // be redrawn (in this case, when both the horizontal
-// and vertical dimensions have changed); the bitwise
-// OR is applied as both options (flags) are have null, true or
+// and vertical dimensions have changed); 
+// the bitwise OR is applied as both options (flags) are have null, true or
 // false states (in this case as 32-bit words set to 1 for true)
+// so here windowClass.style would be 1 when there was a change
+// to the dimensions, and 0 at all other times
 windowClass.style = CS_HREDRAW | CS_VREDRAW;
 
 // set a pointer to a function that handles messages i.e. WindowProc
@@ -138,7 +140,7 @@ windowClass.hCursor = LoadCursor(0, IDC_ARROW);
 windowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(GREY_BRUSH));
 
 // set the name that identifies this classification of window
-static char szAppName[] = "someName";
+static char szAppName[] = L"someName";  // the L prefix is not a typo
 windowClass.lpszClassName = szAppname;
 ```
 
@@ -162,7 +164,7 @@ HWND hWndAlpha;
 
 hWndAlpha = CreateWindow(
 	szAppname, // allows Windows to find the registered window
-	"The Window title goes here",
+	L"The Window title goes here",  // the L prefix is not a typo
 	WS_OVERLAPPEDWINDOW, // this defines what sort of window components to show
 	CW_USEDEFAULT, // the next four are about window size and position
 	CW_USEDEFAULT,
@@ -184,8 +186,8 @@ The Windows API function `ShowWindow()` then draws the window on the screen.
 ShowWindow(hWndAlpha, nCmdShow);
 ```
 
-At present, this will show the window but without application content. The code to draw the content is normally defined in `WindowProc()`.
-Then, call `UpdateWindow(hWndAlpha)` to get Windows to refer to that code and draw the content.
+At present, this will show the window but without application content. The code to draw the content (in an area known as the _client area_) 
+is normally defined in `WindowProc()`. Then, call `UpdateWindow(hWndAlpha)` to get Windows to refer to that code and draw the content.
 
 ```cpp
 // invoke code (trigger an event/send a message) from WindowProc()
@@ -296,10 +298,188 @@ switch (message)
 	break;
 
 	case WM_DESTROY:
-	// code executed when the window is destroyed
+	// code executed when the window is destroyed (clean-up);
+	// this is where the application would call PostQuitMessage(0) to 
+	// generate a WM_QUIT message
 	break;
 
 	default:
 	// default actions...
+}
+```
+
+We focus on repainting a window and therefore examine the `WM_PAINT` message type.
+
+Previously tabulated [above](./2_WindowsAPIApplications.md#windows-data-types), we use an HDC. In more detail, a _HDC_ provides
+a link between device-independent Windows API functions that output data to a screen or printer, along with the device
+specific device drivers that support such operations. The HDC is issued to the application by Windows on request, granting
+the application permission to output data.
+
+To get the HDC for drawing to the screen, the client area (from within `WindowProc()`), use `BeginPaint()`:
+
+```cpp
+HDC hDC;  // the authority
+PAINTSTRUCT PaintSt;  //  structure which defines the drawing region
+
+// pass the winows handle and the PAINTSTRUCT variable.
+hDC = BeginPaint(hWnd, &PaintSt);
+```
+
+The `PAINTSTRUCT` variable is updated by Windows with information about the clent area in response to a `WM_PAINT` message.
+One can obtain the coordinates (as upper left and lower right corners) within a `RECT` structure using `GetClientRect()`:
+
+```cpp
+RECT aRECT;
+GetClientRect(hWnd, &aRECT);
+```
+
+The updated `aRECT` variable is updated by Windows.
+
+We then update the background colour of the client area text (to be shown) as transparent, to allow the background
+of the client area to show through. (Without this, a default `OPAQUE` mode would apply to text background colours.)
+
+```cpp
+SetBkMade(hDC, TRANSPARENT);
+```
+
+We then start drawing, in this setting text with `Drawtext()`:
+
+```cpp
+DrawText(
+	hDC,
+	L"Client area text",	// the L prefix is not a typo
+	-1,					// indicates that the second param is a null terminated string
+	&aRECT,				// the recatangle structure
+	DT_SINGLELINE|		// bitwise OR of text format flags; first: single line
+	DT_CENTER|			// second: centred text
+	DT_VCENTER,			// third: line vertically centered in aRECT
+);
+```
+
+When finished drawing, we pair `BeginPaint()` with a call to `EndPaint()`:
+
+```cpp
+EndPaint(hWnd, &PaintSt);
+```
+
+### Closing the application
+
+As highlighted by the switch block, we define code under `WM_DESTROY` to generate a `WM_QUIT` message,
+which ultimately finds its way into `WinMain()`'s `GetMessage()`:
+
+```cpp
+switch (message)
+{
+	// ...
+
+	case WM_DESTROY:
+	  // zero represents the exit code
+	  PostQuitMessage(0);
+	break;
+
+	default:
+	// default actions...
+```
+
+## The completed Windows API Win32 demo
+
+Having selected a Win32 Project (instead of Windows Console application), the cpp file would look something like this:
+
+```cpp
+#include <windows.h>
+
+LRESULT WINAPI WindowProc(HWND hWnd,
+						  UINT message,
+						  WPARAM wParam,
+						  LPARAM lParam);
+
+// called by Windows at the start of execution
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+				   LPSTR lpCmdLine, int nCmdShow){
+
+   WNDCLASSEX WindowClass;
+
+   static LPCTSTR szAppName = L"winDemo";
+   HWND hWnd;
+   MSG msg;
+
+   WindowClass.cbSize = sizeof(WNDCLASSEX);
+   WindowClass.style = CS_HREDRAW | CS_VREDRAW;
+   WindowClass.lpfnWndProc = WindowProc;
+
+   WindowClass.cbClsExtra = 0;
+   WindowClass.cbWndExtra = 0;
+
+   WindowClass.hInstance = hInstance;
+
+   WindowClass.hIcon = LoadIcon(0, IDI_APPLICATION);
+   WindowClass.hCursor = LoadCursor(0, IDC_ARROW);
+
+   WindowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(GRAY_BRUSH));
+
+   WindowClass.lpszMenuName = 0;
+   WindowClass.lpszClassName = szAppName;
+   WindowClass.hIconSm = 0;
+
+   RegisterClassEx(&WindowClass);
+
+   hWnd = CreateWindow(
+	   szAppName,
+	   L"Example window title",
+	   WS_OVERLAPPEDWINDOW,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   0,
+	   0,
+	   hInstance,
+	   0);
+
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
+   while (GetMessage(&msg, 0, 0, 0) == TRUE){
+	   TranslateMessage(&msg);
+	   DispatchMessage(&msg);
+   }
+
+   return static_cast<int>(msg.wParam);
+}
+
+// called by Windows whenever a message is passed to the application window
+LRESULT WINAPI WindowProc(HWND hWnd,
+						  UINT message,
+						  WPARAM wParam,
+						  LPARAM lParam){
+  HDC hDC;
+  PAINTSTRUCT PaintSt;
+  RECT aRECT;
+
+  switch(message){
+	  case WM_PAINT:
+		  hDC = BeginPaint(hWnd, &PaintSt);
+
+		  GetClientRect(hWnd, &aRECT);
+
+		  SetBkMode(hDC, TRANSPARENT);
+
+		  DrawText(
+			  hDC,
+			  L"Some text that appears in the client area",
+			  -1,
+			  &aRECT,
+			  DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+		  EndPaint(hWnd, &PaintSt);
+		  return 0;
+
+	  case WM_DESTROY:
+		  PostQuitMessage(0);
+		  return 0;
+
+	  default:
+		  return DefWindowProc(hWnd, message, wParam, lParam);
+  }
 }
 ```
