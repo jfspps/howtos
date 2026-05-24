@@ -364,7 +364,7 @@ EndPaint(hWnd, &PaintSt);
 
 ### Closing the application
 
-As highlighted by the switch block, we define code under `WM_DESTROY` to generate a `WM_QUIT` message,
+As highlighted by the switch statement, we define code under `WM_DESTROY` to generate a `WM_QUIT` message,
 which ultimately finds its way into `WinMain()`'s `GetMessage()`:
 
 ```cpp
@@ -379,6 +379,7 @@ switch (message)
 
 	default:
 	// default actions...
+}
 ```
 
 ## The completed Windows API Win32 demo
