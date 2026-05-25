@@ -61,3 +61,36 @@ CDemoApp AnInstance;
 
 // no need for WinMain(), this is already part of CWinApp
 ```
+
+## MFC Concepts
+
+### Documents and Views
+
+MFC applications manage documents and views. A _document_ refers to the data the application handles at a given time
+and a _view_ refers to the how the document is presented to the user. The window in which the view appears is called
+the _frame window_. Each view can only be related to one document (via pointers) whereas each document can be related to 
+multiple views (again, via pointers).
+
+Documents are defined as derived classes of `CDocument` whereas views are defined as derived classes of `CView`.
+
+MFC applications can handle one document at a time as _SDI applications_, supported by the _Single Document Interface_ 
+of the MFC library. Applications that need to support multiple documents (of varying types if needed) 
+at a time are built as _MDI applicaitons_ using the _Multiple Document Interface_.
+
+### Document templates
+
+The connection between a document, a view and frame windows is managed by a document template. The document template can be
+assigned to multiple documents of the same type. Technically, the document template (an MFC object) creates document and frame window
+objects, while the frame window object creates the views. The document template object is subordinate to the application.
+
+- Application creates...
+  + Document template creates...
+    - Document
+	- Frame window creates...
+	  + View
+
+Technically, SDI applications are implemented as derived classes of `CSingleDocTemplate` while MDI applications are
+implemented from `CMultiDocTemplate`. More classes are shown below:
+
+![](./MSVC2005/mfc_classes.png)
+
