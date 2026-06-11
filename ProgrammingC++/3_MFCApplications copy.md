@@ -214,3 +214,91 @@ Double clicking IDR_SketcherTYPE opens an Editor:
 
 ![](./MSVC2005/menu_editor.PNG)
 
+## Graphic Device Interface (GDI)
+
+Drawing in a window is always relative to the top-left corner of the window. Windows can draw on screen when it knows the position of the
+window and the position relative to the top-left corner reference point.
+
+The output is handled without regard to the hardware available via the Windows _Graphical Device Interface_ (GDI). The GDI supports display screens, printers and plotters.
+
+To render something, Windows requires a _device context_, a Windows data structure that translates GDI function calls into physical device actions. The device context handles different _mapping modes_ (coordinate systems), drawing attributes (drawing colour, background colour, line thickness and so on) as well as providing access to hardware information, via GDI functions.
+
+### Mapping modes
+
+Mappings modes are denoted by convention with the `MM-` prefix. For example `MM_TEXT` (the default mapping mode) defines a __pixel__ position from left to right as having increasing positive x values, and a position from top to bottom as having increasing positive y values. So in relation to the top-left corner of a window, all points in the window have positive x- and y-values.
+
+When drawing on a monitor with a higher-resolution, a coordinate (10,20) (that is, 10 pixels to the right, 20 pixels down) will appear closer to the top-left corner, than on a monitor with a lower resolution. The coordinates are (after Windows 98) always given as 32-bit signed integers. It is possible to move the origin (0,0) from the top-left corner, and so have pixels with negative coordinates.
+
+Another mapping mode, `MM_LOENGLISH` is more familiar to geometric coordinate systems: an increasing x value places the point by multiples of 0.01 inch (MM_TEXT uses pixels as a metric) further to the right and n increasing postive y value places the point further up the coordindate system. 
+
+Choosing pixels or lengths as a unit of measure results in different output. Pixel unit values are dependent on the resolution and whereas unit length in inches is not dependent on the resolution.
+
+### MFC and drawing with CDC objects
+
+Drawing with MFC applications is mostly defined by child classes to `CView`, and the function of interest whenever the client area needs to be redrawn is `OnDraw()`. In relation to the above demo, the `OnDraw()` function is set out by the application wizard:
+
+```cpp
+// CSketcherView drawing
+
+void CSketcherView::OnDraw(CDC* /*pDC*/)
+{
+	CSketcherDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	// TODO: add draw code for native data here
+}
+```
+
+The commented out pointer parameter (needs reinstating prior to use) can be read as "pointter-to-Device-Context". The function `GetDocument()` retrieves and casts the current View object data member, and sets up the pointer to the document defined by the programmer i.e. `CSketcherDoc`. This is how MFC documents are related to one or more MFC views.
+
+Key to drawing in MFC applications is the `CDC` class (an MFC class for Device Contexts), and its derivatives. Instances of CDC classes contain a device context and member functions (well over 100) needed to draw on devices. The particular derived class of CDC which is used to handle client areas is `CClientDC`. 
+
+Demonstrating how to chang coordinates for a moment, one modifies OnDraw() as:
+
+```cpp
+// CSketcherView drawing
+
+void CSketcherView::OnDraw(CDC* *pDC)
+{
+	CSketcherDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	// uses CDC member functions
+	pDC->MoveTo(50, 50);
+
+	// alternatively, with older Windows API POINT structure:
+	pDC->MoveTo(pointInstance);
+}
+```
+
+The function `MoveTo()` returns the original coordinates, in the event they are needed (they would be lost otherwise).
+
+### Drawing lines
+
+Instead of just moving from one point to another with `MoveTo()`, applications can draw lines with `LineTo()`.
+
+```cpp
+// uses CDC member functions
+pDC->LineTo(50, 50);
+
+// alternatively, with older Windows API POINT structure:
+pDC->LineTo(pointInstance);
+```
+
+The function `LineTo()` returns TRUE is drawn and FALSE if not.
+
+### Drawing rectangles
+
+When used in combination, the program can change coordinates to some point inside the client area and then draw shapes e.g. as a rectangle
+
+```cpp
+pDC->MoveTo(50, 50);
+pDC->LineTo(50, 200); 	// draw a line 150 pixels down (in MM_TEXT)
+pDC->LineTo(150, 200);  // draw another line 100 pixels to the left (in MM_TEXT)
+pDC->LineTo(150, 50);  	// draw another line 150 pixels up (in MM_TEXT)
+pDC->LineTo(50, 50);	// draw another line 100 pixels to the right (in MM_TEXT)
+```
