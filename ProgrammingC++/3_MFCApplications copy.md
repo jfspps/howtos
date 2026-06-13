@@ -6,7 +6,8 @@ parent: Programming in C++
 
 # Microsoft Foundation Classes applications
 
-This article demonstrates the main aspects involved to building Windows applications with MVS using MFC (Microsoft Foundation Classes).
+This article demonstrates the main aspects involved to building Windows applications with MVS using MFC (Microsoft Foundation Classes). Many
+ of the ideas are demonstrated through the accompanying [Sketcher Demo](https://github.com/jfspps/VisualStudio2005Learning/tree/main/Sketcher).
 
 ## Setup
 
@@ -447,5 +448,6 @@ if (nFlags & MK_CONTROL){
 }
 ```
 
-To reiterate, the bitwise AND operator ANDs both `nFLags` and `MK_CONTROL`. If the bit sequence for `nFlags` is identical to that of `MK_CONTROL`
-then `nFlags & MK_CONTROL` is equal to `MK_CONTROL`. If `nFlags` is 0, then this will always fail (`MK_CONTROL` is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
+The bitwise AND evaulation achieves multiple outcomes. If both bit sequences for `nFLags` and `MK_CONTROL` are non-zero and identical then the evaluation  returns TRUE. If `nFlags` is 0, then this will always fail (`MK_CONTROL` is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
+
+
