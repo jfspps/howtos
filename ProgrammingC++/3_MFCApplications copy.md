@@ -255,7 +255,7 @@ The commented out pointer parameter (needs reinstating prior to use) can be read
 
 Key to drawing in MFC applications is the `CDC` class (an MFC class for Device Contexts), and its derivatives. Instances of CDC classes contain a device context and member functions (well over 100) needed to draw on devices. The particular derived class of CDC which is used to handle client areas is `CClientDC`. 
 
-Demonstrating how to chang coordinates for a moment, one modifies OnDraw() as:
+Demonstrating how to chang coordinates for a moment, one modifies `OnDraw()`. `OnDraw()` is called each time the client needs to be redaw, typically when the window or child frame is moved, minimised or maximised:
 
 ```cpp
 // CSketcherView drawing
@@ -302,3 +302,102 @@ pDC->LineTo(150, 200);  // draw another line 100 pixels to the left (in MM_TEXT)
 pDC->LineTo(150, 50);  	// draw another line 150 pixels up (in MM_TEXT)
 pDC->LineTo(50, 50);	// draw another line 100 pixels to the right (in MM_TEXT)
 ```
+
+### Drawing ellipses, circles and arcs
+
+One can use the CDC method `Ellipse()` to draw (closed) ellipses or circles. This requires an additional _brush_ object, which in part defines the colour of the edge and fill of the ellipse.
+
+Perhaps a more flexible alternative is the CDC `Arc()` function as this allows one to draw ellipse or circle segments (i.e. an arc), additionally without the need to define a brush. There are two overloaded definitions:
+
+```cpp
+// (x1, y1) and (x2, y2) define the upper-left and lower-right corners of the bounded rectangle that encloses the arc; a square would yield a circluar arc
+// (x3, y3) and (x4, y4) define the start and end points of the arc; setting these equal will yield a closed arc
+BOOL Arc(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int x4);
+
+// LPRECT accepts a pointer to a CRect instance (the enclosing rectangle);
+// the last two params set the start and end points as pointers to CPoint
+BOOL Arc(LPRECT lpRect, POINT StartPt, POINT EndPt);
+```
+
+Both methods return TRUE of the arc was drawn, or FALSE otherwise. As a sidenote, `CRect` is an MFC class that corresponds to the Windows API structure `RECT`. Likewise, `CPoint` is an MFC class that corresponds to `POINT`.
+
+The following would generate a circular arc:
+
+```cpp
+void SketcherView::OnDraw(CDC* pDC){
+	// ...
+
+	CRect* pRect = new CRect(250,50,300,100);
+	CPoint Start(275,100);
+	CPoint End(250,75);
+	pDC->Arc(pRect, Start, End);
+
+	// don't forget
+	delete pRect;
+}
+```
+
+### Defining Brushes and Pens
+
+One can define a _pen_ (which defines colour and width) by instantiating `CPen`. The unit of width is mapping mode dependent.
+
+```cpp
+CPen aPen;
+
+// returns TRUE if the pen initialised successfully or FALSE if not;
+// a thickness of 0 always yields a pen one pixel wide regardless of mapping mode (i.e. unit)
+aPen.CreatePen(PS_SOLID, 2, RGB(255,0,0));
+```
+
+There are numerous pen styles expresed (as symbolic constants e.g. `PS_DASH`, `PS_DOT`) available.
+
+To use a pen, call the CDC function `SelectObject()`. This function returns a pointer to the original pen (for the same reasons as `MoveTo()` does). 
+Actually, `SelectObject()` returns a pointer to a `CGdiObject` instance, represented by a class that is parent to pens and brushes.
+
+Building on the ellipse example:
+
+```cpp
+void SketcherView::OnDraw(CDC* pDC){
+	// ...
+
+	CPen aPen;
+	aPen.CreatePen(PS_SOLID, 2, RGB(255,0,0));
+
+	CPen* pOldPen = pDC->SelectObject(&aPen);
+
+	CRect* pRect = new CRect(250,50,300,100);
+	CPoint Start(275,100);
+	CPoint End(250,75);
+	pDC->Arc(pRect, Start, End);
+
+	// don't forget
+	delete pRect;
+
+	// restore the original pen
+	pDC->SelectObject(pOldPen);
+}
+```
+
+Brushes are managed in a similar way and come with a range of brush styles (expressed by symbolic constants e.g. `NULL_BRUSH` (no fill), `GRAY_BRUSH`, `HOLLOW_BRUSH`). The following uses `SelectStockObject()` instead of `SelectObject()` to get a predefined stock brush:
+
+```cpp
+void SketcherView::OnDraw(CDC* pDC){
+	// ...
+
+	CBrush aBrush;
+
+	// options include CreateSolidBrush() and CreateHatchBrush()
+	aBrush.CreateHatchBrush(HS_DIAGCROSS, RGB(255,0,0));
+
+	// SelectStockObject returns a pointer to the predefined stock object relaced; need to cast the pointer
+	// to ensure the correct derived instance (brush derived from CGdiObject) is returned
+	CBrush* oldBrush = (CBrush*) pDC->SelectStockObject(NULL_BRUSH);
+
+	// draw as needed
+
+	// restore the original brush
+	pDC->SelectObject(pOldBrush);
+}
+```
+
+What follows next is how to track mouse pointer events so that users can click and drag to draw shapes on screen ("rubber-banding" graphical design).
