@@ -310,8 +310,11 @@ One can use the CDC method `Ellipse()` to draw (closed) ellipses or circles. Thi
 Perhaps a more flexible alternative is the CDC `Arc()` function as this allows one to draw ellipse or circle segments (i.e. an arc), additionally without the need to define a brush. There are two overloaded definitions:
 
 ```cpp
-// (x1, y1) and (x2, y2) define the upper-left and lower-right corners of the bounded rectangle that encloses the arc; a square would yield a circluar arc
-// (x3, y3) and (x4, y4) define the start and end points of the arc; setting these equal will yield a closed arc
+// (x1, y1) and (x2, y2) define the upper-left and lower-right corners of 
+// the bounded rectangle that encloses the arc; a square would yield 
+// a circluar arc;
+// (x3, y3) and (x4, y4) define the start and end points of the arc; 
+// setting these equal will yield a closed arc
 BOOL Arc(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int x4);
 
 // LPRECT accepts a pointer to a CRect instance (the enclosing rectangle);
@@ -389,8 +392,10 @@ void SketcherView::OnDraw(CDC* pDC){
 	// options include CreateSolidBrush() and CreateHatchBrush()
 	aBrush.CreateHatchBrush(HS_DIAGCROSS, RGB(255,0,0));
 
-	// SelectStockObject returns a pointer to the predefined stock object relaced; need to cast the pointer
-	// to ensure the correct derived instance (brush derived from CGdiObject) is returned
+	// SelectStockObject returns a pointer to the 
+	// predefined stock object relaced; need to cast the pointer
+	// to ensure the correct derived instance 
+	// (brush derived from CGdiObject) is returned
 	CBrush* oldBrush = (CBrush*) pDC->SelectStockObject(NULL_BRUSH);
 
 	// draw as needed
@@ -401,3 +406,46 @@ void SketcherView::OnDraw(CDC* pDC){
 ```
 
 What follows next is how to track mouse pointer events so that users can click and drag to draw shapes on screen ("rubber-banding" graphical design).
+
+### Mouse messaging
+
+As with the above drawing functions, mouse messages are generally defined within the View object of the application.
+
+Examining the message list for the View object (so `CSketcherView` in this case) will reveal all Windows Messages IDs, prefixed with `WM_`.
+The mouse messages to look at are:
+
++ WM_LBUTTONDOWN
++ WM_LBUTTONUP
++ WM_MOUSEMOVE
+
+Note that the above events are treated independently, and need not occur in a sensible order (i.e. button down before before button up). It would be 
+necessary to evaluate the state or position of the pointer to ensure the behaviour is handled accordingly or ignored completely.
+
+```cpp
+// nFlags contains numerous status flags indicating whether keys are down etc.
+void CSketcherView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default below
+
+	CView::OnMouseMove(nFlags, point);
+}
+```
+
+The `OnMouseMove()` function has a UINT parameter, corresponding to a 32-bit Unsigned integer. The value can be passed as a symbolic constant:
+
++ MK_CONTROL - CTRL key being pressed
++ MK_LBUTTON - left mouse button being pressed
++ MK_SHIFT - SHIFT key being pressed
+
+One can check (evaluate) what is being pressed with a bitwise AND operator:
+
+```cpp
+// within the left mouse button message handler...
+
+if (nFlags & MK_CONTROL){
+	// code fired when nFlags has the same bit sequence as MK_CONTROL i.e. nFlags = MK_CONTROL
+}
+```
+
+To reiterate, the bitwise AND operator ANDs both `nFLags` and `MK_CONTROL`. If the bit sequence for `nFlags` is identical to that of `MK_CONTROL`
+then `nFlags & MK_CONTROL` is equal to `MK_CONTROL`. If `nFlags` is 0, then this will always fail (MK_CO`NTROL is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
