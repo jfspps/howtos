@@ -448,4 +448,4 @@ if (nFlags & MK_CONTROL){
 ```
 
 To reiterate, the bitwise AND operator ANDs both `nFLags` and `MK_CONTROL`. If the bit sequence for `nFlags` is identical to that of `MK_CONTROL`
-then `nFlags & MK_CONTROL` is equal to `MK_CONTROL`. If `nFlags` is 0, then this will always fail (MK_CO`NTROL is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
+then `nFlags & MK_CONTROL` is equal to `MK_CONTROL`. If `nFlags` is 0, then this will always fail (`MK_CONTROL` is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
