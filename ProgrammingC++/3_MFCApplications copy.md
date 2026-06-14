@@ -450,4 +450,7 @@ if (nFlags & MK_CONTROL){
 
 The bitwise AND evaulation achieves multiple outcomes. If both bit sequences for `nFLags` and `MK_CONTROL` are non-zero and identical then the evaluation  returns TRUE. If `nFlags` is 0, then this will always fail (`MK_CONTROL` is never 0). Likewise if a different action was fired (a different key was pressed) then the bit sequences would differ and this evaluation would also fail.
 
+In the case of the Sketcher Demo, the `OnMouseMove()` function is involved with drawing successive temporary shapes (aka elements) as the 
+mouse cursor moves. The other message handlers (`WM_LBUTTONDOWN` and `WM_LBUTTONUP`) are responsible for initialising the starting and ending points 
+(coordinates) within a View object.
 

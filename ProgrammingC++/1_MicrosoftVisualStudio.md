@@ -132,4 +132,6 @@ making the global functions available elsewhere in the project.
 
 ![](./MSVC2005/global_functions_header.PNG)
 
-Right-clicking the function name will provide a dropdown to access the function definition.
+Right-clicking the function name will provide a dropdown to access the function definition. 
+
+Highlighting an in-built function with the cursor and entering `F1` open the help documentation to the selected function.
