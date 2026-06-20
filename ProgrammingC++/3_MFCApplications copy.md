@@ -454,3 +454,170 @@ In the case of the Sketcher Demo, the `OnMouseMove()` function is involved with 
 mouse cursor moves. The other message handlers (`WM_LBUTTONDOWN` and `WM_LBUTTONUP`) are responsible for initialising the starting and ending points 
 (coordinates) within a View object.
 
+## MFC Collections
+
+MFC supports template-based type-safe collection classes of objects and pointers to objects.
+
+Collections of objects are (not exclusively) handled by:
+
++ CArray (ordered group, zero-based integer index)
++ CList (doubly linked list group)
++ CMap (key-value mapping)
+
+Similarly, collections of pointers to objects are handled by:
+
++ CTypedPtrArray
++ CTypedPtrList
++ CTypedPtrMap
+
+All collections are derived from `CObject` and therefore inherit its features. Objects must first be copied (via a copy constructor) before being placed into the collection.
+
+### CArray
+
+`CArray` automatically grows as the number of elements increases. The first argument indicates the Object type, the second indicates the type when accessing the array member functions (where applicable), typically a reference to the Object.
+
+```cpp
+// a non-constant array (elements can be updated)
+CArray<CPoint, CPoint&> somePointArray;
+
+// while not necessary, it speeds up operations for 
+// potentially large arrays to set the array size;
+// the first argument is the new size, the second
+// indicates how many elements are readied the next
+// time the array needs to increase in size
+somePointArray.SetSetSize(100, 20);
+
+// add a reference aPoint to some object
+somePointArray.Add(aPoint);
+
+// get an element by index
+bPoint = somePointArray.GetAt(24);
+// could also apply the overloaded operator to CArray
+bPoint = somePointArrays[24];
+
+// non-constant arrays only; pass a copy of the object;
+// both statements are equivalent
+somePointArray.SetAt(18, newPointObject);
+somePointArray[18] = newPointObject;
+```
+
+when calling `SetSize()`, a helper function `ConstructElements()` is called which sets the new element content to zero. This, and many other
+helper functions will need to be overridden if the their default action is not suitable.
+
+### CList
+
+As a doubly-linked list, the setup and parameter list for new `CList` instances is the same as `CArray`:
+
+```cpp
+// a non-constant array (elements can be updated)
+CList<CPoint, CPoint&> bList;
+
+// new elements are added explicitly, at the head or tail
+POSITION positionOfInserted = bList.AddTail(cPoint);
+POSITION positionOfInserted2 = bList.AddHead(dPoint);
+
+// one can retrieve the element at the next position
+// knowing the previous position;
+
+// this returns NULL if there is no element; the value
+// of positionOfInserted passed is incremented (updated)
+// if ePoint is not NULL; therefore, this can be run repeatedly
+CPoint ePoint = bList.GetAt(positionOfInserted);
+
+// inserting elements before or after specific elements
+// requires a known POSITION
+POSITION positionOfThisPoint = bList.InsertBefore(positionOfInserted, thisPoint);
+POSITION positionOfAnotherPoint = bList.InsertAfter(positionOfInserted, anotherPoint);
+
+// updating an element; returns nothing
+bList.SetAt(positionOfThisPoint, thisPointInstead);
+
+// retrieving an element, with a valid POSITION
+CPoint found = bList.GetAt(positionOfThisPoint);
+```
+
+As with `CArray`, it may necessary to override helper functions e.g. `ConstructElements()` or `DestructElements()` 
+if the default behaviour is not suitable.
+
+To __iterate__ through the `CList`, loop through checking the `POSITION` returned until null:
+
+```cpp
+CPoint somePoint(0, 0);
+
+POSITION aPosition = bList.GetHeadPosition();
+
+while (aPosition){
+	// aPostion is updated as long as somePoint is not NULL
+	somePoint = bList.GetNext(aPosition);
+}
+
+
+// similarly, start some place down the list and 
+// iterate back
+
+POSITION bPosition = bList.GetTailPosition();
+
+while (aPosition){
+	somePoint = bList.GetPrev(bPosition);
+}
+```
+
+One can __retrieve__ a element by an index, particularly if the length of the list is known:
+
+```cpp
+int size = bList.GetCount();
+
+// get the second element in CList
+if (size >= 2){
+	POSITION secondPosition = bList.FindIndex(1);
+	CPoint secondPoint = bList.GetAt(secondPosition);
+}
+```
+
+To __search__ `CList`, one can call `Find()`. Under the default helper function `CompareElements()`, this only
+work if the heap address of the element is known ahead of time. The helper function compares
+the address and returns the `POSITION` if matched.
+
+To find an element without knowing the heap address, one would need to override `CompareElements()`.
+
+To __remove__ elements (these methods also free memory automatically):
+
+```cpp
+if (!bList.IsEmpty){
+	bList.RemoveHead();
+
+	// or bList.RemoveTail();
+}
+
+
+// to remove elements by POSITION (nothing returned)
+bList.removeAt(validPosition);
+
+// remove everything
+bList.RemoveAll();
+```
+
+### CMap
+
+The `CMap` element is characterised by a key and value, both of which need not be of the same type. Maps are not ordered.
+
+The key is converted to an unsigned integer value (of type UINT) via _hashing_, to produce a _hash value_ that is an offset to some _base address_. 
+The memory allocation is sequential from the base value by increments of the constant length of the value data type (in bytes). The location of an element (entry) is initially* given by `BASE + (HASH VALUE UINT * LENGTH)`.
+
+Each possible value to `BASE + (HASH VALUE int * LENGTH)` is collectively referred to as a _hash table_. 
+
+Hash values are not always unique,* in which case elements are tied to the element that already resides at that location. See [Hashing](https://jfspps.github.io/howtos/DataStructuresAndAlgorithmsinC++/27_Hashing/#hashing-techniques) to visualise this. Clearly having fewer hash values in the table hinders search functions, since such functions have to evaluate multiple elements for a given hash value.
+
+Carrying on with the MFC `CPoint` example:
+
+```cpp
+// the first two arguments represent the key, the last two represent the value
+CMap<LONG, LONG&, CPoint, CPoint&> pointMap;
+
+// setting values; both are equivalent
+pointMap.SetAt(keyA) = cPointA;
+pointMap[keyB] = cPointB;
+
+// retrieving values
+bool found = pointMap.LookUp(someKey, someValue);
+```
