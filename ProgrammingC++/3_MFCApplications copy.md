@@ -464,13 +464,13 @@ Collections of objects are (not exclusively) handled by:
 + CList (doubly linked list group)
 + CMap (key-value mapping)
 
+All collections are derived from `CObject` and therefore inherit its features. Objects must first be copied (via a copy constructor) before being placed into the collection.
+
 Similarly, collections of pointers to objects are handled by:
 
 + CTypedPtrArray
 + CTypedPtrList
 + CTypedPtrMap
-
-All collections are derived from `CObject` and therefore inherit its features. Objects must first be copied (via a copy constructor) before being placed into the collection.
 
 ### CArray
 
@@ -606,7 +606,7 @@ The memory allocation is sequential from the base value by increments of the con
 
 Each possible value to `BASE + (HASH VALUE int * LENGTH)` is collectively referred to as a _hash table_. 
 
-Hash values are not always unique,* in which case elements are tied to the element that already resides at that location. See [Hashing](https://jfspps.github.io/howtos/DataStructuresAndAlgorithmsinC++/27_Hashing/#hashing-techniques) to visualise this. Clearly having fewer hash values in the table hinders search functions, since such functions have to evaluate multiple elements for a given hash value.
+Hash values are not always unique,* in which case elements are tied to the element that already resides at that location, as a linked list. See [Hashing](https://jfspps.github.io/howtos/DataStructuresAndAlgorithmsinC++/27_Hashing/#hashing-techniques) to visualise this. Clearly having fewer hash values in the table hinders search functions, since such functions have to evaluate multiple elements for a given hash value.
 
 Carrying on with the MFC `CPoint` example:
 
