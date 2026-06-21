@@ -157,7 +157,7 @@ int main(){
   // do stuff to p...
 
   delete[] p;      // clear the heap (do this before resetting the pointer!)
-  p = NULL;        // reset the pointer
+  p = 0;        // reset the pointer
 }
 ```
 
@@ -425,7 +425,7 @@ values to change.
 #include<iostream>
 
 void swap(int *pIntA, int *pIntB){
-	if (pIntA != NULL && pIntB != NULL){
+	if (pIntA != 0 && pIntB != 0){
 		int pTempInt = *pIntA;
 		
 		*pIntA = *pIntB;
@@ -499,7 +499,7 @@ int main(){
 }
 
 void swap(int *pIntA, int *pIntB){
-	if (pIntA != NULL && pIntB != NULL){
+	if (pIntA != 0 && pIntB != 0){
 		int pTempInt = *pIntA;
 		
 		*pIntA = *pIntB;
@@ -580,7 +580,7 @@ int main(){
 // not to confuse this notation with real C++ classes; typename is
 // more neutral
 template<typename T> void swap(T *pVarA, T *pVarB){
-	if (pVarA != NULL && pVarB != NULL){
+	if (pVarA != 0 && pVarB != 0){
 		T pTempVar = *pVarA;
 		
 		*pVarA = *pVarB;
