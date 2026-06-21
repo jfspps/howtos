@@ -474,7 +474,7 @@ Similarly, collections of pointers to objects are handled by:
 
 ### CArray
 
-`CArray` automatically grows as the number of elements increases. The first argument indicates the Object type, the second indicates the type when accessing the array member functions (where applicable), typically a reference to the Object.
+`CArray` automatically grows as the number of elements increases. The first argument indicates the Object type, the second indicates the type when accessing the array member functions (where applicable) and is usually a reference. In the array, the element is passed by (and assigned) a reference.
 
 ```cpp
 // a non-constant array (elements can be updated)
@@ -487,7 +487,7 @@ CArray<CPoint, CPoint&> somePointArray;
 // time the array needs to increase in size
 somePointArray.SetSetSize(100, 20);
 
-// add a reference aPoint to some object
+// add an object aPoint; aPoint is passed by reference
 somePointArray.Add(aPoint);
 
 // get an element by index
@@ -621,3 +621,15 @@ pointMap[keyB] = cPointB;
 // retrieving values
 bool found = pointMap.LookUp(someKey, someValue);
 ```
+
+### CTypedPtrList
+
+This stores pointers to objects. The declaration of the constructor is as follows:
+
+```cpp
+CTypedPtrList<BaseClass, Type*> listName;
+```
+
+The first argument specifies the MFC base class of the element pointer, either `CObList` or `CPtrList`. The former supports pointers of objects derived from `CObject` while the latter supports `void *` pointers. Generally, the base class chosen is `CObList`. The second argument represents the element pointer type required, and is usually the class the best matches elements in the list (choosing `CObList*` would be too general and encompass all child classes).
+
+The member functions to `CTypedPtrList` are similar to the `CList` class, only that they operate exclusively on pointers rather than objects.
