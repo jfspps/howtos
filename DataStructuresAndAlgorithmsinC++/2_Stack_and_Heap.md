@@ -609,19 +609,18 @@ always the program name and so `argc` is always at least 1.
 
 ### Passing by reference (C++ only)
 
-Instead of passing by value or pointer, one can use references to the values and pass references.
+Instead of passing by value or pointer, one can use references to the values and pass said references. 
 
 ```cpp
- swap(int &x, int &y);
+void swap(int &a, int &b){
+  int temp = a;
+
+  a = b;
+  b = temp;
+}
 ```
 
-The above call assigns x and y as references to the function-local parameters `a` and `b`. Thus, the function call `swap(a, b)`
-can change the values of the actual-parameters. This provides an alternative to the pointer approach above.
-The function prototype would take the form of:
-
-```cpp
- void swap(int &x, int &y);
-```
+The function call `swap(x, y)` can change (swap) the values `x` and `y`. This provides an alternative to the pointer approach.
 
 ### Passing arrays
 
