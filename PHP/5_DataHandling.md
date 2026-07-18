@@ -4,7 +4,9 @@ nav_order: 4
 parent: Programming in PHP
 ---
 
-# Handling strings
+# Data handling
+
+## Handling strings
 
 ```php
 <?php
@@ -34,14 +36,11 @@ $fiftyFive .= $addedString;
 echo "Appended string with \"$addedString\": [" . $fiftyFive . "]\n";
 
 
-
-
 /*
  * Searching and replacing characters
  */
 echo "Where is 55? Position: " . 
     strpos($fiftyFive, "55") . "\n";
-
 
 echo "Replaced 55 with 56: " . 
     str_replace("55", "56", $fiftyFive) . "\n";
@@ -61,8 +60,6 @@ foreach ($matches as $match) {
         echo $word . "\n";
     }
 }
-
-
 
 /*
  * Formatting strings
@@ -106,8 +103,6 @@ echo "Original username: [" .
 echo "Trimmed username: [" . trim(
     ($usernameEntered)) . "]\n";
 
-
-
 /**
  * URL encoding
  */
@@ -119,7 +114,6 @@ echo "Encoded Url: $encodedUrl\n";
 
 $decodedUrl = urldecode($encodedUrl);
 echo "Decoded Url: $decodedUrl\n";
-
 
 /**
  * Converting HTML tags to (safer)
@@ -148,8 +142,6 @@ echo $encodedHtml . "\n\n";
 $decodedHtml = html_entity_decode($encodedHtml);
 echo "Decoded to HTML tags again...\n";
 echo $decodedHtml . "\n\n";
-
-
 
 /**
  * Base 64 encoding/decoding
