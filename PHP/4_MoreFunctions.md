@@ -1,7 +1,7 @@
 ---
 title: More Functions
 nav_order: 4
-parent: Functions
+parent: Programming in PHP
 ---
 
 # More Functions
@@ -104,7 +104,7 @@ echo namedParams(report : false, someName: "John Doe");
 echo namedParams(report : true, someName: "John Doe");
 ```
 
-## Arrow functions
+## Arrow functions (PHP 7.4+)
 
 ```php
 <?php

@@ -1,7 +1,7 @@
 ---
 title: Functions
 nav_order: 3
-parent: Functions
+parent: Programming in PHP
 ---
 
 # Functions

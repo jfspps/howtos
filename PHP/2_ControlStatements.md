@@ -164,7 +164,7 @@ switch ($position) {
 }
 ```
 
-## match expressions (PHP8+)
+## match expressions (PHP 8+)
 
 ```php
 <?php
