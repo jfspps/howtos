@@ -237,10 +237,10 @@ They can be initialised as follows for Task entities:
 $ php artisan make:request TaskRequest
 ```
 
-# CSS
+## CSS
 
 This project uses [Tailwind CSS](https://tailwindcss.com/)
 
-# JS
+## JS
 
 This project uses a lightweight JS framework: [AlpineJS](https://alpinejs.dev/)
