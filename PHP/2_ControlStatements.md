@@ -1,6 +1,6 @@
 ---
 title: Control statements
-nav_order: 1
+nav_order: 2
 parent: Programming in PHP
 ---
 
@@ -171,7 +171,8 @@ switch ($position) {
 
 $httpStatus = rand(1, 5) * 100;
 
-// match is an alternative to the switch expression; break is assumed; no type coercion so === is applied;
+// match is an alternative to the switch expression; break is assumed; 
+// no type coercion so === is applied;
 // PHP 8.0 or above only, check with
 // sudo update-alternatives --config php
 $message = match ($httpStatus) {
