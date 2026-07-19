@@ -676,3 +676,20 @@ CTypedPtrList<BaseClass, Type*> listName;
 The first argument specifies the MFC base class of the element pointer, either `CObList` or `CPtrList`. The former supports pointers of objects derived from `CObject` while the latter supports `void *` pointers. Generally, the base class chosen is `CObList`. The second argument represents the element pointer type required, and is usually the class the best matches elements in the list (choosing `CObList*` would be too general and encompass all child classes).
 
 The member functions to `CTypedPtrList` are similar to the `CList` class, only that they operate exclusively on pointers rather than objects.
+
+### Logical and Client Coordinates
+
+Using `CDC` methods e.g. `LineTo()` assumes that arguments (coordinates) are passed as _logical coordinates_. These coordinates assume an origin and unit (dimension) that is initialised when the view is static. The origin is placed at the top left of the canvas. If the user scrolls the view to some other area of the document, then the origin also moves.
+
+Mouse events don't know about MFC documents, they are only based on the views, and are passed according to _client coordinates_. The client coordinates also have origin component, however, their unit is always in pixels and their origin is always fixed to the top-left of the view, even if scrolling is applied. (All this doesn't matter if there is no scrolling. The logical and client origins would be equal and would never change.)
+
+The client coordinates is based on the client window, not the document. The logical coordinates are based on the document.
+
+The mapping mode applied affects __both__ logical and client coordinate systems: for the former it affects the origin and unit, for the latter the origin only. Some mapping modes apply different units/dimensions, and also apply different axes (increasing or decreasing x or y).
+
+To handle this, one will need to
+
++ convert the client coordinates from the mouse pointer to logical coordinates within the document before creating elements (shapes)
++ invalidating rectangular areas of the client area (to get the area to redraw) requires converting the logical coordinates back to client coordinates
+
+The first point can be handled with `CDC`'s `DPtoLP()` method. The latter can be handled with `CDC`'s `LPtoDP()` method.
