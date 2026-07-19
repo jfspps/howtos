@@ -341,6 +341,23 @@ void SketcherView::OnDraw(CDC* pDC){
 }
 ```
 
+### Enclosing and Bounding rectangles
+
+In order to identify the vicinity of an element (a shape), the concept of
+ _enclosing rectangles_ is devised. For the Sketcher project, an enclosing 
+ rectangle defines the rectangle the element occupies assuming the pen width 
+ is 1 pixel. Naturally, the pen width will not always be 1 pixel and in such 
+ cases the enclosing rectangle will need to accommodate the shape pen 
+ width - this is what the _bounding rectangle_ is for. The bounding rectangle
+ is a pen width larger (on all sides) than the enclosing rectangle. 
+
+Both enclosing and bounding rectangles are managed by the MFC class `CRect`.
+The act of inflating the enclosing rectangle is handled by `CRect::InflateRect()`.
+This method assumes the mapping mode `MM_TEXT` is in place. Calling `CRect::NormalizeRect()`
+before inflating it ensures that the rectangle is normalised, i.e. the the left 
+coord of the rectangle is _less_ than the right coord, and the top coord is _less_
+than the bottom coord.
+
 ### Defining Brushes and Pens
 
 One can define a _pen_ (which defines colour and width) by instantiating `CPen`. The unit of width is mapping mode dependent.
