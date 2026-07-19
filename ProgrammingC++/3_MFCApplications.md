@@ -693,3 +693,66 @@ To handle this, one will need to
 + invalidating rectangular areas of the client area (to get the area to redraw) requires converting the logical coordinates back to client coordinates
 
 The first point can be handled with `CDC`'s `DPtoLP()` method. The latter can be handled with `CDC`'s `LPtoDP()` method.
+
+### CString
+
+MFC's CString class provides a useful alternative to native `const char*` or Windows API `LPCTSTR`. Strictly, `CString` is one of three classes based on `CStringT`. `CString` comes with a number of overloaded operators:
+
++ `=` - copies one string to another, from rhs to lhs
++ `+` - concatenates strings
++ `+=` - appends strings
++ `==` - compares two strings for equality
++ `<` - returns true if they are not equal and the mismatched lhs character has a lower numerical code, or if the lhs string length is less than the rhs string)
++ `>` - opposite in sense to `<`
++ `<=` - returns true if they are not equal and the mismatched lhs character has a lower numerical code, or if the lhs string length is equal or shorter than the rhs string)
++ `>=` - opposite in sense to `<=`
+
+In general, avoid using CString in the heap as the capability for them to grow in length can get expensive.
+
+### Serialisation
+
+_Serialisation_ is the process of saving or retrieving an object (more precisely, its more primitive members) to/from pesistent storage. Any class that is derived (directly or indirectly) from `CObject` are serialisable.
+
+The key ingredients needed to implement serialisation is as follows:
+
++ One of `DECLARE_DYNAMIC(className)`, `DECLARE_DYNCREATE(className)` or `DECLARE_SERIAL(className)` macros witin the class declaration (typically in the .h file). These differ in the their functionality, with `DECLARE_SERIAL` offering everything and more that the others provide.
++ The corresponding `IMPLEMENT_DYNAMIC(className, parentClassName, versionNumber)`, `IMPLEMENT_DYNCREATE(className, parentClassName, versionNumber)` or `IMPLEMENT_SERIAL(className, parentClassName, versionNumber)` macro in the class  .cpp file.
++ A default constructor (this allows MFC to create and then serialise instances automatically)
++ Some implementation of `CObject::Serialize(CArchive&)` to carry out serialisation
+
+Overall, the process of serialisation involves tracing through each object and its data members (which themselves would need to be derived from CObject and therefore access `Serialize()`) until a basic (primitive) data type is found, and then saving each basic data type in turn to file. As such, the file is characteristic of the parent object.
+
+The next snippet demonstrates how the `CArchive` overloaded operators work in the same way data is streamed to/from a console (with `cin` and `cout`):
+
+```cpp
+// CArchive is not derived directly or indirectly from CObject, meaning
+// CArchive cannot itself be serialised
+
+void CSketcherDoc::Serialize(CArchive& ar)
+{
+	m_ElementList.Serialize(ar);
+
+	// IsStoring is true for output (to file), false for input (from file)
+	if (ar.IsStoring())
+	{
+		// save to file; CArchive overloads the insertion operator << and 
+		// extraction operator >>; CArchive calls Serialize() automatically
+		ar << m_Colour << m_Element << m_PenWidth << m_DocSize;
+	}
+	else
+	{
+		// load from file (note the order of the members is preserved)
+		ar >> m_Colour >> m_Element >> m_PenWidth >> m_DocSize;
+	}
+}
+```
+
+### Printing with MFC applications
+
+MFC applications by wizard generally come with print preview and printing functionality out of the box, thanks to the GDI device driver abstraction and the MFC `CView` class (see [above hierarchy](3_MFCApplications.md#document-templates)). There may however be cases where it is necessary to override the member functions if documents are likely to require pre-processing e.g. printing large documents across multiple pages.
+
+Typically, one may need to override the following `CView` methods:
+
++ `BOOL OnPreparePrinting(CPrintInfo* pInfo);`
++ `void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);`
++ `void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);`
