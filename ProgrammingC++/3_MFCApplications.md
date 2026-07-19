@@ -471,6 +471,32 @@ In the case of the Sketcher Demo, the `OnMouseMove()` function is involved with 
 mouse cursor moves. The other message handlers (`WM_LBUTTONDOWN` and `WM_LBUTTONUP`) are responsible for initialising the starting and ending points 
 (coordinates) within a View object.
 
+In order to mark a view (of a MDI application) where mouse capture should persist, one can call `SetCapture()`. This ensures that all subsequent
+mouse messages go to the given view. It's clearly necessary to release this mode at some point, so this can be done with `ReleaseCapture()`.
+
+```cpp
+void CSketcherView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// record something
+	SetCapture();
+
+	// do other stuff...
+}
+```
+
+The mouse button released, then release mouse message handling:
+
+```cpp
+void CSketcherView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// is it us?
+	if (this == GetCapture())
+		ReleaseCaptuire();
+
+	// now other views can receive mouse messages...
+}
+```
+
 ## MFC Collections
 
 MFC supports template-based type-safe collection classes of objects and pointers to objects.
