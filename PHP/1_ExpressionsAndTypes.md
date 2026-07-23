@@ -8,6 +8,12 @@ parent: Programming in PHP
 
 ## Expressions
 
+With PHP installed, run the php script (assuming it is `aScript.php`) as
+
+```bash
+php aScript.php
+```
+
 ```php
 <?php
 
@@ -77,7 +83,7 @@ echo $multilineStringWithoutInterpolation;
 echo "\n";
 ```
 
-## Pratical data types
+## Practical data types
 
 ```php
 <?php

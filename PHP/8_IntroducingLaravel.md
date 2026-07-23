@@ -144,11 +144,11 @@ Close the server (Ubuntu) with CTRL-C.
 
 + `/app` - bespoke logic
 + `/bootstrap` - application function definitions
-+ `/config` - base Laravel configuration (often referring to [.env](.env))
++ `/config` - base Laravel configuration (often referring to the .env file)
 + `/database` - all things database, including SQLite files
 + `/node_modules` - NodeJS dependencies
 + `/public` - files that would be publicly accessible after deployment (e.g. Apache configuration)
-+ `/resources` - project assets, including JS scripts and Blade web templates (see [here](/resources/views))
++ `/resources` - project assets, including JS scripts and Blade web templates (views)
 + `/routes` - URL routing
 + `/storage` - Laravel storage and cache
 + `/tests` - automated test files

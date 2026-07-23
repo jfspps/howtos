@@ -165,4 +165,4 @@ Specifically in regard to [MFC](./3_MFCApplications.md) applications, there are 
 
 The choices can be instructed through MVS via the New Project wizard:
 
-![](./MSVC2005/dll_types.PNG))
+![](./MSVC2005/dll_types.PNG)
