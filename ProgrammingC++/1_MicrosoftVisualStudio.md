@@ -135,3 +135,34 @@ making the global functions available elsewhere in the project.
 Right-clicking the function name will provide a dropdown to access the function definition. 
 
 Highlighting an in-built function with the cursor and entering `F1` open the help documentation to the selected function.
+
+## Dynamic link libraries DLLs
+
+DLLs are libraries _linked_ to applications in one of two ways:
+
+- _early binding_ or _load-time dynamic linking_: the DLL is loaded shortly after the application that requires it is loaded
+- _late binding_ or _runtime dynamic linking_: the DLL is only loaded when the application (which may have been booted for some time) needs to access it
+
+When a DLL is no longer required by any application, it is deleted from memory.
+
+For the latter (late-binding) an application can ask to load the DLL (if it is not already loaded) prior to invocation with the Windows API
+function `LoadLibrary()`, before getting the address of the function in the DLL with `GetProcAddress()`. When the program no longer needs the 
+DLL, it can call `FreeLibrary()` to detach itself from the DLL.
+
+### What's available
+
+DLLs not only contain code but also resources e.g. icons, fonts and images. Only specific functions identified by the `exported` keyword are visible to applications. 
+
+DLLs have the equivalent of an application `main()` function known as `DllMain()`. Windows calls this function to initialise the DLL and calls it again to cleanup prior to deletion.
+
+### Types of DLLs
+
+Specifically in regard to [MFC](./3_MFCApplications.md) applications, there are three types of DLLs:
+
++ _MFC extension DLL_ - a DLL that contains classes derived from (that extend) MFC classes, or, defines functions with pointers to MFC instances. Such DLLs dynamically link to other MFC DLLs and so the working environment must have MFC installed. Programs that utilise MFC extension DLLs cannot be statically linked to MFC.
++ _Regular DLL dynamically linked to MFC_ - an option when a DLL does not extend MFC classes, but rather contains functions that require access to MFC classes and related. Programs that use such DLLs need not be MFC applications. MFC must be installed in the environment, since these types of DLLs do not contain MFC implementation.
++ _Regular DLL statically linked to MFC_ - these DLLs do not extend MFC classes but define functions that require access to MFC classes and related. Rather than referring to MFC through dynamic linking, these DLLs contain a copy of the MFC classes it needs through static linking. A bulkier option but with the advantage that MFC need not be installed. As above, programs that utilise such DLLs need not be MFC applications.
+
+The choices can be instructed through MVS via the New Project wizard:
+
+![](./MSVC2005/dll_types.PNG))
