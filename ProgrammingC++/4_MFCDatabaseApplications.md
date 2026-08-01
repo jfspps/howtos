@@ -17,7 +17,8 @@ SELECT * FROM tableName;
 
 SELECT colA, colB FROM tableName;
 
--- the following are equivalent and required for column names with whitespace; the latter preferred with C++ strings
+-- the following are equivalent and required for column names with whitespace; 
+-- the latter preferred with C++ strings
 SELECT "column A", "column B" FROM tableName;
 SELECT [column A], [column B] FROM tableName;
 ```

@@ -170,10 +170,11 @@ hWndAlpha = CreateWindow(
 	CW_USEDEFAULT,
 	CW_USEDEFAULT,
 	CW_USEDEFAULT,
-	0, // 0 = this is a parent window (no handle); pass the parent of the parent handle if required
+	0, // 0 = this is a parent window (no handle)
 	0, // 0 = no menu required
 	hInstance, // this would come from WinMain for this application
-	0 // 0 = simple window layout (single document inteface SDI); multi-document interface (MDI) discussed later
+	0 // 0 = simple window layout (single document inteface SDI); 
+	  // multi-document interface (MDI) discussed later
 );
 ```
 
@@ -240,8 +241,8 @@ The function `GetMessage()` always returns true when a messsage to quit hasn't b
 ```cpp
 GetMessage(
 	&msg, // stores the message content, via a reference, for a queued message found 
-	0, // 0 = retrieve all message for an application, regardless of the no. of windows created
-	0, // these last two params indicate boundaries to message IDs, which allow Windows to focus on specific actions
+	0, // 0 = retrieve all message for an application
+	0, // these last two params indicate boundaries to message IDs, allowing Windows to focus on specific actions
 	0
 );
  ```
@@ -348,7 +349,7 @@ We then start drawing, in this setting text with `Drawtext()`:
 DrawText(
 	hDC,
 	L"Client area text",	// the L prefix is not a typo
-	-1,					// indicates that the second param is a null terminated string
+	-1,					// says the second param is a null terminated string
 	&aRECT,				// the recatangle structure
 	DT_SINGLELINE|		// bitwise OR of text format flags; first: single line
 	DT_CENTER|			// second: centred text
