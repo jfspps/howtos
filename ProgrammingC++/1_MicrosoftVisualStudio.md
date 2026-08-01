@@ -159,10 +159,85 @@ DLLs have the equivalent of an application `main()` function known as `DllMain()
 
 Specifically in regard to [MFC](./3_MFCApplications.md) applications, there are three types of DLLs:
 
-+ _MFC extension DLL_ - a DLL that contains classes derived from (that extend) MFC classes, or, defines functions with pointers to MFC instances. Such DLLs dynamically link to other MFC DLLs and so the working environment must have MFC installed. Programs that utilise MFC extension DLLs cannot be statically linked to MFC.
++ _MFC extension DLL_ - a DLL that contains classes derived from (that extend) MFC classes, objects of said classes, or, defines functions with pointers to MFC instances. Such DLLs dynamically link to other MFC DLLs and so the working environment must have MFC installed. Programs that utilise MFC extension DLLs cannot be statically linked to MFC.
 + _Regular DLL dynamically linked to MFC_ - an option when a DLL does not extend MFC classes, but rather contains functions that require access to MFC classes and related. Programs that use such DLLs need not be MFC applications. MFC must be installed in the environment, since these types of DLLs do not contain MFC implementation.
 + _Regular DLL statically linked to MFC_ - these DLLs do not extend MFC classes but define functions that require access to MFC classes and related. Rather than referring to MFC through dynamic linking, these DLLs contain a copy of the MFC classes it needs through static linking. A bulkier option but with the advantage that MFC need not be installed. As above, programs that utilise such DLLs need not be MFC applications.
 
 The choices can be instructed through MVS via the New Project wizard:
 
 ![](./MSVC2005/dll_types.PNG)
+
+### DLL file types
+
+DLLs are built as both DLL files (for dependent program execution) 
+and as LIB files (containing definitions of the items exported by 
+the DLL required by the linker, during dependent program linking). 
+The DLL file must either reside in the same directory as the program or reside in the `\WINNT\System\` folder.
+
+The program that depends on the DLL must refer to the items via a 
+header file, which should be part of the project.
+
+Without access to the source code, all three files (the DLL, the 
+LIB and the header files) must be provided to other developers or 
+development projects. For general, end-user distribution, only the 
+program EXE and DLL are required.
+
+
+### Extension DLLs: exporting and importing classes, objects, functions and symbols
+
+Classes (which must be visible outside the DLL) from which all required 
+classes or those with public scoped methods must be annotated as follows:
+
+```cpp
+class AFX_EXT_CLASS BaseClassInDLLToBeExported: public SomeMFCClass {
+
+	// variables and methods...
+}
+```
+
+Variables, methods and symbols (constants) that must be 
+accessed (imported) by a program must be prefixed within the DLL code with 
+
+```cpp
+// two underscore characters
+__delspec(dllexport) Type identifier = someValue;
+
+__delspect(dllexport) returnType functionIdentifier(params);
+
+__delspec(dllexport) extern const Type SOME_CONST_VALUE = someValue;
+```
+
+Quite often, it helps define a shorthand instead to simplify the code:
+
+```cpp
+#define DllExport __delspec(dllexport)
+
+// ...later e.g.
+
+DllExport extern const Type SOME_CONST_VALUE = someValue;
+```
+
+The additional `extern` modifier overrides the default action of `const` 
+which makes such variables not only constant but also
+have [internal linkage](/DataStructuresAndAlgorithmsinC%2B%2B/2_Stack_and_Heap.md#storage-classes-storage-duration-and-scope), 
+i.e. limited local scope. We want the symbol to be available externally, i.e. have global scope.
+
+To access exported symbols from a DLL, define them in the program source code (usually a header file) as follows:
+
+```cpp
+// again, following a convention to simplify the notation
+#define DllImport __delspec(dllimport)
+
+// the value is defined in the DLL, we only need to reference it here from the program
+DllImport extern const Type IDENTIFIER_WITHOUT_ASSIGNMENT;
+```
+
+Classes, objects and functions defined within the program that access 
+those from a DLL don't require additional notation. The 
+DLL header file must be declared in the `cpp` file that depends on them.
+
+The DLL `lib` file is only used during linking (i.e. after comppilation) and therefore does
+not need to be referenced from code but made known to MVS from the project property page
+updating `Additional Dependencies`:
+
+![](./MSVC2005/linking_to_dlls.PNG)
