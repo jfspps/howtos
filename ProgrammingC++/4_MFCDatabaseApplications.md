@@ -1,7 +1,7 @@
 ---
-title: Microsoft Visual Studio 2005
+title: MFC Database applications
 nav_order: 4
-parent: MFC Database applications
+parent: Programming in C++
 ---
 
 # MFC Database applications
