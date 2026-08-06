@@ -8,7 +8,7 @@ parent: Programming in PHP
 
 One can build web pages as a series of Blade templates, some of which actually function as a template.
 
-The templating template is found in `resources/views/layouts/app.blade.php`:
+The template (known as a Blade _partial_) found in `resources/views/layouts/app.blade.php` demonstrates templating:
 
 ```php
 <!DOCTYPE html>
