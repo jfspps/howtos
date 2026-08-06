@@ -1,10 +1,10 @@
 ---
-title: POST and PUT requests with data validation
+title: Submitting and validating forms
 nav_order: 13
 parent: Programming in PHP
 ---
 
-# POST and PUT requests with data validation
+# Submitting and validating forms
 
 In the the context of data management, HTTP POST requests typically serve to create new entities.
 
