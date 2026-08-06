@@ -68,9 +68,11 @@ One can set up a couple of routes which handle the list and in turn individual t
 ```php
 // access a Blade template
 Route::get('/blade', function () use ($tasks) {
-    // pass the sub-phrase that precedes .blade.php i.e. index (of index.blade.php), with variables
+    // pass the sub-phrase that precedes .blade.php 
+    // i.e. index (of index.blade.php), with variables
     return view('index', [
-        // note that the HTML elements are escaped and displayed as literally given, blocking cross-site scripting attacks;
+        // note that the HTML elements are escaped and 
+        // displayed as literally given, blocking cross-site scripting attacks;
         // HTML elements would have to be defined in the template instead
         'name' => 'JimJom<script></script>',
         'tasks' => $tasks,
@@ -78,12 +80,14 @@ Route::get('/blade', function () use ($tasks) {
 })->name('tasks.show');
 
 Route::get('/blade/{id}', function ($id) use ($tasks) {
-    // pass the sub-phrase that precedes .blade.php i.e. index (of index.blade.php), with variables
+    // pass the sub-phrase that precedes .blade.php 
+    // i.e. index (of index.blade.php), with variables
     return 'Task selected: ' . $id . ', ' . $tasks[$id - 1]->title;
 })->name('tasks.index');
 ```
 
-The Blade template (`index.blade.php` in this case) can handle lists and return a new (simple) template with a string detailing each task:
+The Blade template (`index.blade.php` in this case) can handle lists and 
+return a new (simple) template with a string detailing each task:
 
 ```php
 <div>
@@ -128,7 +132,8 @@ The Blade template (`index.blade.php` in this case) can handle lists and return 
 <br/>
 
 @forelse($tasks as $theTask)
-    {{--route() generates a URL; pass a key-value pair "id":"theTasksId" to the route with name tasks.index--}}
+    // --route() generates a URL; pass a 
+    // key-value pair "id":"theTasksId" to the route with name tasks.index
     <li><a href="{{ route('tasks.index', ['id' => $theTask->id]) }}">{{ $theTask->title }}</a></li>
 @empty
     <div>No tasks presented</div>

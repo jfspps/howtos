@@ -29,9 +29,11 @@ The route is defined near the top of `web.php`, with the parameter `name` passed
 ```php
 // access a Blade template
 Route::get('/blade', function () {
-    // pass the sub-phrase that precedes .blade.php i.e. index (of index.blade.php), with variables
+    // pass the sub-phrase that precedes .blade.php i.e. 
+    // index (of index.blade.php), with variables
     return view('index', [
-        // note that the HTML elements are escaped and displayed as literally given, blocking cross-site scripting attacks;
+        // note that the HTML elements are escaped and 
+        // displayed as literally given, blocking cross-site scripting attacks;
         // HTML elements would have to be defined in the template instead
         'name' => 'JimJom<script></script>',
     ]);
