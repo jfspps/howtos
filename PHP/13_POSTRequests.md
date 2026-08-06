@@ -116,3 +116,33 @@ the field for "title":
 ```
 
 This means much of the boilerplate code for basic operations need not be implemented.
+
+For completion, if method spoofing to apply PUT requests instead, then the representative route could
+take the following definition:
+
+```php
+Route::put('/blade/{id}', function (Request $request, $id) {
+
+    $data = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'long_description' => 'required',
+    ]);
+
+    $task = Task::findOrFail($id);
+
+    // still don't need the Model definition
+    $task->title = $data['title'];
+    $task->description = $data['description'];
+    $task->long_description = $data['long_description'];
+
+    // this handles save/update db transaction automatically
+    $task->save();
+
+    // save key-value "success":"Task created!" to session, flash as message, and then remove the key-value pair from
+    // the session
+    return redirect()->route('tasks.show', ['task' => $task])
+        ->with('success', 'Task updated!');
+
+})->name('tasks.update');
+```
