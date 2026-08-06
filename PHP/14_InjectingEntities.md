@@ -1,6 +1,6 @@
 ---
 title: Injecting entities
-nav_order: 12
+nav_order: 14
 parent: Programming in PHP
 ---
 
