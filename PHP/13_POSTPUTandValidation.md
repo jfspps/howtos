@@ -1,10 +1,10 @@
 ---
-title: POST requests and data validation
+title: POST and PUT requests with data validation
 nav_order: 12
 parent: Programming in PHP
 ---
 
-# POST requests and data validation
+# POST and PUT requests with data validation
 
 In the the context of data management, HTTP POST requests typically serve to create new entities.
 
@@ -25,6 +25,7 @@ Continuing on with the Blade partials, the following found in  defines the web p
         // HTML forms only support GET and POST; apply method spoofing 
         // with @method: redirect to a route with PUT instead of POST
         // @method('PUT')
+        // DELETE methods would be achieved with @method('DELETE')
 
         <div>
             <label for="title">
