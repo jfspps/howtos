@@ -18,8 +18,13 @@ Continuing on with the Blade partials, the following found in  defines the web p
 @section('content')
     <form method="POST" action="{{ route('tasks.store') }}">
 
-        {{--Laravel middleware builds templates that protect against cross-site request forgery attacks --}}
+        // Laravel middleware builds templates that protect 
+        // against cross-site request forgery attacks
         @csrf
+
+        // HTML forms only support GET and POST; apply method spoofing 
+        // with @method: redirect to a route with PUT instead of POST
+        // @method('PUT')
 
         <div>
             <label for="title">
