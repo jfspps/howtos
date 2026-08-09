@@ -154,8 +154,11 @@ The data type `CStringW` is used to enable support for Unicode strings (as oppos
 The following two functions are central to the application:
 
 ```cpp
-virtual CString GetDefaultSQL(); 	// default SQL query for Recordset
-virtual void DoFieldExchange(CFieldExchange* pFX);	// transfers data from the database to the recordset, and back again
+// default SQL query for Recordset
+virtual CString GetDefaultSQL(); 	
+
+// transfers data from the database to the recordset, and back again
+virtual void DoFieldExchange(CFieldExchange* pFX);	
 ```
 
 To reiterate, `CRecordset::DoFieldExchange()` transfers data between the database and the recordset. The function `CProductView::DoDataExchange()` exchanges data between the recordset and the dialog box.
