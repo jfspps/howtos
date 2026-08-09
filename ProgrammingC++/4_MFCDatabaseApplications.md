@@ -96,3 +96,68 @@ The previous wizard dialog box gives the option of database support type:
 We select snapshot for the demo. Update the generated class names if desired (we chose the Product table from the MDB file so updated the record view class as shown):
 
 ![](./MSVC2005/new_database_mfc_mdb_classes.PNG)
+
+## Introducing the program structure
+
+An MFC database application is composed of the same classes as a non-database application (e.g. [Sketcher](https://github.com/jfspps/VisualStudio2005Learning/tree/main/Sketcher)) with the addition of new classes.
+
+The MFC database application draws on a new MFC class `CRecordSet`. This database class (in [this](https://github.com/jfspps/VisualStudio2005Learning/tree/main/MFC_MDB_Demo) project) defines the DB table fields (selected via the wizard) and is referred to by two key classes:
+
++ A document class `CMFC_MDB_DemoDoc` which is derived from the MFC class `CDocument`. The class now introduces a new public member variable `CMFC_MDB_DemoSet` which is derived from the MFC class `CRecordset`.
++ The view class `CProductView` which is derived from the MFC class for recordsets, `CRecordView`. This class contains a public member pointer variable to `CMFC_MDB_DemoSet`.
+
+The view `DoDataExchange` defines a member function `DoDataExchange()` which transfers data between `CRecordSet` data members and the dialog box controls that a user would interact with.
+
+## CRecordSet derivatives
+
+Such derivatives for `CRecordSet` (amongst many things) manage database connections, via `CDatabase` objects. In this demo project, this is currently of the form:
+
+```cpp
+CString CMFC_MDB_DemoSet::GetDefaultConnect()
+{
+	return _T(
+        "DBQ=C:\\pathTo\\Northwind.MDB;
+        DefaultDir=C:\\pathTo;
+        Driver={Driver do Microsoft Access (*.mdb)};
+        DriverId=25;
+        FIL=MS Access;
+        FILEDSN=C:\\pathTo\\MFC_MDB_Northwind_Demo.dsn;
+        MaxBufferSize=2048;
+        MaxScanRows=8;
+        PageTimeout=5;
+        SafeTransactions=0;
+        Threads=3;
+        UID=admin;
+        UserCommitSync=Yes;");
+}
+```
+
+The application will not normally compile if a string password is present. Instead a popup will show asking fro the user ID and password (if required).
+
+The class also defines member variables for the selected tables' fields, in this case:
+
+```cpp
+	long	m_ProductID;	//Number automatically assigned to new product.
+	CStringW	m_ProductName;
+	long	m_SupplierID;	//Same entry as in Suppliers table.
+	long	m_CategoryID;	//Same entry as in Categories table.
+	CStringW	m_QuantityPerUnit;	//(e.g., 24-count case, 1-liter bottle).
+	double	m_UnitPrice;
+	int	m_UnitsInStock;
+	int	m_UnitsOnOrder;
+	int	m_ReorderLevel;	//Minimum units to maintain in stock.
+	BOOL	m_Discontinued;	//Yes means item is no longer available.
+```
+
+The data type `CStringW` is used to enable support for Unicode strings (as opposed to ASCII) and may be required for international applications. For basic demos such as this, one can update this definition so the `CString` is used instead.
+
+The following two functions are central to the application:
+
+```cpp
+virtual CString GetDefaultSQL(); 	// default SQL query for Recordset
+virtual void DoFieldExchange(CFieldExchange* pFX);	// transfers data from the database to the recordset, and back again
+```
+
+To reiterate, `CRecordset::DoFieldExchange()` transfers data between the database and the recordset. The function `CProductView::DoDataExchange()` exchanges data between the recordset and the dialog box.
+
+Naturally, it is possible to have multiple recordsets and views in place.
