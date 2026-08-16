@@ -161,6 +161,21 @@ virtual CString GetDefaultSQL();
 virtual void DoFieldExchange(CFieldExchange* pFX);	
 ```
 
-To reiterate, `CRecordset::DoFieldExchange()` transfers data between the database and the recordset. The function `CProductView::DoDataExchange()` exchanges data between the recordset and the dialog box.
+As mentioned above, `CRecordset::DoFieldExchange()` transfers data between the database and the recordset. The function `CProductView::DoDataExchange()` exchanges data between the recordset and the dialog box.
+
+![](./MSVC2005/mfc_recordset.png)
 
 Naturally, it is possible to have multiple recordsets and views in place.
+
+The method `GetDefaultSQL` is used to populate the data members. The default implementation is:
+
+```cpp
+CString CProductSet::GetDefaultSQL()
+{
+        return _T("[Products]");
+}
+
+
+// where required, the system generates the SQL query as follows:
+// SELECT * FROM CProductSet::GetDefaultSQL()
+```
