@@ -165,7 +165,7 @@ As mentioned above, `CRecordset::DoFieldExchange()` transfers data between the d
 
 ![](./MSVC2005/mfc_recordset.png)
 
-Naturally, it is possible to have multiple recordsets and views in place.
+Most databases will have multiple tables, which in turn may require their own recordset representative. MFC database make it possible to have multiple recordsets and views in place. A recordset can be associated with more than one table.
 
 The method `GetDefaultSQL` is used to populate the data members. The default implementation is:
 
