@@ -52,14 +52,22 @@ valid type handling. The notation is however still prevalent in Windows applicat
 |n|`int`|
 |p|a pointer|
 |s|a string|
-|sz|a __zero__ terminated string|
+|sz, str|a __zero__ terminated string|
 |w|WORD; `unsigned short`|
+|x, y| short, usually used for coordinates|
+|cx, cy| short, _c_ standing for _count_, used to denote lengths|
+
+Hungarian notation also sets out naming conventions for functions and classes.
+
+Under the Hungarian notation, functions start with capitalised letters, however, underscores are not permitted. 
+Variable names use camel-case. Types and constants are fully capitalised and can include an underscores. Classes 
+always start with uppercase C.
 
 ## Windows applications
 
 Windows recognises and calls two functions in a C++ project:
 
-+ `WinMain()` - where execution begins and ends
++ `WinMain()` - where execution begins and ends (equivalent to command line `main()`)
 + `WindowProc()` - Windows message handling with the application
 
 ### WinMain()
@@ -84,11 +92,45 @@ The parameters:
 
 The function returns an instance of `WINAPI`, which is required for all C++ applications on Windows.
 
-### Defining the sort of window to create: WNDCLASSEX
+### Win32 message boxes
 
-The C/C++ structure `WNDCLASSEX` defines what sort of window to create. The naming CLASS is not a C++ class, but an MFC class, a representation of a window. Historically, `WNDCLASSEX` succeeds (implements additional parameters) an older structure, `WNDCLASS`.
+Starting a new Win32 project (not console) with entry point `WinMain()`:
 
-An instance of WNDCLASSEZ is constructed in WinMain(), and so have access to its parameters.
+```cpp
+// exclude MFC overhead, pure Win32
+#define WIN32_LEAN_AND_MEAN
+
+#include <windows.h>
+#include <windowsx.h> // additional macros
+
+int WINAPI WinMain(HINSTANCE hInstance, 
+				   HINSTANCE hPrevInstance, 
+				   LPSTR lpCmdLine, 
+				   int nCmdShow)
+{
+	MessageBox(
+		NULL,  // handle of owner window (null if parent)
+
+		// recall, L prefix passes a wide char (wchar_t)
+		L"Message box title",
+		L"Message box message", 
+
+		// logical OR producing buttons for both
+		MB_OK | MB_ICONEXCLAMATION);
+
+	return 0;
+}
+```
+
+On compilation, this produces a dialog box:
+
+![](./MSVC2005/win32_message_box.PNG)
+
+### Window classes with WNDCLASSEX
+
+The C/C++ structure `WNDCLASSEX` defines what sort of window to create. The naming CLASS is not a C++ class, but an MFC class, a representation of a window. Historically, `WNDCLASSEX` succeeds (implements additional parameters) an older (obsolete) structure, `WNDCLASS`.
+
+An instance of WNDCLASSEX is constructed in `WinMain()` (the full cpp file is given at the end of this section), and so have access to its parameters.
 
 The fields to focus on for now are commented:
 
@@ -183,7 +225,8 @@ hWndAlpha = CreateWindow(
 The Windows API function `ShowWindow()` then draws the window on the screen.
 
 ```cpp
-// note aforementioned parameters, the reference to the created window and WinMain's nCmdShow
+// note aforementioned parameters, the reference to 
+// the created window and WinMain's nCmdShow
 ShowWindow(hWndAlpha, nCmdShow);
 ```
 
@@ -196,6 +239,25 @@ UpdateWindow(hWndAlpha);
 ```
 
 We cover Windows application messaging in more detail first before returning to updating the application content.
+
+### Scheduling and application threads
+
+Windows (in contrast to older operating systems like DOS) allows different applications to run in a round-robin fashion, 
+where each application gets a small time slice to run in. The CPU is shared among the different applications. 
+The time allotted to each application is managed by a _scheduler_.
+
+Data is transferred between an application and the operating system along an execution line is known as a _thread_, with some applications having multiple threads of execution. Each thread is normally executed a short amount of the time and can be created logically through programming.
+
+The CPU works on a given thread, strictly speaking* in turn and so in the true sense is not multitasking.
+
+### Event-driven applications
+
+Windows supports "multitasking" (in truth, Windows 9X/NT onwards did; for example, Windows 3.1 required applications to 
+yield to the next, related to the deprecated `hPrevInstance` param in `WinMain()`) and is also event-driven. 
+
+An _event_ is an action, usually performed by the user. Windows receives notice
+of these events and then sends the application one or more _messages_ that describe what the user did.
+The message is processed by the application by a handler, as defined within the application.
 
 ### Windows Messages
 
@@ -242,7 +304,8 @@ The function `GetMessage()` always returns true when a messsage to quit hasn't b
 GetMessage(
 	&msg, // stores the message content, via a reference, for a queued message found 
 	0, // 0 = retrieve all message for an application
-	0, // these last two params indicate boundaries to message IDs, allowing Windows to focus on specific actions
+	0, // these last two params indicate boundaries to message IDs, allowing Windows
+	   // to focus on specific actions
 	0
 );
  ```
