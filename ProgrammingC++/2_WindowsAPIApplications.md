@@ -124,13 +124,22 @@ int WINAPI WinMain(HINSTANCE hInstance,
 }
 ```
 
-The passing of string literals with wide Unicode chars (instead of narrower ANSI chars) is achieved with the `L` macro. The above
-`MessageBox()` expects LPCWSTR instead of LPCSTR. This will be commonplace for all examples in this section. See also
-[here](../DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#fundamental-types).
-
 On compilation, this produces a dialog box:
 
 ![](./MSVC2005/win32_message_box.PNG)
+
+### Sidenote: targetting Windows 9X or NT
+
+The passing of string literals with wide Unicode chars (instead of narrower ANSI chars) is achieved with the `L` macro. The above
+`MessageBox()` expects LPCWSTR instead of LPCSTR. This will be commonplace for all examples in this section (compiled applications targetting
+Windows NT derived operating systems). See also [here](../DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#fundamental-types).
+
+If applications need to run on Win 9X, which has very limited support for Unicode, then one will need to compile with 
+__Multi-byte character set__ found under the project settings in MVS 2005 (this normally defaults to __Unicode set__):
+
+![](./MSVC2005/multi-byte_char_set.PNG)
+
+In such cases, it is not necessary to prefix strings with the `L` macro.
 
 ### Window classes with WNDCLASSEX
 
