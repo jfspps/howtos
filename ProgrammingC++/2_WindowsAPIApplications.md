@@ -145,6 +145,16 @@ In such cases, it is not necessary to prefix strings with the `L` macro.
 
 The C/C++ structure `WNDCLASSEX` defines what sort of window to create. The naming CLASS is not a C++ class, but an MFC class, a representation of a window. Historically, `WNDCLASSEX` succeeds (implements additional parameters) an older (obsolete) structure, `WNDCLASS`.
 
+The procedure generally involves:
+
+1. Defining a Window class and attaching an event handler (callback)
+2. Registering the Window class with Windows
+3. Creating a new Window and getting a reference to it
+4. Showing the window
+5. Define the callback function that fires when an event occurs
+
+### 1. Defining WNDCLASSEX and attaching a handler
+
 An instance of WNDCLASSEX is constructed in `WinMain()` (the full cpp file is given at the end of this section), and so have access to its parameters.
 
 The fields to focus on for now are commented:
@@ -154,8 +164,8 @@ struct WNDCLASSEX {
 	UINT cbSize;
 	UINT style;
 	WNDPROC lpfnWndProc;
-	int cbClsExtra;
-	int cbWndExtra;
+	int cbClsExtra; // seldom used
+	int cbWndExtra; // seldom used
 	HINSTANCE hInstance;
 	HICON hIcon;
 	HCURSOR hCursor;
@@ -170,19 +180,22 @@ WNDCLASSEX windowClass;
 
 //initialise specific fields
 
-// size of the structure object
+// size of the structure object (useful for calling function
+// to know ahead of time how much data is expected)
 windowClass.cbSize = sizeof(WNDCLASSEX);
 
-// determine behaviour e.g. when the window should
+// determine behaviour; in this case when the window should
 // be redrawn (in this case, when both the horizontal
 // and vertical dimensions have changed); 
-// the bitwise OR is applied as both options (flags) are have null, true or
-// false states (in this case as 32-bit words set to 1 for true)
+// the bitwise OR is applied as both options (flags) have null, true or
+// false states (in this case as 32-bit words, with 1 for true)
 // so here windowClass.style would be 1 when there was a change
-// to the dimensions, and 0 at all other times
+// to either or both dimensions, and 0 at all other times
 windowClass.style = CS_HREDRAW | CS_VREDRAW;
 
-// set a pointer to a function that handles messages i.e. WindowProc
+// set a pointer to a (callback) function (i.e. WindowProc)
+//  that fires when an event occurs 
+// WindowProc() is defined later
 windowClass.lpfnWndProc = WindowProc;
 
 // pass WinMain's hInstance as the current instance's value
@@ -197,18 +210,24 @@ windowClass.hCursor = LoadCursor(0, IDC_ARROW);
 windowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(GREY_BRUSH));
 
 // set the name that identifies this classification of window
-static char szAppName[] = L"someName";  // the L prefix is not a typo
+static char szAppName[] = L"someName";  // the L prefix is not a typo (Unicode)
 windowClass.lpszClassName = szAppname;
 ```
 
-### Registering WNDCLASSEX object with Windows
+The last field denotes the name _Windows_ uses to refer to this Window class.
+
+### 2. Registering WNDCLASSEX object with Windows
 
 The Windows API function `RegisterClassEx()` can be used the _register_ the
 `WNDCLASSEX` object (or registering the window classification) with Windows. 
 Historically, the function `RegisterClass()` can be used to register objects 
 of the older `WNDCLASS` strcuture.
 
-### Getting a reference to the window created
+```cpp
+RegisterClassEx($nameOfWindowClassInstance);
+```
+
+### 3. Getting a reference to the window created
 
 The Windows API function `CreateWindow()` can be called after window registration
 and return a reference to the window. The reference can be useful later. Note
@@ -235,9 +254,13 @@ hWndAlpha = CreateWindow(
 );
 ```
 
-### Showing the window
+There is another similar function `CreateWindowEx()` that is similar to `CreateWindow()`. The former
+includes an extra parameter `dwExStyle` for advanced window features, and is generally null. Hence,
+we use `CreateWindow()` here.
 
-The Windows API function `ShowWindow()` then draws the window on the screen.
+### 4. Showing the window
+
+The Windows API function `ShowWindow()` can then be used to draw the window to the screen.
 
 ```cpp
 // note aforementioned parameters, the reference to 
@@ -245,7 +268,26 @@ The Windows API function `ShowWindow()` then draws the window on the screen.
 ShowWindow(hWndAlpha, nCmdShow);
 ```
 
-At present, this will show the window but without application content. The code to draw the content (in an area known as the _client area_) 
+This method is however not necessary if the third parameter to `CreateWindow()` is set with `WS_VISIBLE`:
+
+```cpp
+hWndAlpha = CreateWindow(
+	szAppname, 
+	L"The Window title goes here",  
+	WS_OVERLAPPEDWINDOW | WS_VISIBLE, // this shows that window on instantiation
+	CW_USEDEFAULT, 
+	CW_USEDEFAULT,
+	CW_USEDEFAULT,
+	CW_USEDEFAULT,
+	0, 
+	0, 
+	hInstance, 
+	0
+);
+```
+
+Continuing on following a call to `ShowWindow()`, this will show the window but without application 
+content. The code to draw the content (in an area known as the _client area_) 
 is normally defined in `WindowProc()`. Then, call `UpdateWindow(hWndAlpha)` to get Windows to refer to that code and draw the content.
 
 ```cpp
@@ -253,7 +295,9 @@ is normally defined in `WindowProc()`. Then, call `UpdateWindow(hWndAlpha)` to g
 UpdateWindow(hWndAlpha);
 ```
 
-We cover Windows application messaging in more detail first before returning to updating the application content.
+## More on Windows applications
+
+We cover Windows application messaging in more detail first before returning to updating the application content following `UpdateWindow()`.
 
 ### Scheduling and application threads
 
@@ -284,8 +328,10 @@ Messages are either
 Messages are handled as follows:
 
 1. Process queued messages (if they exist) in WinMain()
-2. Ask Windows to call WinProc() (this doesn't happen automatically) to deal
+2. Ask Windows to call WinProc() (short for _Windows Procedure_; this isn't called automatically) to deal
 with the message. By this point, the message isn't in a queue anymore.
+
+### The main event (message) loop
 
 The WinMain() _message loop_ can take the form given below:
 
@@ -341,7 +387,7 @@ to anther application, regardless of whether messages are pending. This approach
 In either case, implementation of a messaging loop is required, since the application will need to prepare for
 the case when Windows interrupts execution.
 
-### Defining application behaviour: WindowProc()
+### 5. Defining application behaviour with WindowProc()
 
 As is hopefully becoming evident, most of the custom application logic is defined in `WindowProc()`. Below is the prototype:
 
@@ -356,7 +402,7 @@ LRESULT CALLBACK WindowProc(
 
 Recall from [Windows data types](2_WindowsAPIApplications.md#windows-data-types) 
 that `LRESULT` is the return to the message, equivalent to a `long`.
-The specifier `CALLBACK` is needed to indicate (for various reason) that 
+The specifier `CALLBACK` is needed to indicate (for various reasons) that 
 `WindowProc()` is accessed through a pointer and how Windows should handle the four parameters.
 
 In effect, `WindowProc()` processes the message IDs (known by the second parameter) via a `switch` block:
@@ -387,25 +433,42 @@ switch (message)
 }
 ```
 
-We focus on repainting a window and therefore examine the `WM_PAINT` message type.
+A complete implementation of `WindowProc()` is given at the end of this section. We focus 
+on repainting a window and therefore examine the `WM_PAINT` message type.
 
-Previously tabulated [above](./2_WindowsAPIApplications.md#windows-data-types), we use an HDC. In more detail, a _HDC_ provides
-a link between device-independent Windows API functions that output data to a screen or printer, along with the device
-specific device drivers that support such operations. The HDC is issued to the application by Windows on request, granting
-the application permission to output data.
+### Repainting a window
 
-To get the HDC for drawing to the screen, the client area (from within `WindowProc()`), use `BeginPaint()`:
+Previously tabulated [above](./2_WindowsAPIApplications.md#windows-data-types), we use an HDC. In more detail, a _HDC_ (handle
+to a device context) provides a link between device-independent Windows API functions that output data to a screen or 
+printer, along with the device specific device drivers that support such operations. The HDC is issued to the application
+by Windows on request, granting the application permission to output data.
+
+To get the HDC for drawing to the screen (defined within `WindowProc()`) use `BeginPaint()`:
 
 ```cpp
-HDC hDC;  // the authority
-PAINTSTRUCT PaintSt;  //  structure which defines the drawing region
+// the authority
+HDC hDC;  
 
-// pass the winows handle and the PAINTSTRUCT variable.
+// a structure which defines the region
+// that must be redrawn
+PAINTSTRUCT PaintSt;
+
+// pass the window's handle (unqiue to the window)
+// and the PAINTSTRUCT variable.
 hDC = BeginPaint(hWnd, &PaintSt);
 ```
 
-The `PAINTSTRUCT` variable is updated by Windows with information about the clent area in response to a `WM_PAINT` message.
-One can obtain the coordinates (as upper left and lower right corners) within a `RECT` structure using `GetClientRect()`:
+The _client area_ is essentially the area of the window _minus_ the title bar. When a part of the client
+area is __invalidated__, it means another window or similar previously obscured that part of the 
+client area and now it is no longer obscured, the affected area needs
+to be redrawn. The remainder of the client area need not be redraw.
+
+In this demo, we are going to redraw the entire client area and set text against it.
+
+The `PAINTSTRUCT` variable is updated by Windows with information about the client area
+in response to a `WM_PAINT` message.
+One can obtain the coordinates (as upper left and lower right corners) 
+within a `RECT` structure using `GetClientRect()`:
 
 ```cpp
 RECT aRECT;
@@ -415,13 +478,13 @@ GetClientRect(hWnd, &aRECT);
 The updated `aRECT` variable is updated by Windows.
 
 We then update the background colour of the client area text (to be shown) as transparent, to allow the background
-of the client area to show through. (Without this, a default `OPAQUE` mode would apply to text background colours.)
+of the client area to show through. Without this, a default `OPAQUE` mode would apply to text background colours.
 
 ```cpp
 SetBkMade(hDC, TRANSPARENT);
 ```
 
-We then start drawing, in this setting text with `Drawtext()`:
+We then start drawing, in this demo setting text with `Drawtext()`:
 
 ```cpp
 DrawText(
@@ -441,7 +504,7 @@ When finished drawing, we pair `BeginPaint()` with a call to `EndPaint()`:
 EndPaint(hWnd, &PaintSt);
 ```
 
-### Closing the application
+## Closing the application
 
 As highlighted by the switch statement, we define code under `WM_DESTROY` to generate a `WM_QUIT` message,
 which ultimately finds its way into `WinMain()`'s `GetMessage()`:
@@ -485,6 +548,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
    WindowClass.cbSize = sizeof(WNDCLASSEX);
    WindowClass.style = CS_HREDRAW | CS_VREDRAW;
+
+   // set the Window class to point to WindowProc
+   // in preparation for message handling when called upon
+   // by DispatchMessage() (see main event loop)
    WindowClass.lpfnWndProc = WindowProc;
 
    WindowClass.cbClsExtra = 0;
@@ -519,8 +586,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
+   // the main event loop
    while (GetMessage(&msg, 0, 0, 0) == TRUE){
 	   TranslateMessage(&msg);
+
+	   // this call WindowProc()
 	   DispatchMessage(&msg);
    }
 
@@ -552,14 +622,65 @@ LRESULT WINAPI WindowProc(HWND hWnd,
 			  DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 		  EndPaint(hWnd, &PaintSt);
+
+		  // returning zero indicates to Windows that this message
+		  // was handled
 		  return 0;
 
 	  case WM_DESTROY:
 		  PostQuitMessage(0);
+
+		  // returning zero indicates to Windows that this message
+		  // was handled
 		  return 0;
 
 	  default:
+	  	  // send any message that weren't handled to Windows for
+		  // default (def) processing
 		  return DefWindowProc(hWnd, message, wParam, lParam);
   }
 }
 ```
+
+## Allowing for background tasks
+
+The above main event loop only fires logic if a message is queued. Any other logic that should 
+run the background that should not be event-driven (e.g. background tasks) will not be 
+invoked. 
+
+For example, `DoBackgroundStuff()` won't be invoked all the time:
+
+```cpp
+   while (GetMessage(&msg, 0, 0, 0) == TRUE){
+	   TranslateMessage(&msg);
+
+	   // this call WindowProc()
+	   DispatchMessage(&msg);
+
+	   // this only fires if a message (may not be related)
+	   // is queued and GetMessage() grants access
+	   DoBackgroundStuff();
+   }
+```
+
+An alternative approach is to utilise `PeekMessage()`:
+
+```cpp
+while(TRUE){
+	if (PeekMessage($msg, NULL, 0, 0, PM_REMOVE)){
+		if (msg.message == WM_QUIT)
+			break;
+
+		TranslateMessage(&msg);
+
+	   	// this call WindowProc()
+	   	DispatchMessage(&msg);
+	}
+
+	// now we can repeatedly do stuff until the application closes 
+	DoBackgroundStuff();
+}
+```
+
+In the above case, the flag `PM_REMOVE` removes the message from the queue,
+assigning it to `msg`. In this case, there is no need to call `GetMessage()`.
