@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 The passing of string literals with wide Unicode chars (instead of narrower ANSI chars) is achieved with the `L` macro. The above
 `MessageBox()` expects LPCWSTR instead of LPCSTR. This will be commonplace for all examples in this section. See also
-[here](/DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#fundamental-types).
+[here](../DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#fundamental-types).
 
 On compilation, this produces a dialog box:
 
