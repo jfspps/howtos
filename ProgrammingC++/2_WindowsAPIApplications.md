@@ -25,7 +25,8 @@ Some (not all) are tabulated below:
 |HDC|A handle to a device context (an object that outputs data to a screen or printer)|
 |HINSTANCE|A handle to an instance (running application)|
 |LPARAM|A message parameter|
-|LPCSTR|A pointer to a constant null-terminated string of 8-bit characters|
+|LPCSTR|A pointer to a constant null-terminated string of 8-bit ANSI characters|
+|LPCWSTR|A pointer to a constant null-terminated string of 16-bit Unicode characters|
 |LPHANDLE|A pointer to a handle|
 |LRESULT|A signed value that results from processing a __message__ (a message represents an application event)|
 |WORD|A 16-bit unisgned integer, equivalent to an `unsigned short` in C++|
@@ -111,7 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	MessageBox(
 		NULL,  // handle of owner window (null if parent)
 
-		// recall, L prefix passes a wide char (wchar_t)
+		// this project is configured to support Unicode
+		// so the L macro which passes a Unicode wide char is required
 		L"Message box title",
 		L"Message box message", 
 
@@ -121,6 +123,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	return 0;
 }
 ```
+
+The passing of string literals with wide Unicode chars (instead of narrower ANSI chars) is achieved with the `L` macro. The above
+`MessageBox()` expects LPCWSTR instead of LPCSTR. This will be commonplace for all examples in this section. See also
+[here](/DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#fundamental-types).
 
 On compilation, this produces a dialog box:
 
