@@ -41,7 +41,10 @@ The MVS resource compiler handles all resources and bundles them as part of the 
 
 ### Menus
 
-Menu and menu options are also defined in MVS as resources. In the resource script (`resource.rc`), one could define:
+Menu and menu options are also defined in MVS as resources. 
+
+The following is demonstrated by [this project](https://github.com/jfspps/VisualStudio2005Learning/tree/main/WindowsAPIv2). 
+In the resource script (`resource.rc`), one can define:
 
 ```cpp
 MainMenu MENU DISCARDABLE
@@ -107,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
    WindowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(GRAY_BRUSH));
 
    // refer to the resource by name (could also define as a symbolic constant)
-   WindowClass.lpszMenuName = "MainMenu"; 
+   WindowClass.lpszMenuName = L"MainMenu"; 
 
    WindowClass.lpszClassName = szAppName;
    WindowClass.hIconSm = 0;
@@ -125,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	   CW_USEDEFAULT,
 	   CW_USEDEFAULT,
 	   0,
-	   LoadMenu(hInstance, "MainMenu"),
+	   LoadMenu(hInstance, L"MainMenu"),
 	   hInstance,
 	   0);
 
@@ -177,3 +180,59 @@ LRESULT WINAPI WindowProc(HWND hWnd,
 ```
 
 We define the event handler fired when a user clicks a menu option next.
+
+### Linking LIB files
+
+For this demo, we will be playing wave files. This will require importing the `mmsystem.h` header file __and__
+including the Windows Multimedia Extension library `WINMM.LIB`. 
+
+Lib files can be included as a linker dependency through the project properties. 
+Simply type in the name of the library (it is located Platform SDK lib folder, normally
+`C:\Program Files (x86)\Microsoft Visual Studio 8\VC\PlatformSDK\Lib`; there is an AMD64 version too)
+
+![](./MSVC2005/linking_to_libs.PNG)
+
+### Menu option messages: introducing audio
+
+Menu option selection is a result of uer interaction and therefore classed as a [command message](3_MFCApplications.md#types-of-messages), `WM_COMMAND`. Under this, each menu option is assigned a sound
+to play (except for Exit):
+
+```cpp
+case WM_COMMAND:
+		  {
+			  switch (LOWORD(wParam))
+			  {
+			  case MENU_FILE_ID_OPEN:
+				  {
+					  PlaySound(MAKEINTRESOURCE(SOUND_ID_ENERGIZE),
+						hinstance_app,
+						SND_RESOURCE | SND_ASYNC);
+				  } break;
+			  case MENU_FILE_ID_CLOSE:
+				  {
+					  PlaySound(MAKEINTRESOURCE(SOUND_ID_BEAM),
+						hinstance_app,
+						SND_RESOURCE | SND_ASYNC);
+				  } break;
+			  case MENU_FILE_ID_SAVE:
+				  {
+					  PlaySound(MAKEINTRESOURCE(SOUND_ID_TELEPORT),
+						hinstance_app,
+						SND_RESOURCE | SND_ASYNC);
+				  } break;
+			  case MENU_FILE_ID_EXIT:
+				  {
+					  PostQuitMessage(0);
+				  } break;
+			  case MENU_HELP_ABOUT:
+				  {
+					  MessageBox(
+						  hWnd, 
+						  L"Menu Sound Demo", 
+						  L"About Sound Menu", 
+						  MB_OK | MB_ICONEXCLAMATION);
+				  } break;
+			  default: break;
+			  }
+		  } break;
+```

@@ -667,7 +667,7 @@ An alternative approach is to utilise `PeekMessage()`:
 
 ```cpp
 while(TRUE){
-	if (PeekMessage($msg, NULL, 0, 0, PM_REMOVE)){
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 		if (msg.message == WM_QUIT)
 			break;
 
