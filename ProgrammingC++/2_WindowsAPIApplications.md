@@ -1,10 +1,10 @@
 ---
-title: Microsoft Windows API C++ applications
+title: Microsoft Windows API C++ applications Part 1
 nav_order: 2
 parent: Programming in C++
 ---
 
-# Microsoft Windows API C++ applications
+# Microsoft Windows API C++ applications Part 1
 
 This article demonstrates the main aspects involved to building Windows applications with MVS using the Windows API.
 

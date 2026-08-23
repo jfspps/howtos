@@ -216,33 +216,6 @@ Double clicking IDR_SketcherTYPE opens an Editor:
 
 ![](./MSVC2005/menu_editor.PNG)
 
-Resource scripts are actually text files that resemble C code. Taking the icon section of the script:
-
-```C
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\Sketcher.ico"
-IDR_SketcherTYPE        ICON                    "res\\SketcherDoc.ico"
-```
-
-The layout shows the symbolic constant (referred to by icon related functions in code), 
-the type of resource (e.g. ICON, CURSOR, WAVE) and then the file location. The symbolic constant can be given in the resource
-script or located in a header file that would be declared at the top of the .rc script.
-
-In the Sketcher demo, the header file is "resource.h", which declares the above icons as:
-
-```C
-#define IDR_MAINFRAME                   128
-#define IDR_SketcherTYPE                129 // the numbers are arbitrary
-```
-
-The MVS resource compiler handles all resources and bundles them as part of the EXE file.
-
 ## Graphic Device Interface (GDI)
 
 Drawing in a window is always relative to the top-left corner of the window. Windows can draw on screen when it knows the position of the
