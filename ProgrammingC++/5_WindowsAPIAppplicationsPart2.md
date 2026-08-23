@@ -14,7 +14,7 @@ This article continues from [Part 1](2_WindowsAPIApplications.md), focusing on G
 
 Resource scripts are actually text files that resemble C code. Taking the icon section of the script:
 
-```C++
+```cpp
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -32,7 +32,7 @@ script or located in a header file that would be declared at the top of the .rc 
 
 In the Sketcher demo, the header file is "resource.h", which declares the above icons as:
 
-```C++
+```cpp
 #define IDR_MAINFRAME                   128
 #define IDR_SketcherTYPE                129 // the numbers are arbitrary
 ```
@@ -43,7 +43,7 @@ The MVS resource compiler handles all resources and bundles them as part of the 
 
 Menu and menu options are also defined in MVS as resources. In the resource script (`resource.rc`), one could define:
 
-```C++
+```cpp
 MainMenu MENU DISCARDABLE
 {
 	POPUP "&File"
@@ -63,7 +63,7 @@ MainMenu MENU DISCARDABLE
 
 Then via a declared header file (`resource.h`), state:
 
-```C++
+```cpp
 #define MENU_FILE_ID_OPEN 1000
 #define MENU_FILE_ID_CLOSE 1001
 #define MENU_FILE_ID_SAVE 1002
@@ -74,7 +74,7 @@ Then via a declared header file (`resource.h`), state:
 
 Then initialise and set the menu in the body of the application (with a plain Win32 demo):
 
-```C++
+```cpp
 #include <windows.h>
 #include "resource.h"
 
