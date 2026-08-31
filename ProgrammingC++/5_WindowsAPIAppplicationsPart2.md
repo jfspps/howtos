@@ -194,7 +194,7 @@ Simply type in the name of the library (it is located Platform SDK lib folder, n
 
 ### Menu option messages: introducing audio
 
-Menu option selection is a result of uer interaction and therefore classed as a [command message](3_MFCApplications.md#types-of-messages), `WM_COMMAND`. Under this, each menu option is assigned a sound
+Menu option selection is a result of user interaction and therefore classed as a [command message](3_MFCApplications.md#types-of-messages), `WM_COMMAND`. Under this, each menu option is assigned a sound
 to play (except for Exit):
 
 ```cpp

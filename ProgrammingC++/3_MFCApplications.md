@@ -216,7 +216,7 @@ Double clicking IDR_SketcherTYPE opens an Editor:
 
 ![](./MSVC2005/menu_editor.PNG)
 
-## Graphic Device Interface (GDI)
+## Graphic Device Interface (GDI) with MFC
 
 Drawing in a window is always relative to the top-left corner of the window. Windows can draw on screen when it knows the position of the
 window and the position relative to the top-left corner reference point.

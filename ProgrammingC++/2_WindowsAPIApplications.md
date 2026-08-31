@@ -218,7 +218,7 @@ The last field denotes the name _Windows_ uses to refer to this Window class.
 
 ### 2. Registering WNDCLASSEX object with Windows
 
-The Windows API function `RegisterClassEx()` can be used the _register_ the
+The Windows API function `RegisterClassEx()` can be used to _register_ the
 `WNDCLASSEX` object (or registering the window classification) with Windows. 
 Historically, the function `RegisterClass()` can be used to register objects 
 of the older `WNDCLASS` strcuture.
