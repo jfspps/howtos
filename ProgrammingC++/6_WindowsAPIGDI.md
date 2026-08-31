@@ -57,7 +57,7 @@ done, with `ReleaseDC()`:
 // instead of using BeginPaint and EndPaint
 
 // name as gdc to emphasise graphics device context
-// (device contexts are not exclusive to displays)
+// (device contexts can also take the form of printers)
 HDC gdc = NULL;
 
 if (!(gdc = GetDC(hWnd))){
@@ -155,4 +155,111 @@ Such predefined combinations can be tabluated:
 |255|100|100|100|
 
 The above table represents a _palette_, and is a table of all (256) RGB combinations. It is actually referred to as a _colour lookup table_ or __CLUT__. Each pixel is assigned a value equivalent to a zero-based index of the table. The combination of red, green and blue is then pulled from the table 
-and (via a digital to analogue converter) displayed by the pixel on screen.
+and (via a digital to analogue converter, DAC) displayed by the pixel on screen.
+
+## Printing text
+
+Printing text can be performed with either `TextOut()` (simpler, faster) or `DrawText()` (more complex, supports formatting).
+
+```cpp
+// draw text at given coords with TextOut
+bool drawn = TextOut(
+	hdc,
+	20, // x-coord
+	30, // y-coord
+	"Example output with TextOut",
+	strlen("Example output with TextOut")
+);
+
+// draw text within a bounding rectangle with DrawText
+int drawn = DrawText(
+	hdc,
+	"Example output with DrawText",
+	strlen("Example output with DrawText"),
+	&someBoundingRect,
+	DT_LEFT // formatting flag (this one left-justifies text)
+);
+```
+
+The [bounding rectangle](3_MFCApplications.md#enclosing-and-bounding-rectangles) required by DrawText is of type `LPRECT`. 
+
+Recall, a _bounding rectangle_ defines the boundary within which to draw elements,
+accommodating the thickness or width of lines. An _enclosing rectangle_ similarly defines the region within which elements reside but assumes a unit
+pixel width. Boundary rectangles are therefore always at least as large as enclosing rectangles. The rectangles are defined by client coordinates.
+
+The remaining commentary focuses on the simpler `TextOut()` call, while introducing transparency.
+
+Printing text without transparency is generally quicker than printing text with it. To incorporate transparency, it will be necessary to set forground and 
+background colours accordingly.
+
+```cpp
+COLORREF oldForeColour, oldBackColour;
+
+int oldTransparencyMode;
+
+HDC gdc = GetDC(hWnd);
+
+// set a new foreground colour to green, saving the old one
+oldForeColour = SetTextColor(gdc, RGB(0,255,0));
+
+// set the background to black, saving the old one
+oldBackColour = SetBkColor(gdc, RGB(0,0,0));
+
+// enable transparency mode, saving the old preference
+// (OPAQUE to disable transparency)
+oldTransparencyMode = SetBkMode(gdc, TRANSPARENT);
+
+TextOut(
+	gdc,
+	20,
+	30,
+	"Another example",
+	strlen("Another example")
+);
+
+// restore previous settings
+SetTextColor(gdc, oldForeColour);
+SetBkColor(gdc, oldBackColour);
+SetBkMode(gdc, oldTransparencyMode);
+
+// release the device context
+ReleaseDC(hWnd, gdc);
+```
+
+The above can be defined within a block following a window update:
+
+```cpp
+PAINTSTRUCT ps;
+HDC hdc;
+
+case WM_PAINT:
+  {
+	// validate the window
+	hdc = BeginPaint(hWnd, &ps);
+
+	// set a new foreground colour to green, saving the old one
+	oldForeColour = SetTextColor(gdc, RGB(0,255,0));
+
+	// set the background to black, saving the old one
+	oldBackColour = SetBkColor(gdc, RGB(0,0,0));
+
+	// enable transparency mode, saving the old preference
+	oldTransparencyMode = SetBkMode(gdc, TRANSPARENT);
+
+	TextOut(
+		gdc,
+		20,
+		30,
+		"Another example",
+		strlen("Another example")
+	);
+
+	// restore previous settings
+	SetTextColor(gdc, oldForeColour);
+	SetBkColor(gdc, oldBackColour);
+	SetBkMode(gdc, oldTransparencyMode);
+
+	EndPaint(hWnd, &ps);
+	return 0;
+  } break;
+```
