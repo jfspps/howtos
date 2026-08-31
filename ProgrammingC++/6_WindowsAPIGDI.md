@@ -42,9 +42,13 @@ case WM_PAINT:
 The coordinates of the area that needs repainting are stored in `rcPaint` field of the `PAINTSTRUCT ps` 
 that is returned by `BeginPaint()` (stored above in `hdc`).
 
+## Updating the entire client area
+
 The area returned (known to `hdc` above) is not always the entire client area, only some portion of it. If an update 
-to the whole of the client area (e.g. for graphics applications and games) was required, then the application code
+to the whole of the client area (e.g. for graphics applications and games) is required, then the application code
 would instead get a handle to the _graphics device context_ of the window.
+
+### Introducing GetDC and ReleaseDC
 
 Normally, one can get the context with `GetDC()` but must then eventually return the handle back to Windows when 
 done, with `ReleaseDC()`:
@@ -98,3 +102,57 @@ case WM_PAINT:
 
   } break;
 ```
+
+To reiterate, _client coordinates_ are always relative to the window, whereas 
+_window coordinates_ are always relative to the screen.
+
+### Invalidating the entire client area
+
+Alternatively, it is possible to manually invalidate the whole of the client area and then 
+call `BeginPaint()` and `EndPaint()`, since `BeginPaint()` will in such cases always 
+return coords of the whole of the client area.
+
+To invalidate the whole of the client area, call `InvalidateRect()`:
+
+```cpp
+PAINTSTRUCT ps;
+HDC hdc;
+
+case WM_PAINT:
+  {
+	// invalidate the entire window
+	InvalidateRect(hWnd, NULL, FALSE);
+
+	// validate the window
+	hdc = BeginPaint(hWnd, &ps);
+
+	// repaint now...
+
+	EndPaint(hWnd, &ps);
+	return 0;
+  } break;
+```
+
+The above approach is generally more applicable when responding to `WM_PAINT` messages. The aforementioned
+`GetDC()` and `ReleaseDC()` pairing tends to be used when `WM_PAINT` is not involved.
+
+## Excursion: RGB and palattes
+
+To start off, colour can be represented _directly_ via an RGB system. There are a number of international RGB standards.
+
+A 24-bit wide type can be broken up into three (equally portioned) 8-bit segments. Each segment represents the red, green and
+blue components (channels) of colour.
+
+8-bits will have 2<sup>8</sup> = 256 values, so each channel takes on 256 values. An 8-bit colour depth means that the actual number of RGB channels combinsations is limited to 8-bits or 256 combinations of red, green and blue, which is evidently much lower than the total number of RGB combinations.
+Such predefined combinations can be tabluated:
+
+|Index|Red|Green|Blue|
+|-|-|-|-|
+|0|100|5|36|
+|1|29|200|60|
+|2|52|36|161|
+|...|...|...|...|
+|255|100|100|100|
+
+The above table represents a _palette_, and is a table of all (256) RGB combinations. It is actually referred to as a _colour lookup table_ or __CLUT__. Each pixel is assigned a value equivalent to a zero-based index of the table. The combination of red, green and blue is then pulled from the table 
+and (via a digital to analogue converter) displayed by the pixel on screen.
