@@ -6,7 +6,7 @@ parent: Programming in C++
 
 # GDI Windows API applications Part 2
 
-This article covers more about the GDI, including graphical objects, timing functions and messaging.
+This article covers more about the GDI, including graphical objects, timing functions, sending messages to controls and getting system information.
 
 ## GDI objects
 
@@ -386,3 +386,171 @@ The above code runs separate logic at 33 millisecond intervals, or 30 operations
 
 If a delay is all that is required (as opposed to synchronisation), then
 one can call `Sleep(33);` instead.
+
+## Sending user input via controls
+
+User input via events (e.g. pushing buttons) will normally send a `WM_COMMAND` message to `WinProc()`.
+
+The next section focuses on push buttons but many of the ideas re. messaging via controls applies to 
+other controls (e.g. edit boxes, list boxes, scroll bars, checkboxes and radio buttons).
+
+Before continuing, we recall the process to define a new child window. Note that while an application
+can have a `HWND` initialised multiple times, all windows go thorough the same `WinProc()` message handling 
+function. Also note we are using `CreateWindowEx()` instead of `CreateWindow()`. Both are basically the same,
+the former is more up to date and introduces one additional style paramter.
+
+```cpp
+if (!(hWnd = CreateWindowEx(/*params for first window*/)))
+  return 0;
+
+// create a second child window
+if (!(hWnd = 
+    CreateWindowEx(
+        NULL, // additional (extended), optional style param
+        "button", // class
+        "Push here", // text on button
+        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        10, // initial x
+        10, // initial y
+        100, // initial width
+        24, // initial height
+        mainWindowhandle, // handle to parent
+        (HMENU)(100), // ID of button
+        hInstance,
+        NULL
+    ))
+    )
+  return 0;
+```
+
+The child window will have a push button with the caption "Push here", which when pushed will send 
+a `WM_COMMAND` message to `WinProc()`.
+
+The child window ID is stored in the `LOWORD(wParam)` of `WinProc()`, and likewise, `lParam` for the child window handle
+and finally `HIWORD(wParam)` for the _notification code_ (what happened to the control: the push button, e.g. `BN_CLICKED`, `BN_PAINT`).
+
+```cpp
+// inside WinProc()
+case WM_COMMAND:
+{
+    // see (HMENU)(100) for the ID of the button
+    if (LOWORD(wParam) == 100)
+    {
+        // control with ID 100 pressed, do stuff...
+    }
+
+    return 0;
+} break;
+```
+
+### Sending messages to child controls
+
+It is often necessary to [send messages](6_WindowsAPIGDIPart1.md#sending-and-posting-messages-manually) 
+to the control itself (which is also part of a child window)
+after the user performed an action. For example, when a button is pressed, the button control needs 
+to get updated to look like it was clicked.
+
+This can be achieved by calling `SendMessage()`. The prototype is:
+
+```cpp
+SendMessage(
+    HWND hWnd, 
+    UINT msg,
+    WPARAM wParam, 
+    LPARAM lParam);
+```
+
++ Making a button looked pressed: 
+  - ```SendMessage(hwndButton, BM_CLICK, 0, 0);```
++ Set (or unset) a check on a checkbox option:  
+  - ```SendMessage(hwndButton, BM_SETCHECK, BST_CHECKED, 0);```
+  - The `wParam` expected: `BST_CHECKED`, `BST_INDETERMINATE`, `BST_UNCHECKED`
++ Get the state of a button check:
+  - ```someState = SendMessage(hwndButton, BM_GETCHECK, 0, 0);```
+  - `someState` would be one of `BST_CHECKED`, `BST_INDETERMINATE`, `BST_UNCHECKED`
++ Highlight a button selected by the user:
+  - ```SendMessage(hwndButton, BM_SETSTATE, 1, 0);```
+  - The `wParam` expected: 1 for true or 0 for false
++ Get the general state of a button:
+  - ```someState = SendMessage(hwndButton, BM_GETSTATE, 0, 0);```
+  - `someState` would be one of `BST_CHECKED`, `BST_FOCUS`, 
+  `BST_INDETERMINATE`, `BST_PUSHED`, `BST_UNCHECKED`
+
+## Getting system information to initialise an application
+
+Some applications will have to be loaded according to the system hardware and operating system used. 
+
++ Determine the system properties with e.g. `GetSystemInfo()`. This would show several properties, including 
+page size, number of processors, processor type (e.g. 486 vs Pentium).
++ Determine the system metrics for example:
+  - how the system was booted
+  - mouse is 
+    + installed or not 
+    + the number of mouse buttons
+    + a mouse-wheel is available
+    + handedness of the mouse (i.e. swapped left and right buttons)
+  - dimensions of various elements
+    + cursors
+    + windows (in various states) and window borders
+    + valid double-click regions
+    + fullscreen window size
+    + icons
+    + the screen
+    + small caption buttons
+    + single-line menu bar
+  - whether a DEBUG version of the application is installed
+  - alignment of drop-down menus
+  - languages in use
+  - a network is available
+  - whether an application should give visual prompts (instead of audio prompts)
+
+For examples, an application can be made to occupy the entire screen space with `GetSystemMetrics()` calls in `CreateWindowEx()` (and `CreateWindow()`):
+
+```cpp
+CreateWindowEx(
+        NULL, // additional (extended), optional style param
+        "button", // class
+        "Push here", // text on button
+        WS_POPUP | WS_VISIBLE,
+        0, // initial x
+        0, // initial y
+        GetSystemMetrics(SM_CXSCREEN), // initial width
+        GetSystemMetrics(SM_CYSCREEN), // initial height
+        mainWindowhandle, // handle to parent
+        (HMENU)(100), // ID of button
+        hInstance,
+        NULL
+    )
+```
+
+The `WS_POPUP` is needed to create a window without any borders or controls. In combination with calls
+to `GetSystemMetric()`, this results in a full-screen application.
+
+### Getting text metrics
+
+It may prove useful to use `GetTextMetrics()` at the application level (in much the same way as `GetSystemMetrics()` is 
+based on the system level) when attempting to render text appropriate for whatever font is in use.
+
+For exampe, centering text for the font currently used:
+
+```cpp
+// in WinMain...
+TEXTMETRIC tm;
+
+char textMsg[] = "Centre this text";
+char *pTextMsg = &textMsg[0];
+
+// hdc relates to one of potentially many handles (to device
+// contexts) for each font "objects" selected
+GetTextMetrics(hdc, &tm);
+
+int windowCentrePos = windowWidth - ((strlen(pTextMsg)*tm.tmAveCharWidth)/2);
+
+TextOut(
+    hdc,
+    windowCentrePos, // x-coord
+    0, // y-coord
+    pTextMsg,
+    strlen(pTextMsg)
+);
+```
