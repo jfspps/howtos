@@ -14,6 +14,35 @@ coverage with [MFC](3_MFCApplications.md#graphic-device-interface-gdi-with-mfc).
 Windows applications define event handlers (callback functions) via `WinProc()`. User and Windows generated messages are placed in a queue, with those 
 destined for the application captured by `WinProc()`. 
 
+```cpp
+LRESULT WINAPI WindowProc(HWND hWnd,
+						  UINT message,
+						  WPARAM wParam,
+						  LPARAM lParam){
+  HDC hDC;
+  PAINTSTRUCT PaintSt;
+  RECT aRECT;
+
+  switch(message){
+	  case WM_PAINT:
+		  
+		  // do stuff
+
+		  return 0;
+
+	  case WM_DESTROY:
+		  // do stuff
+		  
+		  return 0;
+
+	  default:
+	  	  // send any message that weren't handled to Windows for
+		  // default (def) processing
+		  return DefWindowProc(hWnd, message, wParam, lParam);
+  }
+}
+```
+
 The messages have IDs (of type `UINT`) e.g. `WM_CREATE`, `WM_MOVE`, `WM_MOUSEMOVE` which are normally handled separately by a switch block in `WinProc()`.
 
 In reference to the GDI, the message central to a window is `WM_PAINT`. This is sent whenever a window's contents needs updating. The process of responding to a window update is known as _validation_, updating some or all of the client area of the window. 
@@ -46,7 +75,8 @@ that is returned by `BeginPaint()` (stored above in `hdc`).
 
 The area returned (known to `hdc` above) is not always the entire client area, only some portion of it. If an update 
 to the whole of the client area (e.g. for graphics applications and games) is required, then the application code
-would instead get a handle to the _graphics device context_ of the window.
+would instead get a handle to the _graphics device context_ of the window. The latter is an abstraction of 
+display or graphics output devices, including video cards and printers.
 
 ### Introducing GetDC and ReleaseDC
 
