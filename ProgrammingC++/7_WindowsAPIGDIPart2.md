@@ -98,3 +98,179 @@ if (DeleteObject(solidBrush) && DeleteObject(hatchBrush)){
 }
 ```
 
+## Points, lines and polygons
+
+### Points
+
+Points are simplest graphical object and do not require a pen to draw, since points are one pixel objects.
+
+Recall that RGB colour modes do not support every possible red, blue and green combination, and instead are based on
+a limited number of combinations (to fit the bit mode selected). As such, the colour requested is often not the colour 
+drawn, hence GDI values (`COLORREF`) returned are the _actual_ colour drawn.
+
+```cpp
+COLORREF colourDrawn = SetPixel(
+    hdc,
+    200, 
+    300,
+    RGB(0,0,255)
+);
+```
+
+### The default GDI coordinate system `MM_TEXT`
+
+The default coordinate system `MM_TEXT` for GDI applications is an inverted Cartesian coordinate system,
+placing increasing x-values from left-to-right, and increases y-values from top-to-bottom. Units are pixels.
+
+Recall, there are screen coordinates (relative to the top-left of the screen) and 
+client coordinates (relative to the top-left of the window).
+
+There are other mapping modes (see [MM_LOENGLISH](3_MFCApplications.md#mapping-modes)) but `MM_TEXT` is generally
+used for GDI (and DirectX) applications.
+
+Points in a coordinate system can be stored by a structure `POINT`, which has the following definition:
+
+```cpp
+struct tagPOINT{
+    LONG x;
+    LONG y;
+} POINT;
+```
+
+### Lines
+
+Lines represent a series of points from an origin to a destination. More complex line drawing operations lead to
+the drawing of polygons.
+
+Line drawing is managed by `MoveToEx()` and `LineTo()`. Each call to `MoveToEx()` presents developers with the opportunity
+to record the last point.
+
+```cpp
+// assume HDC object gdc is valid
+
+// set the current position, 
+// ignoring the last position (null fourth param)
+MoveToEx(gdc, 10, 10, NULL);
+
+// then move to the new MM_TEXT coords
+LineTo(gdc, 50, 60);
+```
+
+To record the coordinates:
+
+```cpp
+// assume HDC object gdc is valid
+
+// see POINT struct above
+POINT lastPosition;
+
+// initialises lastPosition with the last position
+// before setting the new position at (10, 10)
+MoveToEx(gdc, 10, 10, &lastPosition);
+```
+
+To demonstrate a complete line drawing example:
+
+```cpp
+// assume HWND object hWnd is valid from WinProc()
+
+HDC gdc = GetDC(hWnd);
+
+HPEN greenPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+HPEN oldPen = SelectObject(gdc, greenPen);
+
+// don't need the last position on init
+MoveToEx(gdc, 10, 10, NULL);
+LineTo(gdc, 50, 60);
+
+// restore the old pen
+SelectObject(gdc, oldPen);
+
+DeleteObject(greenPen);
+ReleaseDC(hWnd, gdc);
+```
+
+Triangles can be drawn from a sequence of lines. Rectangles too can be drawn but this
+is already made available with standard methods (next).
+
+### Rectangles
+
+This quite often involves both pens (for the outline) and brushes (for the interior).
+
+To draw a rectangle, use the `Rectangle()` function. In particular this draws a _bounding rectangle_ with an
+outline pen width of one pixel with a solid line. Everything (including the outline) 
+is fit or bound to the coordinates given. (The _enclosing rectangle_ is the area inside the outline,
+a bounding rectangle of dimensions {0, 0, 2, 2} would have a zero enclosing rectangle.)
+
+```cpp
+// assume the HDC gdc is valid
+
+// define the pen and brush
+HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
+
+// select both objects
+SelectObject(pen);
+SelectObject(brush);
+
+Rectangle(gdc, 10, 10, 20, 20);
+```
+
+It is also possible to use a `RECT` structure to define the rectangle and then 
+
++ call `FillRect()` to draw a filled rectangle without a border
++ call `FrameRect()` to draw a hollow rectangle
+
+```cpp
+// assume the HDC gdc is valid
+
+RECT rect {10, 10, 20, 20};
+
+// filled rectangle without a border
+FillRect(gdc, &rect, CreateSolidBrush(RGB(255, 0, 0)));
+
+// hollow rectangle
+FrameRect(gdc, &rect, CreateSolidBrush(RGB(255, 0, 0)));
+```
+
+### Circles and ellipses
+
+The GDI draws circles and ellipses by first defining the bounding rectangle (for an ellipse)
+or bounding square (for a circle) before drawing the ellipse or circle.
+
+For an ellipse or circle, use `Ellipse()`:
+
+```cpp
+// assume the HDC gdc is valid
+
+// major axis 20 and minor axis 15
+Ellipse(gdc, 0, 0, 20, 15);
+
+// for a circle e.g.
+Ellipse(gdc, 20, 20, 40, 40);
+```
+
+### Polygons
+
+GDI polygons are objects drawn from an array of `POINT` instances (as vertices), using the `Polygon()` function:
+
+```cpp
+// assume the HDC gdc is valid
+
+// for example
+POINT onePt {3, 5};
+
+// more POINTs...
+
+POINT polygon[7] = {
+    onePt,
+    twoPt,
+    threePt,
+    fourPt,
+    fivePt,
+    sixPt,
+    sevenPt
+};
+
+Polygon(gdc, polygon, 7);
+```
