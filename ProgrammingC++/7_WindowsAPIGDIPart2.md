@@ -274,3 +274,115 @@ POINT polygon[7] = {
 
 Polygon(gdc, polygon, 7);
 ```
+
+## Timer messaging
+
+PCs have an built-in hardware timer that Windows abstracts as an almost infinite number of timers. One
+can set a timer with `SetTimer()`:
+
+```cpp
+#define TIMER_1SEC_ID 1
+#define TIMER_3SEC_ID 3
+
+// assume we have HWND hWnd
+
+SetTimer(hWnd, TIMER_1SEC, 1000, NULL);
+```
+
+The above function will send a message `WM_TIMER` to `WinProc()`, which from there one can execute
+code at intervals defined by the timer.
+
+Looking more closely at the `SetTimer()` prototype:
+
+```cpp
+UNIT SetTimer(
+    // handle to the parent window
+    HWND hWnd,
+    // timer ID (each WM_TIMER message will get this)
+    UINT nIDevent,
+    // time to delay in milliseconds
+    UNIT nElapse,
+    // callback function (optional)
+    TIMERPROC lpTimerFunc
+);
+```
+
+The callback function is a function that is called at the same time the message is 
+sent to `WinProc()` so in effect it is possible to invoke logic via `WinProc()` and
+the callback function. Generally, the parameter is NULL.
+
+The timer ID is captured by `WinProc()` `wParam` parameter:
+
+```cpp
+#define TIMER_1SEC_ID 1
+#define TIMER_3SEC_ID 3
+
+// in WinProc switch block...
+case WM_TIMER:
+{
+    switch (wParam)
+    {
+        case TIMER_1SEC_ID:
+        {
+            // do stuff when this timer 
+            // fires
+        } break;
+
+        case TIMER_3SEC_ID:
+        {
+            // do other stuff
+        } break;
+
+        default: break;
+    }
+
+    // timer message handled
+    return 0;
+} break;
+
+case WM_DESTROY:
+{
+    // release timer resources
+    KillTimer(hWnd, TIMER_1SEC_ID);
+    KillTimer(hWnd, TIMER_3SEC_ID);
+
+    PostQuiteMessage(0);
+} break;
+```
+
+Such timers are only accurate to about +/- 10 milliseconds. For more
+accurate timers, one should use Win32 high-performance timers (next) or resort
+to hardware counters accessible through Assembly.
+
+### Locking in operations frequency (e.g. framerate)
+
+Alternatives to timers (when accuracy is required) include calculation of
+timer elapsed through Win32 `GetTickCount()`. This method can be used to 
+calculate the time elapsed accurately by invocation at different points 
+of a code block:
+
+```cpp
+while (!someCondition){
+    DWORD startTime = GetTickClock();
+
+    // do logic
+
+    // run an repeated loop until 33 milliseconds as passed
+    while ((GetTickCount() - startTime) < 33);
+
+    // logic that goes here is delayed by 33 milliseconds
+
+    if (conditionMet){
+        someCondition = true;
+    }
+
+    // go back and rerun logic and wait until 33 milliseconds
+    // have elapsed
+}
+```
+
+The above code runs separate logic at 33 millisecond intervals, or 30 operations
+(or frames) per second. This forces synchronicity.
+
+If a delay is all that is required (as opposed to synchronisation), then
+one can call `Sleep(33);` instead.
