@@ -1638,7 +1638,7 @@ void PassByRef(const BaseClass& anObject)
 
 ## Abstract Classes and Pure Virtual Functions
 
-Similar to Java, C++ abstract classes provide a common starting point for other derived
+Similar to Java interfaces, C++ abstract classes provide a common starting point for other derived
 classes that provide more of the 'missing' implementation of member functions.
 Since it is often necessary to redefine derived class member functions via virtual 
 functions, the base class must first set the tone with regard to virtual functions.
