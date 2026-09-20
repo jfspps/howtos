@@ -22,7 +22,7 @@ As shown, Win32 applications call upon DirectX libraries, which in turn access t
 
 What is not shown above is an additional layer known as the _Hardware emulation layer_ (HEL) that performs functions in software mode if the underlying hardware does not support said functions. This sits on top of the _Harware abstraction layer_ (HAL).
 
-A major alternative to Direct3D was OpenGL (now at time of writing superseded by Vulkan). OpenGL drivers are released along with DirectX drivers from hardware vendors. OpenGL v2.0 (to v2.1) was released in 2004, at roughly the same time as DirectX 9.0c (integrated with Windows XP SP2). Most hardware vendors release drivers for both APIs.
+A major alternative to Direct3D was OpenGL (now at time of writing superseded by Vulkan). OpenGL drivers are released along with DirectX drivers from hardware vendors. OpenGL v2.0 (to v2.1) was released in 2004, at roughly the same time as DirectX 9.0c (integrated with Windows XP SP2).
 
 For completeness, roughly speaking Direct3D 10 (Windows Vista or later) was released at around the same time as OpenGL v3.x. Similarly, Direct3D 11 (Windows 7 or later; added to Vista SP2 shortly after initial release) was released at the same time as OpenGL v4.x.
 
@@ -30,35 +30,35 @@ Full details about what version of DirectX and OpenGL (amongst other APIs) can b
 
 ![](./MSVC2005/GPU_Z.PNG)
 
-### Older components: DirectDraw (DirectX 7 and DirectX 9 managed code)
+### Deprecated: DirectDraw (DirectX 7)
 
-Since DirectX 8.0, all 2-dimensional acceleration was provided by _DirectDraw_. This API is generally much faster then the GDI (or older MCI, Media Control Interface, which DirectX replaces). All 2-dimensional drawing with DirectX 8+ was merged with Direct3D.
+Up to and including DirectX 7.0, all 2-dimensional acceleration was provided by _DirectDraw_. This API is generally much faster then the GDI (or older MCI, Media Control Interface, which DirectX replaces). From DirectX 8 onwards, all 2-dimensional drawing was merged with Direct3D.
 
-More recent APIs that replace DirectDraw include Direct2D (launched ca. 2012, Windows 7 or above).
+More recent dedicated APIs that replace DirectDraw include Direct2D (launched ca. 2012, Windows 7 or above).
 
-### Older components: DirectMusic (DirectX 8)
+### Deprecated: DirectMusic (DirectX 8)
 
-DirectXSound does not support MIDI and wavetable synthesiser music. This is what DirectMusic is for, and was built on top of DirectSound when supported. Since Windows Vista, DirectMusic is not available to 64-bit applications and was deprecated and replaced by Windows Audio Session API (WASAPI).
+DirectXSound does not support MIDI and wavetable synthesiser music. Such features were provided by DirectMusic, which was built on top of DirectSound. Since Windows Vista, DirectMusic is not available to 64-bit applications and was deprecated and replaced by Windows Audio Session API (WASAPI).
 
 Alternative to DirectSound include OpenAL.
 
-### Older components: DirectPlay (DirectX 8 and DirectX 9 managed code)
+### Deprecated: DirectPlay (DirectX 8)
 
-DirectPlay is a networking API, providing features such as "sessions" (games in progress) and "lobbies" (where players congregate and play). 
+DirectPlay is a networking API, providing features such as "sessions" (games in progress) and "lobbies" (where players congregate and play).
 
-### Direct3D retained mode (Direct3DRM)
+### Deprecated: Direct3D retained mode (Direct3DRM)
 
 A more high-level object and frame based 3D system. Requires programmers to modify each frame scene, without much need to interface with the DirectX API, and quite slow.
 
-The concepts of retained mode and (below) immediate mode are not unique to the DirectX graphics APIs but applied to other graphical APIs.
+The concepts of _retained mode_ and (below) _immediate mode_ are not unique to the DirectX graphics APIs but applied to other graphical APIs.
 
-### Direct3D immediate mode (Direct3DIM)
+### Deprecated: Direct3D immediate mode (Direct3DIM)
 
 A more low-level part of the API (retained mode was built on top of immediate mode) and quite difficult to use in its eariler iterations. Eventually (since Direct3D 5) adopted a more accessible OpenGL like approach to function calls with the rendering engine rather than direct arrays (i.e. buffers).
 
-For the release of DirectX 9.0c, the distinction between retained mode and immediate mode was dropped, and retained mode abandoned. In short, all Direct3D calls with DirectX 9.0c are assumed in immediate mode.
+Following the release of DirectX 9.0c, the distinction between retained mode and immediate mode was dropped, and retained mode abandoned. In short, all Direct3D calls with DirectX 9.0c are assumed in immediate mode.
 
-### DirectShow (DirectX 8)
+### Deprecated: DirectShow (DirectX 8)
 
 This component handles video streaming in applications, supporting a numer of formats including Advanced Streaming Format (ASF), Motion Pictures Exports Group (MPEG), Audio-Video Interleaved (AVI), MPEG Audio Layer-3 (MP3) and WAV files. This was removed from the DirectX 9 and moved to the Windows SDK.
 
@@ -68,7 +68,7 @@ DirectShow was eventually superseded by Media Foundation (MF) in Windows Vista o
 
 DirectX, OLE and ActiveX technologies makes use of the conventions set out by the Component Object Model (COM). COM objects come in the form of DLLs and therefore applications that depend on the logic do not need to be recompiled or rebooted. Despite the name and as shown shortly, COM objects are not instances or OOP objects but classes.
 
-COM objects are essentially a C++ class that inherits multiple [pure virtual](../DataStructuresAndAlgorithmsinC++/3_Classes_in_C++.md#abstract-classes-and-pure-virtual-functions) C++ classes. Each virtual class functions similarly to Java interfaces (definition without implementation).
+COM objects are essentially C++ classes that inherits multiple [pure virtual](../DataStructuresAndAlgorithmsinC++/3_Classes_in_C++.md#abstract-classes-and-pure-virtual-functions) C++ classes. Each virtual class functions similarly to Java interfaces (definition without implementation).
 
 All COM objects are prefixed with an "I". A single COM object can have one or more interfaces and there can be one or more COM objects. All COM objects are derived from a base class interface `IUnknown`. This has a C++ structure:
 
@@ -357,7 +357,7 @@ run without issue.
 
 In outline only for now, a typical DirectDraw application proceeds as follows:
 
-1. Create a DirectX COM object with `DirectDrawCreate()` and give its own GUID (this is overall similar to what `CoCreateInstance()` above does)
+1. Instantiate a DirectX COM object with `DirectDrawCreate()` and give its own GUID. This is overall similar to what `CoCreateInstance()` above does.
 2. Create NULL pointers (for the DirectDraw interfaces) e.g. of type `LPDIRECTDRAW7`
 3. Assign the NULL pointer(s) to the DirectDraw interface with `QueryInterface()` and thereby get access to DirectDraw's virtual functions.
 4. Call DirectDraw functions required using the interface pointer
