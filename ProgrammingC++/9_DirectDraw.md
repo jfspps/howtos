@@ -6,7 +6,7 @@ parent: Programming in C++
 
 # DirectDraw (DirectX 7)
 
-This article introduces the concepts behind DirectDraw with DirectX v8 interfaces.
+This article introduces the concepts behind DirectDraw (for DirectX 7) with the DirectX v9.0c SDK.
 
 ## DirectDraw interfaces
 
@@ -17,9 +17,9 @@ There are four DirectDraw interfaces, all derived from `IUnknown`. The following
   - Primary surface - represents the video buffer being rasterised and displayed on screen
   - Seconday surface - represents the back buffer (off-screen) scene
 + IDirectDrawPalette - handles the 256-colour mode [colour palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palattes)
-+ IDirectDrawClipper - assists with clipping bitmap and raster operations, typically for windowed applications
++ IDirectDrawClipper - assists with clipping bitmap and raster operations, ensuring assets are set within the bounds of windowed applications and DirectDraw surfaces boundaries
 
-## Creating the DirectDraw object
+## 1. Creating the DirectDraw object
 
 There are principally three ways to create DirectDraw objects (based on `IDirectDraw7`):
 
@@ -109,3 +109,40 @@ The function `DirectDrawEx()` has four parameters:
 + lplpDD - receiver of the interface
 + iid - interface ID of the interface requested
 + pUnkOther - advanced COM, leave as NULL
+
+## 2. Cooperating DirectX with Windows
+
+The next step in building a DirectDraw application is consideration to how DirectX draws upon Windows resources. This is particularly notes for windowed applications, where a DirectX application will not have nearly as much attention as a fullscreen application. Other applications may need to refresh their content and so temporarily the DirectX application must yield control to other applications from time to time.
+
+_Cooperative levels_ are determined by `IDirectDraw7::SetCooperativeLevel()`. 
+
+```cpp
+HRESULT SetCooperativeLevel(
+    HWND hWnd,
+    DWORD dwFlags
+);
+```
+
+The first parameter is normally the main window handle. The second parameter is the control flags parameter and it determines how DirectDraw cooperates with Windows, as bitwise OR flags.
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7 is initialised
+
+// for windowed applications
+lpdd7->SetCooperativeLevel(
+    hWnd,
+    DDSCL_NORMAL
+);
+
+// for fullscreen applications
+lpdd7->SetCooperativeLevel(
+    hWnd,
+    DDSCL_FULLSCREEN |
+    DDSCL_ALLOWMODEX | // allow Mode X display modes e.g. 320x200
+    DDSCL_EXCLUSIVE | // exclusive level
+    DDSCL_ALLOWREBOOT | // allow CTRL+ALT+DEL to be detected
+);
+```
+
+See this [DirectDrawDemo](https://github.com/jfspps/VisualStudio2005Learning/tree/main/DirectDrawDemo) for an
+example of running a windowed DirectDraw application. Note that the `ddraw` LIB and header files had to be copied from the DirectX 9.0c SDK to the project folder prior to compilation.

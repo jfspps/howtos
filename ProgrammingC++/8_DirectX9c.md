@@ -94,7 +94,7 @@ Note (or recall) that the `__stdcall` pushes parameters to the stack from right 
 
 ### COM interface functions
 
-The function `QueryInterface()` is used to assign pointers to functions (pointers to functions are discussed later in this section) from other interfaces. Each interface has its own 128-bit interface ID (`iid`), consequently of which there are 2<sup>128</sup> possible values. These are basically globally unique identifiers (GUIDs). To generate the UUIDs within MVS 2005, click _Tools_ and then click _Generate GUID_:
+The function `QueryInterface()` is used to assign pointers to functions (pointers to functions are discussed later in this section) from other interfaces. Each interface has its own 128-bit interface ID (type `IID`), consequently of which there are 2<sup>128</sup> possible values. These are basically globally unique identifiers (GUIDs). To generate the UUIDs within MVS 2005, click _Tools_ and then click _Generate GUID_:
 
 ![](./MSVC2005/guid_generator.PNG)
 
