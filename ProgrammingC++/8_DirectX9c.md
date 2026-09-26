@@ -30,35 +30,35 @@ Full details about what version of DirectX and OpenGL (amongst other APIs) can b
 
 ![](./MSVC2005/GPU_Z.PNG)
 
-### Deprecated: DirectDraw (DirectX 7)
+### Deprecated: DirectDraw (last available with DirectX 7)
 
 Up to and including DirectX 7.0, all 2-dimensional acceleration was provided by _DirectDraw_. This API is generally much faster then the GDI (or older MCI, Media Control Interface, which DirectX replaces). From DirectX 8 onwards, all 2-dimensional drawing was merged with Direct3D.
 
 More recent dedicated APIs that replace DirectDraw include Direct2D (launched ca. 2012, Windows 7 or above).
 
-### Deprecated: DirectMusic (DirectX 8)
+### Deprecated: DirectMusic (last available with DirectX 8)
 
 DirectXSound does not support MIDI and wavetable synthesiser music. Such features were provided by DirectMusic, which was built on top of DirectSound. Since Windows Vista, DirectMusic is not available to 64-bit applications and was deprecated and replaced by Windows Audio Session API (WASAPI).
 
 Alternative to DirectSound include OpenAL.
 
-### Deprecated: DirectPlay (DirectX 8)
+### Deprecated: DirectPlay (last available with DirectX 8)
 
 DirectPlay is a networking API, providing features such as "sessions" (games in progress) and "lobbies" (where players congregate and play).
 
-### Deprecated: Direct3D retained mode (Direct3DRM)
+### Deprecated: Direct3D retained mode Direct3DRM
 
 A more high-level object and frame based 3D system. Requires programmers to modify each frame scene, without much need to interface with the DirectX API, and quite slow.
 
 The concepts of _retained mode_ and (below) _immediate mode_ are not unique to the DirectX graphics APIs but applied to other graphical APIs.
 
-### Deprecated: Direct3D immediate mode (Direct3DIM)
+### Deprecated: Direct3D immediate mode Direct3DIM
 
 A more low-level part of the API (retained mode was built on top of immediate mode) and quite difficult to use in its eariler iterations. Eventually (since Direct3D 5) adopted a more accessible OpenGL like approach to function calls with the rendering engine rather than direct arrays (i.e. buffers).
 
 Following the release of DirectX 9.0c, the distinction between retained mode and immediate mode was dropped, and retained mode abandoned. In short, all Direct3D calls with DirectX 9.0c are assumed in immediate mode.
 
-### Deprecated: DirectShow (DirectX 8)
+### Deprecated: DirectShow (last available with DirectX 8)
 
 This component handles video streaming in applications, supporting a numer of formats including Advanced Streaming Format (ASF), Motion Pictures Exports Group (MPEG), Audio-Video Interleaved (AVI), MPEG Audio Layer-3 (MP3) and WAV files. This was removed from the DirectX 9 and moved to the Windows SDK.
 
@@ -66,11 +66,15 @@ DirectShow was eventually superseded by Media Foundation (MF) in Windows Vista o
 
 ## The Component Object Model (COM)
 
-DirectX, OLE and ActiveX technologies makes use of the conventions set out by the Component Object Model (COM). COM objects come in the form of DLLs and therefore applications that depend on the logic do not need to be recompiled or rebooted. Despite the name and as shown shortly, COM objects are not instances or OOP objects but classes.
+DirectX, OLE and ActiveX technologies makes use of the conventions set out by the Component Object Model (COM). COM objects come in the form of DLLs and therefore applications that depend on the logic do not need to be recompiled or rebooted. Despite the name, COM objects are not instances or OOP objects but are instead classes.
 
-COM objects are essentially C++ classes that inherits multiple [pure virtual](../DataStructuresAndAlgorithmsinC++/3_Classes_in_C++.md#abstract-classes-and-pure-virtual-functions) C++ classes. Each virtual class functions similarly to Java interfaces (definition without implementation).
+### COM objects and interfaces
 
-All COM objects are prefixed with an "I". A single COM object can have one or more interfaces and there can be one or more COM objects. All COM objects are derived from a base class interface `IUnknown`. This has a C++ structure:
+COM objects are concrete C++ classes that inherit and implement one or more abstract classes (through multiple inheritance), which themselves are collections of [pure virtual functions](../DataStructuresAndAlgorithmsinC++/3_Classes_in_C++.md#abstract-classes-and-pure-virtual-functions). The abstract classes are also referred to as _interfaces_ and are simply collections of function prototypes.
+
+All COM interfaces (prefixed with an "I") are derived from a base class interface `IUnknown`. A single COM object (prefixed with a "C") can have one or more interfaces.
+
+`IUnknown` is a C++ structure:
 
 ```cpp
 struct IUnknown {
@@ -87,6 +91,8 @@ struct IUnknown {
 
 Note (or recall) that the `__stdcall` pushes parameters to the stack from right to left. All methods are
 `virtual` to support polymorphism ([late-binding](../DataStructuresAndAlgorithmsinC++/3_Classes_in_C++.md#virtual-functions)).
+
+### COM interface functions
 
 The function `QueryInterface()` is used to assign pointers to functions (pointers to functions are discussed later in this section) from other interfaces. Each interface has its own 128-bit interface ID (`iid`), consequently of which there are 2<sup>128</sup> possible values. These are basically globally unique identifiers (GUIDs). To generate the UUIDs within MVS 2005, click _Tools_ and then click _Generate GUID_:
 
@@ -119,20 +125,26 @@ struct IInput : IUnknown{
     // other methods...
 }
 
-// C++ multiple inheritance
-class DemoClass : public IGraphics, ISound, IInput {
+// a COM object
+class CDemoClass : public IGraphics, ISound, IInput {
     public:
 
     // retrieves other interfaces 
     // (and via the pointer, their functions)
     virtual HRESULT __stdcall 
-        QueryInterface(const IID &iid, (void **)ip) = 0;
+        QueryInterface(const IID &iid, (void **)ip){
+            // implementation required
+        }
 
     // increments interfaces references count
-    virtual ULONG __stdcall AddRef() = 0;
+    virtual ULONG __stdcall AddRef(){
+        // implementation required
+    }
 
     // decrements interfaces references count
-    virtual ULONG __stdcall Release() = 0;
+    virtual ULONG __stdcall Release(){
+        // implementation required
+    }
 
     // now implement the interfaces
     virtual int InitGraphics(int mode){
@@ -165,6 +177,8 @@ class DemoClass : public IGraphics, ISound, IInput {
 ```
 
 When upgrading the above object, it is important to retain the original interface implementations. This is so that other applications that call on this COM object (as a DLL) can continue to work without needing to update the calling application.
+
+The next section looks at implementing the interfaces.
 
 ## A minimal COM application
 
@@ -200,7 +214,6 @@ interface IX: IUnknown{
     virtual void __stdcall fx(void)=0;
 }; 
 
-// define the IY interface
 interface IY: IUnknown{
     virtual void __stdcall fy(void)=0;
 }; 
@@ -367,7 +380,7 @@ In outline only for now, a typical DirectDraw application proceeds as follows:
 
 As shown, interface functions are virtual functions, so that the definition invoked is not fixed at compile time but determined at runtime. This is known as late-binding.
 
-A COM interface is really a list of virtual functions, known as a _virtual function table_ or `VTABLE`. The VTABLE lists the address to all virtual functions for a given interface: _the interface pointer is thus  a VTABLE pointer._
+A COM interface is a list of virtual functions, known as a _virtual function table_ or `VTABLE`. The VTABLE lists the address to all virtual functions for a given interface: _the interface pointer is thus a VTABLE pointer._
 
 ## Function pointers in C++
 
