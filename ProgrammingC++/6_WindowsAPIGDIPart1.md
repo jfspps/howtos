@@ -166,7 +166,7 @@ case WM_PAINT:
 The above approach is generally more applicable when responding to `WM_PAINT` messages. The aforementioned
 `GetDC()` and `ReleaseDC()` pairing tends to be used when `WM_PAINT` is not involved.
 
-## Excursion: RGB and palattes
+## Excursion: RGB and palettes
 
 To start off, colour can be represented _directly_ via an RGB system. There are a number of international RGB standards.
 
