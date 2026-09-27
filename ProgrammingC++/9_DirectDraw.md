@@ -12,12 +12,12 @@ This article introduces the concepts behind DirectDraw (for DirectX 7) with the 
 
 There are four DirectDraw interfaces, all derived from `IUnknown`. The following interface identifiers omits any specific version number.
 
-+ IDirectDraw - the main interface which effectively represents the GPU
-+ IDirectDrawSurface - represents the display surface that can reside in VRAM or system memory. Two types of surface: 
++ `IDirectDraw` - the main interface which effectively represents the GPU
++ `IDirectDrawSurface` - represents the display surface that can reside in VRAM or system memory. Two types of surface: 
   - Primary surface - represents the video buffer being rasterised and displayed on screen
   - Seconday surface - represents the back buffer (off-screen) scene
-+ IDirectDrawPalette - handles the 256-colour mode [colour palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palattes)
-+ IDirectDrawClipper - assists with clipping bitmap and raster operations, ensuring assets are set within the bounds of windowed applications and DirectDraw surfaces boundaries
++ `IDirectDrawPalette` - handles the 256-colour mode [colour palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palattes)
++ `IDirectDrawClipper` - assists with clipping bitmap and raster operations, ensuring assets are set within the bounds of windowed applications and DirectDraw surfaces boundaries
 
 ## 1. Creating the DirectDraw object
 
@@ -185,9 +185,9 @@ For example, the following sets the display mode to 800x600:
 lpdd7->SetDisplayMode(800, 600, 16, 0, 0);
 ```
 
-Setting the colour depth to 8-bit (256 colour) will require a [palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palettes) to be defined for mappings.
+Setting the colour depth to 8-bit (256 colour) will require a [palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palettes) to be defined for mappings. Recall that this means there are 256 values for each of the red, green and blue channels. Thus this requires a data type that stores three 8-bit wide channels i.e. a 24-bit wide data type.
 
-Higher level 16-bit, 24-bit and 32-bit colour modes do not require a palette and instead require encoded data
+Higher level 16-bit, 24-bit and 32-bit colour modes do not require a palette and instead use encoded data
 sent straight to the video buffer (discussed later).
 
 ### Setting up an 8-bit palette
@@ -209,17 +209,69 @@ for (int colour = 1; colour < 255; coloir++){
     palette[colour].peFlags = PC_NOCOLLAPSE;
 }
 
-// set white colours (0, 0, 0)
+// set black colours (0, 0, 0) - somewhat optional, see the control flags later
 palette[0].peRed = 0;
 palette[0].peGreen = 0;
 palette[0].peBlue = 0;
 palette[0].peFlags = PC_NOCOLLAPSE;
 
-// set black colours (255, 255, 255)
+// set white colours (255, 255, 255) - somewhat optional, see the control flags later
 palette[255].peRed = 255;
 palette[255].peGreen = 255;
 palette[255].peBlue = 255;
 palette[255].peFlags = PC_NOCOLLAPSE;
 ```
+
+With the above palette set up, one then assigns this to [`IDirectDrawPalette` interface](#directdraw-interfaces) using 
+`IDirectDraw7::CreatePalette()`.
+
+```cpp
+HRESULT CreatePalette(
+    DWORD dwFlags, // control flags
+    LPPALETTEENTRY lpColourTable, // palette data or NULL
+    LPDIRECTDRAWPALETTE FAR *lplpDDPalette, // palette interface 
+    IUnknown FAR *pUnkOuter // advanced usage; leave as NULL
+);
+```
+
+The first parameter is probably of most concern here, and is composed of one or more control flags, with bitwise
+OR operations if needed. Some commonly used flags:
+
++ `DDCAPS_8BIT` - Represents 8-bit colour, with 256 colour table entries
++ `DDCAPS_ALLOW256` - applies if all 256 entries have been defined by the palette, including `0` for black and `255` for white. Some systems (e.g. Windows NT) do not allow these to be set and assume black and white values are already `0` and `255` respectively. In such cases it will be necessary to exclude these "colours" from the palette and this flag is not required.
++ `DDCAPS_INITIALIZE` - initialise the colours based on the array passed to `CreatePalette()`; this is needed for 8-bit colour
+
+With the above 8-bit palette initialised, one can assign it:
+
+```cpp
+// palette array is "palette", above, where black and
+// white are defined
+
+// the palette interface received
+LPDIRECTDRAWPALETTE lpddpal = NULL;
+
+if (FAILED(lpdd7->CreatePalette(
+    DDCAPS_8BIT | DDCAPS_ALLOW256 | DDCAPS_INITIALIZE,
+    palette,
+    &lpddpal,
+    NULL
+))){
+    // problem setting up the display palette, clean up and exit
+}
+
+// OK, lpddpal is no longer NULL and has a valid IDirectDrawPalette interface, palette ready...
+```
+
+### Building a Display Surface
+
+A _display surface_ is a DirectDraw abstraction of memory that define a rectangular region that holds bitmap data.
+For completeness, a _bitmap_ (or _pixmap_ or _raster_) is an image defined by an array of pixels. Raster graphics define each pixel via an array and have a defined resolution, unlike _vector graphics_ which are defined by mathematical formulae and are not characterised by a finite resolution.
+
+As mentioned previously, there are two types of surface:
+
++ Primary surface - video memory currently being _rasterised_ (converted to a raster) to the screen by the video card. There is usually only one primary surface in a given DirectDraw application.
++ Secondary surface - this can be either the abstraction of video memory or system memory, which is prepared offscreen prior to the next frame. The secondary surface is a buffer that is eventually _page-flipped_ (copied) to the primary surface. There is usually more than one secondary surface present per application. For example, applications that have two secondary surfaces would support _double buffering_, and three secondary surface applications supporting _triple buffering_.
+
+To build a display surface, one must first define a `DDSURFACEDESC2` structure that describes the surface, before calling `IDirectDraw7::CreateSurface()` to create it.
 
 
