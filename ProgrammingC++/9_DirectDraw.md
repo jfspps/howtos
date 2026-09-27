@@ -29,11 +29,21 @@ There are principally three ways to create DirectDraw objects (based on `IDirect
 
 ### Using `DirectDrawCreate()` to get `IDirectDraw7`
 
+```cpp
+HRESULT WINAPI DirectDrawCreate(
+    GUID FAR *lpGUID,
+    LPDIRECTDRAW FAR *lplpDD,
+    IUnknown FAR *pUnkOuter
+);
+```
+
 `DirectDrawCreate()` has three parameters:
 
 1. lpGUID - GUID of the display driver to use; set to NULL to use the system default
 2. lplpDD - a pointer to a pointer that receives `IDirectDraw` 
 3. pUnkOuter - advanced feature, leave as NULL
+
+This section also introduces error handling, with macros `SUCCCEEDED` and `FAILED`. The following sections define functions that return `HRESULT`, as a return code. The only success code is `DD_OK`, so `FAILED(DD_OK)` returns `false`. There are several failure codes, including `DDERR_DIRECTDRAWALREADYCREATED` and `DDERR_OUTOFMEMORY`.
 
 ```cpp
 // standard DirectDraw 1.0
@@ -110,7 +120,7 @@ The function `DirectDrawEx()` has four parameters:
 + iid - interface ID of the interface requested
 + pUnkOther - advanced COM, leave as NULL
 
-## 2. Cooperating DirectX with Windows
+## 2. Setting the Cooperative level with Windows
 
 The next step in building a DirectDraw application is consideration to how DirectX draws upon Windows resources. This is particularly notes for windowed applications, where a DirectX application will not have nearly as much attention as a fullscreen application. Other applications may need to refresh their content and so temporarily the DirectX application must yield control to other applications from time to time.
 
@@ -138,7 +148,7 @@ lpdd7->SetCooperativeLevel(
 lpdd7->SetCooperativeLevel(
     hWnd,
     DDSCL_FULLSCREEN |
-    DDSCL_ALLOWMODEX | // allow Mode X display modes e.g. 320x200
+    DDSCL_ALLOWMODEX | // allow Mode X (i.e. undocumented) display modes e.g. 320x200
     DDSCL_EXCLUSIVE | // exclusive level
     DDSCL_ALLOWREBOOT | // allow CTRL+ALT+DEL to be detected
 );
@@ -146,3 +156,70 @@ lpdd7->SetCooperativeLevel(
 
 See this [DirectDrawDemo](https://github.com/jfspps/VisualStudio2005Learning/tree/main/DirectDrawDemo) for an
 example of running a windowed DirectDraw application. Note that the `ddraw` LIB and header files had to be copied from the DirectX 9.0c SDK to the project folder prior to compilation.
+
+## 3. Setting the display mode
+
+The next step is setting the display mode, with `IDirectDraw7::SetDisplayMode()`.
+
+```cpp
+HRESULT SetDisplayMode(
+    DWORD dwWidth,
+    DWORD dwHeight,
+    DWORD dwBPP,
+    DWORD dwRefreshRate,
+    DWORD dwFlags
+);
+```
+
+The parameters are:
+
++ dwWidth - width of display mode in pixels
++ dwHeight - height of display mode in pixels
++ dwBPP - bit-depth or colour depth (per pixel) e.g. 8-bit, 16-bit, 24-bit...
++ dwRefreshRate - refresh rate; 0 is default
++ dwFlags - advanced use; 0 for defaults
+
+For example, the following sets the display mode to 800x600:
+
+```cpp
+lpdd7->SetDisplayMode(800, 600, 16, 0, 0);
+```
+
+Setting the colour depth to 8-bit (256 colour) will require a [palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palettes) to be defined for mappings.
+
+Higher level 16-bit, 24-bit and 32-bit colour modes do not require a palette and instead require encoded data
+sent straight to the video buffer (discussed later).
+
+### Setting up an 8-bit palette
+
+In applications targetting 8-bit colour, a palette would need to be defined.
+
+This normally involves defining palette data structure as an array of 256 `PALETTENTRY`:
+
+```cpp
+PALETTENTRY palette[256];
+
+for (int colour = 1; colour < 255; coloir++){
+    palette[colour].peRed = rand() % 256;
+    palette[colour].peGreen = rand() % 256;
+    palette[colour].peBlue = rand() % 256;
+
+    // this is needed to prevent Windows or DirectX
+    // automatically optimising the palette
+    palette[colour].peFlags = PC_NOCOLLAPSE;
+}
+
+// set white colours (0, 0, 0)
+palette[0].peRed = 0;
+palette[0].peGreen = 0;
+palette[0].peBlue = 0;
+palette[0].peFlags = PC_NOCOLLAPSE;
+
+// set black colours (255, 255, 255)
+palette[255].peRed = 255;
+palette[255].peGreen = 255;
+palette[255].peBlue = 255;
+palette[255].peFlags = PC_NOCOLLAPSE;
+```
+
+
