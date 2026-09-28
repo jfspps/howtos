@@ -190,7 +190,7 @@ Setting the colour depth to 8-bit (256 colour) will require a [palette](6_Window
 Higher level 16-bit, 24-bit and 32-bit colour modes do not require a palette and instead use encoded data
 sent straight to the video buffer (discussed later).
 
-### Setting up an 8-bit palette
+### a. Setting up an 8-bit palette
 
 In applications targetting 8-bit colour, a palette would need to be defined.
 
@@ -262,7 +262,7 @@ if (FAILED(lpdd7->CreatePalette(
 // OK, lpddpal is no longer NULL and has a valid IDirectDrawPalette interface, palette ready...
 ```
 
-### Building a Display Surface
+### b. Building a Display Surface
 
 A _display surface_ is a DirectDraw abstraction of memory that define a rectangular region that holds bitmap data.
 For completeness, a _bitmap_ (or _pixmap_ or _raster_) is an image defined by an array of pixels. Raster graphics define each pixel via an array and have a defined resolution, unlike _vector graphics_ which are defined by mathematical formulae and are not characterised by a finite resolution.
@@ -270,8 +270,110 @@ For completeness, a _bitmap_ (or _pixmap_ or _raster_) is an image defined by an
 As mentioned previously, there are two types of surface:
 
 + Primary surface - video memory currently being _rasterised_ (converted to a raster) to the screen by the video card. There is usually only one primary surface in a given DirectDraw application.
-+ Secondary surface - this can be either the abstraction of video memory or system memory, which is prepared offscreen prior to the next frame. The secondary surface is a buffer that is eventually _page-flipped_ (copied) to the primary surface. There is usually more than one secondary surface present per application. For example, applications that have two secondary surfaces would support _double buffering_, and three secondary surface applications supporting _triple buffering_.
++ Secondary surface - this can be either the abstraction of video memory or system memory, which is prepared offscreen prior to the next frame. The secondary surface is a buffer that is eventually _page-flipped_ (copied) to the primary surface. There is usually more than one secondary surface present per application. For example, applications that have one secondary surface would support _double buffering_, and two secondary surface applications supporting _triple buffering_.
 
 To build a display surface, one must first define a `DDSURFACEDESC2` structure that describes the surface, before calling `IDirectDraw7::CreateSurface()` to create it.
 
+```cpp
+typedef struct _DDSURFACEDESC2 {
+  DWORD      dwSize;
+  DWORD      dwFlags;
+  DWORD      dwHeight;
+  DWORD      dwWidth;
 
+  union {
+    LONG  lPitch;
+    DWORD dwLinearSize;
+  } DUMMYUNIONNAMEN(1);
+
+  DWORD dwBackBufferCount;
+  
+  union {
+    DWORD dwMipMapCount;
+    DWORD dwRefreshRate;
+  } DUMMYUNIONNAMEN(2);
+
+  DWORD      dwAlphaBitDepth;
+  DWORD      dwReserved;
+  LPVOID     lpSurface;
+  DDCOLORKEY ddckCKDestOverlay;
+
+  DDCOLORKEY ddckCKDestBlt;
+  DDCOLORKEY ddckCKSrcOverlay;
+  DDCOLORKEY ddckCKSrcBlt;
+  
+  DDPIXELFORMAT ddpfPixelFormat;
+  DDSCAPS2   ddsCaps;
+  DWORD      dwTextureStage;
+} FAR *LPDDSURFACEDESC2, DDSURFACEDESC2;
+```
+
+An overview/reminder of C++ unions is given [here](../DataStructuresAndAlgorithmsinC++/1_Essential_C_and_C++.md#unions).
+As given, `_DDSURFACEDESC2` is a struct with unions as fields.
+
+The following summarises the principal fields that are commonly used (see the [official docs](https://learn.microsoft.com/en-us/windows/win32/api/ddraw/ns-ddraw-ddsurfacedesc2) for more details for all fields).
+
++ __dwSize__ - specifies the size in bytes of this DDSURFACEDESC2 structure and must be initialised before the structure is used
++ __dwFlags__ - identifies which `_DDSURFACEDESC2` fields (represented by flags) are provided with valid data or `_DDSURFACEDESC2` fields which are required during a query. For example, the field `ddsCaps` has the flag `DDSD_CAPS`
++ __dwWidth__ - indicates the width of the surface in pixels
++ __dwHeight__ - indicates the height of the surface in pixels
++ __lPitch__ - Also known as the _stride_ or _memory width_, this represents the number of bytes per line for the video mode. In VRAM, the literal width (visualise as horizontal resolution) of memory used to represent each row of the surface is not uniform (do not support _linear memory modes_), since some rows have extraneous sectors for e.g. cache.  To access a pixel on the nth position of a row that is m-columns _down_ (memory is addressed top to bottom, left to right) is given by `n + (m*lPitch)`.
++ __lpSurface__ - used to retrieve a pointer to the surface, whether in video memory or system memory.
++ __dwBackBufferCount__ - used to set or read the number of back buffers (secondary offscreen flipping buffers) chained to the primary surface. One back buffer is called _double buffering_ while two back buffers is called _triple buffering_.
++ __ddckCKDestBlt__ - used to control the destination colour key used in _blitting_ operations (the transfer of a rectangular block of pixels)
++ __ddckCKSrcBlt__ - indicates the source colour key, i.e. the colours that shouldn't be blitted. Used to set transparency colours.
++ __ddpfPixelFormat__ - used to retrieve the pixel format of a surface, with `_DDPIXELFORMAT` structure (itself quite an extensive structure)
++ __ddsCaps__ - indicates the requested properties (capabilities) of the surface that are currently undefined which require initialisation at some point. Surface capabilities include back buffering, whether a surface uses video memory instead of system memory, whether a surface is an offscreen surface with minimal characteristics (e.g. no overlays, texturing or alpha surfacing).
+
+As an example of setting display surface:
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7 has been initialised
+
+// pointer to the surface interface
+LPDIRECTDRAWSURFACE7 lpddsprimary = NULL;
+
+// the surface description
+DDSURFACEDESC2 ddsd;
+
+// a general recommendation to clear and prep of ddsd
+memset(&ddsd, 0, sizeof(ddsd));
+
+// start initialising the structure's fields
+ddsd.dwSize = sizeof(ddsd);
+
+// decide which valid fields will be provided or required
+// in this case the surface properties field ddsCaps
+ddsd.dwFlags = DDSD_CAPS;
+
+// now set the capabilities of the chosen field(s)
+// ddsCaps is itself a structure, of which dwCaps is 
+// a commonly used field
+ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+// now create the primary surface, and initialise lpddsprimary
+if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsprimary, NULL))){
+    // failed to build the primary surface, clean up and exit
+}
+
+// okay, good to go...
+```
+
+### c. Attaching the palette to the surface
+
+With both the palette and surface ready, one can invoke `IDirectDrawSurface7::SetPalette()`:
+
+```cpp
+HRESULT SetPalette(LPDIRECTDRAWPALETTE, lpDDPalette);
+```
+
+The function can be called as shown:
+
+```cpp
+// ...resuming from the palette lpddpal and surface lpddsprimary
+if (FAILED(lpddsprimary->SetPalette(lpddpal))){
+    // error attaching palette to surface, clean up and exit...
+}
+
+// palette attached OK...
+```
