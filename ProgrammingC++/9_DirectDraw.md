@@ -105,7 +105,7 @@ CoUninitialize();
 
 ### Using `DirectDrawCreateEx()` to get `IDirectDraw7`
 
-This is a bit quicker to invoke.
+This is a bit quicker to invoke, though still required knowing the interface ID of DirectDraw7 (`IID_DirectDraw7`).
 
 ```cpp
 LPDIRECTDRAW lpdd7 = NULL;
@@ -122,7 +122,7 @@ The function `DirectDrawEx()` has four parameters:
 
 ## 2. Setting the Cooperative level with Windows
 
-The next step in building a DirectDraw application is consideration to how DirectX draws upon Windows resources. This is particularly notes for windowed applications, where a DirectX application will not have nearly as much attention as a fullscreen application. Other applications may need to refresh their content and so temporarily the DirectX application must yield control to other applications from time to time.
+The next step in building a DirectDraw application is consideration to how DirectX draws upon Windows resources. This is particularly applicable to windowed applications, where a DirectX application will not have nearly as much attention as a fullscreen application. Other applications may need to refresh their content and so temporarily the DirectX application must yield control to other applications from time to time.
 
 _Cooperative levels_ are determined by `IDirectDraw7::SetCooperativeLevel()`. 
 
@@ -179,7 +179,7 @@ The parameters are:
 + dwRefreshRate - refresh rate; 0 is default
 + dwFlags - advanced use; 0 for defaults
 
-For example, the following sets the display mode to 800x600:
+For example, the following sets the display mode to 800x600 with a 16-bit colour depth:
 
 ```cpp
 lpdd7->SetDisplayMode(800, 600, 16, 0, 0);
@@ -209,13 +209,13 @@ for (int colour = 1; colour < 255; coloir++){
     palette[colour].peFlags = PC_NOCOLLAPSE;
 }
 
-// set black colours (0, 0, 0) - somewhat optional, see the control flags later
+// set black colours (0, 0, 0) - somewhat optional, see remarks on control flags later
 palette[0].peRed = 0;
 palette[0].peGreen = 0;
 palette[0].peBlue = 0;
 palette[0].peFlags = PC_NOCOLLAPSE;
 
-// set white colours (255, 255, 255) - somewhat optional, see the control flags later
+// set white colours (255, 255, 255) - somewhat optional, see remarks on control flags later
 palette[255].peRed = 255;
 palette[255].peGreen = 255;
 palette[255].peBlue = 255;
@@ -238,7 +238,7 @@ The first parameter is probably of most concern here, and is composed of one or 
 OR operations if needed. Some commonly used flags:
 
 + `DDCAPS_8BIT` - Represents 8-bit colour, with 256 colour table entries
-+ `DDCAPS_ALLOW256` - applies if all 256 entries have been defined by the palette, including `0` for black and `255` for white. Some systems (e.g. Windows NT) do not allow these to be set and assume black and white values are already `0` and `255` respectively. In such cases it will be necessary to exclude these "colours" from the palette and this flag is not required.
++ `DDCAPS_ALLOW256` - applies if all 256 entries have been defined by the palette, including `0` for black and `255` for white. Some systems (e.g. Windows NT) do not allow these to be set and assume black and white values are already `0` and `255` respectively. To let the OS handle black and white, exclude these "colours" from the palette (see above) and then omit this flag.
 + `DDCAPS_INITIALIZE` - initialise the colours based on the array passed to `CreatePalette()`; this is needed for 8-bit colour
 
 With the above 8-bit palette initialised, one can assign it:
@@ -251,7 +251,7 @@ With the above 8-bit palette initialised, one can assign it:
 LPDIRECTDRAWPALETTE lpddpal = NULL;
 
 if (FAILED(lpdd7->CreatePalette(
-    DDCAPS_8BIT | DDCAPS_ALLOW256 | DDCAPS_INITIALIZE,
+    DDCAPS_8BIT | DDCAPS_INITIALIZE,
     palette,
     &lpddpal,
     NULL
@@ -264,13 +264,13 @@ if (FAILED(lpdd7->CreatePalette(
 
 ### b. Building a Display Surface
 
-A _display surface_ is a DirectDraw abstraction of memory that define a rectangular region that holds bitmap data.
+A _display surface_ is a DirectDraw abstraction of memory that defines a rectangular region that holds bitmap data.
 For completeness, a _bitmap_ (or _pixmap_ or _raster_) is an image defined by an array of pixels. Raster graphics define each pixel via an array and have a defined resolution, unlike _vector graphics_ which are defined by mathematical formulae and are not characterised by a finite resolution.
 
 As mentioned previously, there are two types of surface:
 
-+ Primary surface - video memory currently being _rasterised_ (converted to a raster) to the screen by the video card. There is usually only one primary surface in a given DirectDraw application.
-+ Secondary surface - this can be either the abstraction of video memory or system memory, which is prepared offscreen prior to the next frame. The secondary surface is a buffer that is eventually _page-flipped_ (copied) to the primary surface. There is usually more than one secondary surface present per application. For example, applications that have one secondary surface would support _double buffering_, and two secondary surface applications supporting _triple buffering_.
++ _Primary surface_ - video memory currently being _rasterised_ (converted to a raster) to the screen by the video card. There is usually only one primary surface in a given DirectDraw application.
++ _Secondary surface_ - this can be either the abstraction of video memory or system memory, which is prepared offscreen prior to the next frame. The secondary surface is a buffer that is eventually _page-flipped_ (copied) to the primary surface. There is usually more than one secondary surface present per application. For example, applications that have one secondary surface would support _double buffering_, and two secondary surface applications supporting _triple buffering_.
 
 To build a display surface, one must first define a `DDSURFACEDESC2` structure that describes the surface, before calling `IDirectDraw7::CreateSurface()` to create it.
 
@@ -376,4 +376,252 @@ if (FAILED(lpddsprimary->SetPalette(lpddpal))){
 }
 
 // palette attached OK...
+```
+
+## A completed Win32 DirectDraw7 example
+
+```cpp
+#define WIN32_LEAN_AND_MEAN  
+
+#define INITGUID 
+
+#include <windows.h>   
+#include <windowsx.h> 
+#include <mmsystem.h>
+#include <iostream> 
+#include <conio.h>
+#include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdio.h> 
+#include <math.h>
+#include <io.h>
+#include <fcntl.h>
+
+// copied from the DirectX SDK to the parent directory of this project;
+// also include DDRW.LIB from the DirectX SDK with this project
+#include "ddraw.h" 
+
+#define WINDOW_CLASS_NAME "WINCLASS1"
+
+// default screen size
+#define SCREEN_WIDTH    640  // size of screen
+#define SCREEN_HEIGHT   480
+#define SCREEN_BPP      8    // bits per pixel
+#define MAX_COLORS      256  // maximum colors
+
+typedef unsigned short USHORT;
+typedef unsigned short WORD;
+typedef unsigned char  UCHAR;
+typedef unsigned char  BYTE;
+
+// MACROS /////////////////////////////////////////////////
+
+#define KEYDOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
+#define KEYUP(vk_code)   ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
+
+// initializes a direct draw struct
+#define DD_INIT_STRUCT(ddstruct) { memset(&ddstruct, 0, sizeof(ddstruct)); ddstruct.dwSize = sizeof(ddstruct);}
+
+HWND      main_window_handle = NULL; // globally track main window
+HINSTANCE hinstance_app      = NULL; // globally track hinstance
+
+// directdraw stuff
+
+LPDIRECTDRAW7         lpdd         = NULL;   // dd object
+LPDIRECTDRAWSURFACE7  lpddsprimary = NULL;   // dd primary surface
+LPDIRECTDRAWSURFACE7  lpddsback    = NULL;   // dd back surface
+LPDIRECTDRAWPALETTE   lpddpal      = NULL;   // a pointer to the created dd palette
+LPDIRECTDRAWCLIPPER   lpddclipper  = NULL;   // dd clipper
+PALETTEENTRY          palette[256];          // color palette
+PALETTEENTRY          save_palette[256];     // used to save palettes
+DDSURFACEDESC2        ddsd;                  // a direct draw surface description struct
+DDBLTFX               ddbltfx;               // used to fill
+DDSCAPS2              ddscaps;               // a direct draw surface capabilities struct
+HRESULT               ddrval;                // result back from dd calls
+DWORD                 start_clock_count = 0; // used for timing
+
+// these defined the general clipping rectangle
+int min_clip_x = 0,                          // clipping rectangle 
+    max_clip_x = SCREEN_WIDTH-1,
+    min_clip_y = 0,
+    max_clip_y = SCREEN_HEIGHT-1;
+
+// these are overwritten globally by DD_Init()
+int screen_width  = SCREEN_WIDTH,            // width of screen
+    screen_height = SCREEN_HEIGHT,           // height of screen
+    screen_bpp    = SCREEN_BPP;              // bits per pixel
+
+char buffer[80];                     // general printing buffer
+
+
+LRESULT CALLBACK WindowProc(HWND hwnd, 
+						    UINT msg, 
+                            WPARAM wparam, 
+                            LPARAM lparam){
+	// this is the main message handler of the system
+	PAINTSTRUCT		ps;		// used in WM_PAINT
+	HDC				hdc;	// handle to a device context
+
+	// what is the message 
+	switch(msg)
+		{	
+		case WM_CREATE: 
+			{
+			// do initialization stuff here
+			// return success
+			return(0);
+			} break;
+	   
+		case WM_PAINT: 
+			{
+			// simply validate the window 
+   			hdc = BeginPaint(hwnd, &ps);	 
+	        
+			// end painting
+			EndPaint(hwnd, &ps);
+
+			// return success
+			return(0);
+   			} break;
+
+		case WM_DESTROY: 
+			{
+
+			// kill the application, this sends a WM_QUIT message 
+			PostQuitMessage(0);
+
+			// return success
+			return(0);
+			} break;
+
+		default:break;
+
+		}
+
+	// process any messages that we didn't take care of 
+	return (DefWindowProc(hwnd, msg, wparam, lparam));
+} 
+
+int Game_Main(void *parms = NULL, int num_parms = 0){
+	// for now test if user is hitting ESC and send WM_CLOSE
+	if (KEYDOWN(VK_ESCAPE))
+	   SendMessage(main_window_handle,WM_CLOSE,0,0);
+
+	// return success or failure or your own return code here
+	return(1);
+} 
+
+
+int Game_Init(void *parms = NULL, int num_parms = 0){
+	// this is called once after the initial window is created and
+	// before the main event loop is entered, do all your initialization
+	// here
+
+	// create IDirectDraw interface 7.0 object and test for error
+	if (FAILED(DirectDrawCreateEx(NULL, (void **)&lpdd, IID_IDirectDraw7, NULL)))
+	   return(0);
+
+	// set cooperation to normal since this will be a windowed app
+	lpdd->SetCooperativeLevel(
+		main_window_handle, 
+		DDSCL_NORMAL);
+
+	// return success or failure or your own return code here
+	return(1);
+}
+
+int Game_Shutdown(void *parms = NULL, int num_parms = 0){
+	// this is called after the game is exited and the main event
+	// loop while is exited, do all you cleanup and shutdown here
+
+	// simply blow away the IDirectDraw7 interface
+	if (lpdd){
+	   lpdd->Release();
+	   lpdd = NULL;
+	}
+
+	// return success or failure or your own return code here
+	return(1);
+} 
+
+int WINAPI WinMain(	HINSTANCE hinstance,
+					HINSTANCE hprevinstance,
+					LPSTR lpcmdline,
+					int ncmdshow){
+
+	WNDCLASSEX winclass; // this will hold the class we create
+	HWND	   hwnd;	 // generic window handle
+	MSG		   msg;		 // generic message
+
+	// first fill in the window class stucture
+	winclass.cbSize         = sizeof(WNDCLASSEX);
+	winclass.style			= CS_DBLCLKS | CS_OWNDC | 
+							  CS_HREDRAW | CS_VREDRAW;
+	winclass.lpfnWndProc	= WindowProc;
+	winclass.cbClsExtra		= 0;
+	winclass.cbWndExtra		= 0;
+	winclass.hInstance		= hinstance;
+	winclass.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+	winclass.hCursor		= LoadCursor(NULL, IDC_ARROW); 
+	winclass.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
+	winclass.lpszMenuName	= NULL;
+	winclass.lpszClassName	= WINDOW_CLASS_NAME;
+	winclass.hIconSm        = LoadIcon(NULL, IDI_APPLICATION);
+
+	// save hinstance in global
+	hinstance_app = hinstance;
+
+	// register the window class
+	if (!RegisterClassEx(&winclass))
+		return(0);
+
+	// create the window
+	if (!(hwnd = CreateWindowEx(NULL,                  // extended style
+								WINDOW_CLASS_NAME,     // class
+								"DirectDraw Initialisation Demo", // title
+								WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+					 			0,0,	  // initial x,y
+								400,300,  // initial width, height
+								NULL,	  // handle to parent 
+								NULL,	  // handle to menu
+								hinstance,// instance of this application
+								NULL)))	// extra creation parms
+	{
+		return(0);
+	}
+		
+	// save main window handle
+	main_window_handle = hwnd;
+
+	// initialize game here
+	Game_Init();
+
+	// enter main event loop
+	while(TRUE){
+		// test if there is a message in queue, if so get it
+		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)){ 
+		   // test if this is a quit
+		   if (msg.message == WM_QUIT)
+			   break;
+		
+		   // translate any accelerator keys
+		   TranslateMessage(&msg);
+
+		   // send the message to the window proc
+		   DispatchMessage(&msg);
+		}
+	    
+	   // main game processing goes here
+	   Game_Main();
+	}
+
+	// closedown game here
+	Game_Shutdown();
+
+	// return to Windows like this
+	return(msg.wParam);
+}
 ```
