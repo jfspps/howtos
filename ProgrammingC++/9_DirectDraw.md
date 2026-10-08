@@ -567,7 +567,7 @@ The following summarises the principal fields that are commonly used (see the [o
 + __dwFlags__ - identifies which `_DDSURFACEDESC2` fields (represented by flags) are provided with valid data or `_DDSURFACEDESC2` fields which are required during a query. For example, the field `ddsCaps` has the flag `DDSD_CAPS`
 + __dwWidth__ - indicates the width of the surface in pixels
 + __dwHeight__ - indicates the height of the surface in pixels
-+ __lPitch__ - Also known as the _stride_ or _memory width_, this represents the number of bytes per line for the video mode. In VRAM, the literal width (visualise as horizontal resolution) of memory used to represent each row of the surface is not uniform (do not support _linear memory modes_), since some rows have extraneous sectors for e.g. cache.  To access a pixel on the nth position of a row that is m-columns _down_ (memory is addressed top to bottom, left to right) is given by `n + (m*lPitch)`.
++ __lPitch__ - Also known as the _stride_ or _memory width_, this represents the number of bytes per line for the video mode. In VRAM, the literal width (visualise as horizontal resolution) of memory used to represent each row of the surface is not uniform (do not support _linear memory modes_), since some rows have extraneous sectors for e.g. cache.  Access a pixel on the _nth_ position of a row (from the left) that is _m_-columns _down_ (memory is addressed top to bottom, left to right) is given by `n + (m*lPitch)`.
 + __lpSurface__ - used to retrieve a pointer to the surface, whether in video memory or system memory.
 + __dwBackBufferCount__ - used to set or read the number of back buffers (secondary offscreen flipping buffers) chained to the primary surface. One back buffer is called _double buffering_ while two back buffers is called _triple buffering_.
 + __ddckCKDestBlt__ - used to control the destination colour key used in _blitting_ operations (the transfer of a rectangular block of pixels)
@@ -626,4 +626,127 @@ if (FAILED(lpddsprimary->SetPalette(lpddpal))){
 }
 
 // palette attached OK...
+```
+
+## How pixels are plotted
+
+As mentioned previously, video memory abstracts a surface by mapping a location on the surface to a specific area in memory. The surface origin is positioned at the top-left, and in terms of memory location is also represented by the top-left memory location. Each row (left to right, top to bottom) then falls somewhere below and to the right of the origin.
+
+Video memory is not always uniformly distributed, so simply assuming one can plot a pixel by memory, at the mth row and nth point along the row cannot be applied. For such cases, DirectX provides another abstraction, the _memory pitch_ (per line) which determines number of bytes between each row. Then determining the pixel position for the mth row (x) at the nth position (to the right, y) is given by:
+
+```cpp
+// 8-bit integer
+UCHAR *videoBuffer8bit;
+
+// somePixelColour8 is UCHAR
+videoBuffer8bit[x + (y*memoryPitch8bit)] = somePixelColour6;
+```
+
+8-bits is one byte, so each pixel in 8-bit mode requires one byte. For 16-bit mode, an adjustment is needed:
+
+```cpp
+// 16-bit integer
+USHORT *videoBuffer16bit;
+
+// somePixelColour16 is USHORT
+videoBuffer16bit[x + (y* (memoryPitch8bit >> 1))] = somePixelColour16;
+```
+
+In the case of the pointer `videoBuffer16bit` (or array), `videoBuffer16bit[1]` represents the second 16-bit element, equivalent to the combination of the elements at `videoBuffer8bit[2]` and `videoBuffer8bit[3]`. 
+
+The `>>` shift operation is equivalent to dividing the 8-bit memory pitch in half, to yield a 16-bit memory pitch.
+
+As already mentioned, the `somePixelColour16` pixel is given by an encoded RGB format, whereas `somePixelColour6` is an 8-bit value colour index. 16-bit RGB formats include R<sub>5</sub>G<sub>6</sub>B<sub>5</sub>, i.e. 5-bits for red and blue, with 6-bits for green.
+
+## Locking memory, plotting pixels and unlocking memory
+
+In order to manage surfaces clearly, it is first necessary to lock an area of memory in order to prevent other Windows processes from accessing or modifying it.
+
+```cpp
+HRESULT Lock(
+	LPRECT lpDestRect,
+	LPDDSURFACEDESC2 lpDDSurfaceDesc,
+	DWORD dwFlags,
+	HANDLE hEvent
+);
+```
+
+The first parameter of type `LPRECT` represents a rectangular proportion of or entirety of the surface to be locked. Passing `NULL` here will assume the entire surface should be locked. The rectangle origin is the same as the surface origin. An `LPRECT` instance has both memory pitch (`lPitch`) and pointer to surface (`lpSurface`) properties: these are accessed shortly when plotting pixels.
+
+The second parameter, as explained above, of type `LPDDSURFACEDESC2` defines the surface characteristics required.
+
+The third parameter represent control flags in relation to the lock, e.g.:
+
++ __DDLOCK_READONLY__ - locked surface will be read-only
++ __DDLOCK_SURFACEMEMORYPTR__ - a valid memory pointer to the top of the rectangle (type `LPRECT`) must be returned (see `ddsd` in the code snippet below)
++ __DDLOCK_WAIT__ - retry attempts to obtain a lock automatically if previous attempts fail or an error occurs
++ __DDLOCK_WRITEONLY__ - locked surface will be write-enabled
+
+The fourth parameter is for advanced use cases, and not covered here.
+
+Plotting pixels can be handled by custom functions (not part of DirectX) `Plot8()` and `Plot16()`, for 8-bit and 16-bit modes respectively.
+
+```cpp
+inline void Plot8(
+	int x,
+	int y,
+	UCHAR color, // colour index for 8-bit mode
+	UCHAR *buffer, // pointer to surface memory
+	int memPitch){
+		videoBuffer8bit[x + (y*memPitch)] = color;
+}
+```
+
+An example showing `Plot8()` is given below. For comparison, `Plot16()` has a implementation and usage as follows:
+
+```cpp
+inline void Plot16(
+	int x,
+	int y,
+	UCHAR red,
+	UCHAR green, 
+	UCHAR blue,
+	USHORT *buffer,
+	int memPitch){
+		// use R5G6B5 format
+		videoBuffer16bit[x + (y* (memPitch >> 1))] = __RGB16BIT565(red, green, blue);
+}
+```
+
+The following shows how to lock the surface, plot pixels (with `Plot8()`) before unlocking the surface.
+
+```cpp
+// our valid memory pointer to the rectangle
+DDSURFACEDESC2 ddsd;
+
+// clear the surface description
+memset(&ddsd, 0, sizeof(ddsd));
+
+ddsd.dwSize = sizeif(ddsd);
+
+if (FAILED(lpddsprimary->Lock(
+	NULL,
+	&ddsd,
+	DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT,
+	NULL))){
+		// error locking the surface, exit...
+}
+
+// now plot pixels on the lock surface with custom Plot8(),
+// passing the aforementioned lpSurface and lPitch ddsd props
+Plot8(
+	100,
+	20,
+	26, // colour index
+	(UCHAR*) ddsd.lpSurface,
+	(int) ddsd.lPitch
+);
+
+// done plotting, now unlock the entire surface by 
+// passing NULL
+if (FAILED(lpddsprimary->Unlock(NULL))){
+	// error unlocking the surface, clean up and exit..
+}
+
+// surface unlocked
 ```
