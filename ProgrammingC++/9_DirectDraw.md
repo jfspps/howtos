@@ -678,13 +678,13 @@ The second parameter, as explained above, of type `LPDDSURFACEDESC2` defines the
 The third parameter represent control flags in relation to the lock, e.g.:
 
 + __DDLOCK_READONLY__ - locked surface will be read-only
-+ __DDLOCK_SURFACEMEMORYPTR__ - a valid memory pointer to the top of the rectangle (type `LPRECT`) must be returned (see `ddsd` in the code snippet below)
++ __DDLOCK_SURFACEMEMORYPTR__ - a valid memory pointer to the top-left corner of the rectangle (type `LPRECT`) must be returned (see `ddsd` in the code snippet below)
 + __DDLOCK_WAIT__ - retry attempts to obtain a lock automatically if previous attempts fail or an error occurs
 + __DDLOCK_WRITEONLY__ - locked surface will be write-enabled
 
 The fourth parameter is for advanced use cases, and not covered here.
 
-Plotting pixels can be handled by custom functions (not part of DirectX) `Plot8()` and `Plot16()`, for 8-bit and 16-bit modes respectively.
+Plotting pixels can be handled by custom functions (not part of DirectX) `Plot8()` and `Plot16()`, for 8-bit and 16-bit modes respectively. As shown, these functions encapsulate the video buffer and memory pitch assignments.
 
 ```cpp
 inline void Plot8(
@@ -711,6 +711,15 @@ inline void Plot16(
 		// use R5G6B5 format
 		videoBuffer16bit[x + (y* (memPitch >> 1))] = __RGB16BIT565(red, green, blue);
 }
+
+// then plot under a 16-bit encoded format 
+Plot16(
+	300,
+	100,
+	10, 14, 30, // RGB
+	(USHORT*) ddsd.lpSurface,
+	(int) ddsd.lPitch
+);
 ```
 
 The following shows how to lock the surface, plot pixels (with `Plot8()`) before unlocking the surface.
