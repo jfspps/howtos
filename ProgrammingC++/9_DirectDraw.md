@@ -40,7 +40,7 @@ HRESULT WINAPI DirectDrawCreate(
 `DirectDrawCreate()` has three parameters:
 
 1. lpGUID - GUID of the display driver to use; set to NULL to use the system default
-2. lplpDD - a pointer to a pointer that receives `IDirectDraw` 
+2. lplpDD - a pointer to a pointer that receives `IDirectDraw` (recall, `LP` is a prefix to indicate that a pointer to the object of type given after the prefix is involved; hence, `lplpDD` is a pointer to a pointer to a DirectDraw interface)
 3. pUnkOuter - advanced feature, leave as NULL
 
 This section also introduces error handling, with macros `SUCCCEEDED` and `FAILED`. The following sections define functions that return `HRESULT`, as a return code. The only success code is `DD_OK`, so `FAILED(DD_OK)` returns `false`. There are several failure codes, including `DDERR_DIRECTDRAWALREADYCREATED` and `DDERR_OUTOFMEMORY`.

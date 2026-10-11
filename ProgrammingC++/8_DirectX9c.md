@@ -1,12 +1,12 @@
 ---
-title: DirectX 9.0c
+title: DirectX 9.0c and COM
 nav_order: 8
 parent: Programming in C++
 ---
 
-# DirectX 9.0c
+# DirectX 9.0c and COM
 
-This article introduces the concepts behind DirectX 9.0c, set in relation to the GDI and Win32 APIs.
+This article introduces the concepts behind DirectX 9.0c and COM, set in relation to the GDI and Win32 APIs.
 
 ## Components
 
@@ -371,7 +371,7 @@ run without issue.
 In outline only for now, a typical DirectDraw application proceeds as follows:
 
 1. Instantiate a DirectX COM object with `DirectDrawCreate()` and give its own GUID. This is overall similar to what `CoCreateInstance()` above does.
-2. Create NULL pointers (for the DirectDraw interfaces) e.g. of type `LPDIRECTDRAW7`
+2. Create NULL pointers (for the DirectDraw interfaces) e.g. of type `LPDIRECTDRAW7` (actually, `LP` is a prefix applied to indicate that there is a pointer pointing to an object of type `DIRECTDRAW7`)
 3. Assign the NULL pointer(s) to the DirectDraw interface with `QueryInterface()` and thereby get access to DirectDraw's virtual functions.
 4. Call DirectDraw functions required using the interface pointer
 5. Release the interface before the program terminates (this therefore releases the GUID)
