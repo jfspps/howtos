@@ -1,6 +1,6 @@
 ---
 title: DirectDraw Graphics Part 1
-nav_order: 8
+nav_order: 10
 parent: Programming in C++
 ---
 
