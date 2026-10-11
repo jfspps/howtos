@@ -759,3 +759,17 @@ if (FAILED(lpddsprimary->Unlock(NULL))){
 
 // surface unlocked
 ```
+
+A full demo showing the steps to start up and draw on a DirectDraw surface is located [here](https://github.com/jfspps/VisualStudio2005Learning/tree/main/DirectDrawPaletteSurfaceDemo). Features shown include:
+
++ DirectDraw7 COM object setup
++ Cooperative level setup with Windows
++ Display mode setup
+  - Palette setup
+  - Surface setup
+  - Attaching the palette to the surface
++ Plotting points to the surface
+  - Locking the video buffer
+  - Plotting pixels by filling the video buffer array
+  - Unlocking the video buffer
++ Releasing resources on shutdown
