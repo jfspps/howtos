@@ -43,7 +43,7 @@ HRESULT WINAPI DirectDrawCreate(
 2. lplpDD - a pointer to a pointer that receives `IDirectDraw` (recall, `LP` is a prefix to indicate that a pointer to the object of type given after the prefix is involved; hence, `lplpDD` is a pointer to a pointer to a DirectDraw interface)
 3. pUnkOuter - advanced feature, leave as NULL
 
-This section also introduces error handling, with macros `SUCCCEEDED` and `FAILED`. The following sections define functions that return `HRESULT`, as a return code. The only success code is `DD_OK`, so `FAILED(DD_OK)` returns `false`. There are several failure codes, including `DDERR_DIRECTDRAWALREADYCREATED` and `DDERR_OUTOFMEMORY`.
+This section also introduces error handling, with macros `SUCCCEEDED` and `FAILED` (more modern C++ applications tend to avoid using macros and use regular functions instead). The following sections define functions that return `HRESULT`, as a return code. The only success code is `DD_OK`, so `FAILED(DD_OK)` returns `false`. There are several failure codes, including `DDERR_DIRECTDRAWALREADYCREATED` and `DDERR_OUTOFMEMORY`.
 
 ```cpp
 // standard DirectDraw 1.0
@@ -586,7 +586,8 @@ LPDIRECTDRAWSURFACE7 lpddsprimary = NULL;
 // the surface description
 DDSURFACEDESC2 ddsd;
 
-// a general recommendation to clear and prep of ddsd
+// a general recommendation to clear (really fill with zeros) and prep ddsd
+// with memset()
 memset(&ddsd, 0, sizeof(ddsd));
 
 // start initialising the structure's fields
@@ -728,7 +729,7 @@ The following shows how to lock the surface, plot pixels (with `Plot8()`) before
 // our valid memory pointer to the rectangle
 DDSURFACEDESC2 ddsd;
 
-// clear the surface description
+// flood zeros, and prep the surface description
 memset(&ddsd, 0, sizeof(ddsd));
 
 ddsd.dwSize = sizeif(ddsd);
@@ -741,7 +742,7 @@ if (FAILED(lpddsprimary->Lock(
 		// error locking the surface, exit...
 }
 
-// now plot pixels on the lock surface with custom Plot8(),
+// now plot pixels on the locked surface with custom Plot8(),
 // passing the aforementioned lpSurface and lPitch ddsd props
 Plot8(
 	100,
@@ -770,6 +771,6 @@ A full demo showing the steps to start up and draw on a DirectDraw surface is lo
   - Attaching the palette to the surface
 + Plotting points to the surface
   - Locking the video buffer
-  - Plotting pixels by filling the video buffer array
+  - Plotting pixels by filling the video buffer array (via blitting or _bit block_ transfer)
   - Unlocking the video buffer
 + Releasing resources on shutdown

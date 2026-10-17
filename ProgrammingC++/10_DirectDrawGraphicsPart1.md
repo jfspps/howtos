@@ -10,7 +10,7 @@ This article extends the DirectDraw setup and foundation from [the previous sect
 
 + High-colour modes
 + Page flipping and double buffering
-+ The blitter
++ The _blitter_ (part of the microprocesser that transfer and modifies data in memory, for the CPU)
 + Clipping
 + Bitmaps
 + Colour animation
@@ -62,7 +62,7 @@ The blue (int) colour is masked so as to fit within the first 31 (2<sup>5</sup> 
 
 #### Getting the pixel format
 
-The RGB encoding available (the _pixel format_) is hardware dependent but evidently needs to be known, because the colour word for each encoding is hardware dependent. One can deduce the pixel format with `IDIRECTDRAWSURFACE7::GetPixelFormat()`:
+The RGB encoding available (the _pixel format_) is hardware dependent and therefore must be known by the application prior to rendering. One can deduce the pixel format with `IDIRECTDRAWSURFACE7::GetPixelFormat()`:
 
 ```cpp
 HRESULT GetPixelFormat(LPDDPIXELFORMAT lpDDPixelFormat);
@@ -73,10 +73,13 @@ The sole parameter `LPDDPIXELFORMAT` is a pointer to `DDPIXELFORMAT` which is up
 Assuming that the DirectDraw primary surface (`lpdds_primary`) has already by initialised:
 
 ```cpp
-DDPIXELFORMAT ddPixel;
-
+// assume this was initialised
 LPDIRECTDRAWSURFACE7 lpdds_primary;
 
+// this will store the pixel format
+DDPIXELFORMAT ddPixel;
+
+// memset to fill memory block with zeros, to prep ddPixel
 memset(&ddPixel, 0, sizeof(ddPixel));
 ddPixel.dwSize = sizeof(ddPixel);
 
@@ -107,9 +110,118 @@ if (ddPixel.dwFlags & DDPF_RGB){
 	}
 } else {
 	if (ddPixel.dwFlags & DDPF_PALETTEINDEXED8){
-		// 256 (8-bit) colour palettised mode
+		// DDPF_PALETTEINDEXED8 indicates 256 (8-bit) colour palettised mode
 	} else {
-		// something else
+		// something other pixel format...
 	}
 }
+```
+
+So far, we need four variables/pointers to store:
+
++ DirectDraw7 interface pointer (`LPDIRECTDRAW7`)
++ DirectDraw surface description (`DDSURFACEDESC2`)
++ DirectDraw primary surface pointer (`LPDIRECTDRAWSURFACE7`)
++ Pixel format/RGB encoding provided (`DDPIXELFORMAT`)
+
+### Plotting pixels in 16-bit
+
+The [previous section](./9_DirectDraw.md#how-pixels-are-plotted) covered pixel plotting in some detail in 8-bit. In this section, we cover plotting pixels in 16-bit, i.e. without the need for a palette and instead referring to the pixel format of the hardware.
+
+Like 8-bit colour modes, we still need to lock (and unlock) the video buffer. In general, one should minimise the number of times a buffer is locked and then unlocked: locking and unlocking buffers is expensive.
+
+```cpp
+// builds a 16-bit colour value in 5.6.5 format (green dominant);
+// note the green spectrum is 6 bits so covers (2^6 - 1) or 63 values
+#define _RGB16BIT565(r, g, b) (((r & 31) << 11) + ((g & 63) << 5) + (b & 31))
+
+
+// locking is handled outside this function so that we don't lock/unlock on a
+// per pixel basis 
+inline void plotPixel16(
+	int x, int y,
+	int red, int green, int blue,
+	USHORT *videoBuffer, int lPitch)
+	{
+		USHORT pixel = _RGB16BIT565(red, green, blue);
+
+		// write the data, invoke the blitter;
+		// recall lPitch is the memory width in bytes (8-bit blocks);
+		// we adjust to a 16-bit block with a right-shift 
+		videoBuffer[x + y*(lPitch >> 1)] = pixel;
+	}
+```
+
+In general, it is preferable to lock the buffer and draw all that is required before unlocking the buffer. The following shows this in action, and would be applied during a game loop:
+
+#### 24-bit and 32-bit colour modes
+
+24-bit colour modes use three 8-bit (on byte) per channel. An byte can hold up to 2<sup>8</sup> or 256 values, and hence across the RGB mode, there are 256x256x256 = 16.7 million colours. The red, green and blue channels are equally distributed, unlike 16-bit 5.6.5 mode, which is green heavy.
+
+Since 24-bits is made up of three 8-bit blocks, the x- address for each colour word is located every three bytes. Within a colour word, the ordering from the low byte is still blue, then green, and then (the high byte) red.
+
+![](./MSVC2005/24_bit_addressing.png)
+
+The video buffer elements are of type `DWORD` (a 32-bit unsigned int). As shown above, the blue channel of pixel (0,0) resides in memory at 0, the green channel is one 32-bit int above this, and finally red is another above.
+
+Plotting pixels in 24-bit mode involves setting the colour word with each colour channel in step, rather than apply bitwise operations as e.g. 16-bit macro that yield the entire colour word:
+
+```cpp
+// again, assume buffer locking and unlocking is handled outside this function;
+// recall UCHAR is an unsigned 8-bit int
+inline void plotPixel24(
+	int x, int y,
+	int red, int green, int blue,
+	UCHAR *videoBuffer, int lPitch){
+		// DWORD 32-bit unsigned int as the address of the colour 
+		// for the pixel (x, y)
+		DWORD pixelAddress = (x + x + x) + (y * lPitch);
+
+		// no bit fiddling here, simply set the colours in the 
+		// buffer in the order B then G then R 
+		videoBuffer[pixelAddress] = blue;
+		videoBuffer[pixelAddress + 1] = green;
+		videoBuffer[pixelAddress + 2] = red;
+	}
+```
+
+An equivalent macro that sets the colour word would be:
+
+```cpp
+#define _RGB24BIT(r, g, b) (b + (g << 8) + (r << 16))
+```
+
+32-bit colour modes follow in that the blue channel resides in the low byte and each channel occupies 8-bits.
+
++ __Alpha(8).8.8.8__ - the high byte represents the alpha channel (usually for transparency but also for
+other purposes). Being a 32-bit word, this fits entirely within 32-bit CPU registers.
++ __X(8).8.8__ - this is similar to Alpha(8).8.8.8 but the alpha channel is not used at all.
+
+It may seem as though 32-bit colours modes are redundant given that they don't perform much more than 24-bit. Both
+support about 16.7 million colours. The situation is some GPUs do not support or address three-byte words and require a fourth byte to align words correctly. Hence, DirectX applications sometimes ignore 24-bit modes altogether and go with 
+32-bit colour modes without offering 24-bit colour modes.
+
+We can extend the 16-bit pixel plotting function to suit 32-bit colours modes:
+
+```cpp
+// builds a 32-bit colour value as a WORD
+#define _RGB32BIT(alpha, r, g, b) (b + (g << 8) + (r << 16) + (alpha << 24))
+
+// (32-bit) DWORD pitch
+int lPitch32 = lPitch >> 2; 
+
+// locking is handled outside this function so that we don't lock/unlock on a
+// per pixel basis 
+inline void plotPixel132(
+	int x, int y,
+	int alpha, int red, int green, int blue,
+	UINT *videoBuffer, int lPitch32)
+	{
+		// UINT is a 32-bit unsigned int
+		UINT pixel = _RGB32BIT(alpha, red, green, blue);
+
+		// write the data, invoke the blitter;
+		// lPitch is in 4 byte (32-bit) blocks
+		videoBuffer[x + y*(lPitch32)] = pixel;
+	}
 ```
