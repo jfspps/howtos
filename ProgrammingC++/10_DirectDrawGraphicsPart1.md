@@ -145,7 +145,7 @@ inline void plotPixel16(
 	{
 		USHORT pixel = _RGB16BIT565(red, green, blue);
 
-		// write the data, invoke the blitter;
+		// write the data;
 		// recall lPitch is the memory width in bytes (8-bit blocks);
 		// we adjust to a 16-bit block with a right-shift 
 		videoBuffer[x + y*(lPitch >> 1)] = pixel;
@@ -220,7 +220,7 @@ inline void plotPixel132(
 		// UINT is a 32-bit unsigned int
 		UINT pixel = _RGB32BIT(alpha, red, green, blue);
 
-		// write the data, invoke the blitter;
+		// write the data;
 		// lPitch is in 4 byte (32-bit) blocks
 		videoBuffer[x + y*(lPitch32)] = pixel;
 	}
