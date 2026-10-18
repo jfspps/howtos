@@ -568,7 +568,7 @@ The following summarises the principal fields that are commonly used (see the [o
 + __dwWidth__ - indicates the width of the surface in pixels
 + __dwHeight__ - indicates the height of the surface in pixels
 + __lPitch__ - The _memory pitch_, also known as the _stride_ or _memory width_, this represents the number of bytes per (2D) memory row. In VRAM, a row of pixels is stored in a memory row, which has a width known as memory pitch. The memory pitch is always greater than or equal to the surface's horizontal resolution. When the pitch is greater, it means that some portion of the memory row is used for something other than the surface, e.g. cache. 
-![](./MSVC2005/gpu_memory_pitch.png)
+![](./MSVC2005/gpu_memory_pitch.png) 
 In order for the application to consistently find the pixel definition within the memory row, it is necessary to know what the memory pitch is. One accesses a pixel on the _nth_ position of a row (from the left) that is _m_-columns _down_ (memory is addressed top to bottom, left to right) is given by `n + (m*lPitch)`.
 + __lpSurface__ - used to retrieve a pointer to the surface, whether in video memory or system memory.
 + __dwBackBufferCount__ - used to set or read the number of back buffers (secondary offscreen flipping buffers) chained to the primary surface. One back buffer is called _double buffering_ while two back buffers is called _triple buffering_.

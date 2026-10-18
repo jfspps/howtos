@@ -9,7 +9,7 @@ parent: Programming in C++
 This article extends the DirectDraw setup and foundation from [the previous section](9_DirectDraw.md), covering topics such as:
 
 + High-colour modes
-+ Page flipping and double buffering
++ Double buffering and page flipping
 + The _blitter_ (part of the microprocesser that transfer and modifies data in memory, for the CPU)
 + Clipping
 + Bitmaps
@@ -224,4 +224,51 @@ inline void plotPixel132(
 		// lPitch is in 4 byte (32-bit) blocks
 		videoBuffer[x + y*(lPitch32)] = pixel;
 	}
+```
+
+## Double buffering and page flipping
+
+Drawing to an offscreen surface allows applications to hide surface operations (removing elements, updating pixel colours etc.) from viewers. 
+
+The process of drawing to an offscreen area and then copying it to a surface is known as _double buffering_.
+
+A similar operation, known as _page flipping_. This is where the application draws to one of e.g. two visible areas (surfaces) and before directing the hardware to display to newly drawn surface. Instead of copying an image to a surface, the hardware points to a different portion of memory.
+
+### Implementing double buffering
+
+In short, one allocates a portion of memory for the offscreen area with the same resolution as the primary surface, fills the buffer with the next scene, before copying it to the primary surface.
+
+Copying the data is somewhat involved, in that the memory stride (pitch) of the primary surface determines which C++ operations are required.
+
+If the stride equals the horizontal resolution (i.e. there are no extraneous elements to the memory row) then one can call e.g.:
+
+```cpp
+// UCHAR is an unsigned 8-bit int
+UCHAR * primaryBuffer;
+// ...assume the primary buffer is already initialised
+
+UCHAR * doubleBuffer = new UCHAR[640*480];
+// ...assume the double buffer is filled later...
+// e.g. doubleBuffer[x + (640*y)] = someColour
+
+// the last parameter of memcpy() is the number of bytes to copy 
+// (from doubleBuffer to primaryBuffer)
+memcpy((void *) primaryBuffer, (void *) doubleBuffer, 640*480); 
+```
+
+If the stride is greater than the horizontal resolution, then one needs to skip the extraneous elements with an iterative approach:
+
+```cpp
+for (int y = 0; y < 480; y++){
+	
+	// copy the first 640 bytes (each pixel is one byte or 8-bits)
+	memcpy((void *) primaryBuffer, (void *) doubleBuffer, 640);
+
+	// memPitch is in number of bytes;
+	// advance the primary surface buffer by memPitch bytes
+	primaryBuffer += memPitch;
+
+	// get ready for the next line of pixels
+	doubleBuffer += 640;
+}
 ```
