@@ -232,7 +232,7 @@ Drawing to an offscreen surface allows applications to hide surface operations (
 
 The process of drawing to an offscreen area and then copying it to a surface is known as _double buffering_.
 
-A similar operation, known as _page flipping_. This is where the application draws to one of e.g. two visible areas (surfaces) and before directing the hardware to display to newly drawn surface. Instead of copying an image to a surface, the hardware points to a different portion of memory.
+A similar operation, known as _page flipping_. This is where the application draws to one of e.g. two visible areas (surfaces) before directing the hardware to display to newly drawn surface. Instead of copying an image to a surface, the hardware points to a different portion of memory.
 
 ### Implementing double buffering
 
@@ -279,4 +279,92 @@ for (int y = 0; y < 480; y++){
 	// get ready for the next line of pixels
 	doubleBuffer += 640;
 }
+```
+
+### Complex surfaces
+
+Surfaces can be described as _primary surfaces_ or _secondary surfaces_. Secondary surfaces are part of an animation chain that have the same resolution and colour depth as the primary surface. One can utilise page flipping to point the primary display to the next secondary surface.
+
+Each offscreen surface (secondary surface) is a _back buffer_, and usually occupies the GPU VRAM. Page flipping in such cases is generally much faster than copying data between surfaces, though the number of back buffers is limited by the resolution requested and the amount of VRAM available.
+
+For 8-bit colour depth, an `m*n` resolution will require `m*n` bytes per surface. A more common application which requires 16-bit colour depth with double buffering (i.e. one back buffer) will require `2*2*m*n` bytes of VRAM (e.g. 640x480 at 16-bit with double buffering is 1,228,800 bytes, roughly 1.2 MB; likewise 2560x1440 at 32-bit colour depth with double buffering requires 7,372,800 bytes).
+
+Creating a back buffer and relating it to the primary surface (in preparation for page flipping) is carried out in DirectX by creating a _complex surface_. Reviewing the procedure set out [here](./9_DirectDraw.md#b-building-a-display-surface)
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7 has been initialised
+
+// pointer to the PRIMARY surface interface
+LPDIRECTDRAWSURFACE7 lpddsprimary = NULL;
+
+// pointer to A BACK BUFFER interface
+LPDIRECTDRAWSURFACE7 lpddsBack = NULL;
+
+// the surface description
+DDSURFACEDESC2 ddsd;
+
+// a general recommendation to clear (really fill with zeros) and prep ddsd
+// with memset()
+memset(&ddsd, 0, sizeof(ddsd));
+
+// start initialising the structure's fields
+ddsd.dwSize = sizeof(ddsd);
+
+// the application can expect valid surface settings: 
+// ddsCaps (for DirectDraw) and a back buffer count (one in this case)
+ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+
+// now set the capabilities of the chosen field(s)
+
+// set the back buffer count
+ddsd.dwBackBufferCount = 1;
+
+// set up for a complex, flippable surface
+ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
+
+// now create the primary surface, and initialise lpddsprimary
+if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsprimary, NULL))){
+    // failed to build the primary surface, clean up and exit
+}
+
+// get ready to request the back buffer
+ddsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
+
+// now request the attached back buffer
+if (FAILED(lpddsprimary->GetAttachedSurface(&ddsd.ddsCaps, &lpddsBack))){
+	return (0);
+}
+
+// okay, now establised with the primary lpddsprimary
+// and secondary surface lpddsBack...
+```
+
+To draw to the back buffer, simply lock the surface, draw to it then unlock it. The flip the page...this is decribed next.
+
+### Page flipping
+
+Despite first appearances, a page-flipping mechanism does not change the definition of primary or secondary surfaces. A back buffer is _always_ offscreen, with the primary surface _always_ onscreen. That is, even though the pointer to a surface is updated during page flipping, the back buffer does not _become_ the primary surface, and neither does the primary surface become a back buffer.
+
+To flip the primary surface use `Flip()` (one does not flip a back buffer), the signature is given below:
+
+```cpp
+HRESULT Flip(LPDIRECTDRAWSURFACE7 lpDDSurfaceTargetOverride, DWORD dwFlags);
+```
+
+The first parameter is advanced and passing NULL is normally fine. The second parameter is one of the following control flag:
+
++ DDLIP_INTERVAL2 - flip after two retraces (vertical sync)
++ DDLIP_INTERVAL3 - flip after three retraces
++ DDLIP_INTERVAL4 - flip after four retraces
++ DDFLIP_NOVSYNC - flip as close as possible to the next (monitor) scan line
++ DDFLIP_WAIT - wait until a flip is possible (commonly used control flag)
+
+The first three flags indicate how many vertical retraces to wait between each flip (defaults to one), and are only
+valid if `DDSCAPS2_FLIPINTERVAL` is declared by the `ddsd` surface description.
+
+Both the back buffer and primary surface must be unlocked before the primary surface is flipped.
+
+```cpp
+// this approach allows for repeated attempts
+while(FAILED(lpddsprimary->Flip(NULL,  DDFLIP_WAIT)));
 ```

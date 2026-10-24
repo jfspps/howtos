@@ -15,7 +15,7 @@ There are four DirectDraw interfaces, all derived from `IUnknown`. The following
 + `IDirectDraw` - the main interface which effectively represents the GPU
 + `IDirectDrawSurface` - represents the display surface that can reside in VRAM or system memory. Two types of surface: 
   - Primary surface - represents the video buffer being rasterised and displayed on screen
-  - Seconday surface - represents the back buffer (off-screen) scene
+  - Secondary surface - represents the back buffer (off-screen) scene
 + `IDirectDrawPalette` - handles the 256-colour mode [colour palette](6_WindowsAPIGDIPart1.md#excursion-rgb-and-palattes)
 + `IDirectDrawClipper` - assists with clipping bitmap and raster operations, ensuring assets are set within the bounds of windowed applications and DirectDraw surfaces boundaries
 
@@ -568,7 +568,6 @@ The following summarises the principal fields that are commonly used (see the [o
 + __dwWidth__ - indicates the width of the surface in pixels
 + __dwHeight__ - indicates the height of the surface in pixels
 + __lPitch__ - The _memory pitch_, also known as the _stride_ or _memory width_, this represents the number of bytes per (2D) memory row. In VRAM, a row of pixels is stored in a memory row, which has a width known as memory pitch. The memory pitch is always greater than or equal to the surface's horizontal resolution. When the pitch is greater, it means that some portion of the memory row is used for something other than the surface, e.g. cache (see below). In order for the application to consistently find the pixel definition within the memory row, it is necessary to know what the memory pitch is. One accesses a pixel on the _nth_ position of a row (from the left) that is _m_-columns _down_ (memory is addressed top to bottom, left to right) is given by `n + (m*lPitch)`. 
-![](./MSVC2005/gpu_memory_pitch.png)
 + __lpSurface__ - used to retrieve a pointer to the surface, whether in video memory or system memory.
 + __dwBackBufferCount__ - used to set or read the number of back buffers (secondary offscreen flipping buffers) chained to the primary surface. One back buffer is called _double buffering_ while two back buffers is called _triple buffering_.
 + __ddckCKDestBlt__ - used to control the destination colour key used in _blitting_ operations (the transfer of a rectangular block of pixels)
@@ -596,6 +595,7 @@ ddsd.dwSize = sizeof(ddsd);
 
 // decide which valid fields will be provided or required
 // in this case the surface properties field ddsCaps
+// for DirectDraw applications
 ddsd.dwFlags = DDSD_CAPS;
 
 // now set the capabilities of the chosen field(s)
