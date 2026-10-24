@@ -634,6 +634,8 @@ if (FAILED(lpddsprimary->SetPalette(lpddpal))){
 
 As mentioned previously, video memory abstracts a surface by mapping a location on the surface to a specific area in memory. The surface origin is positioned at the top-left, and in terms of memory location is also represented by the top-left memory location. Each row (left to right, top to bottom) then falls somewhere below and to the right of the origin.
 
+![](./MSVC2005/video_buffer.png)
+
 Video memory is not always uniformly distributed, so simply assuming one can plot a pixel by memory, at the mth row and nth point along the row cannot be applied. For such cases, DirectX provides another abstraction, the _memory pitch_ (per line) which determines number of bytes between each row. Then determining the pixel position for the mth row (x) at the nth position (to the right, y) is given by:
 
 ```cpp
@@ -643,6 +645,8 @@ UCHAR *videoBuffer8bit;
 // somePixelColour8 is UCHAR
 videoBuffer8bit[x + (y*memoryPitch8bit)] = somePixelColour6;
 ```
+
+As shown by the above snippet, the video buffer is an array `x by y` elements for each pixel. Knowing the pitch allows one to traverse between surface lines.
 
 8-bits is one byte, so each pixel in 8-bit mode requires one byte. For 16-bit mode, an adjustment is needed:
 

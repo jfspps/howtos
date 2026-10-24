@@ -240,7 +240,7 @@ In short, one allocates a portion of memory for the offscreen area with the same
 
 Copying the data is somewhat involved, in that the memory stride (pitch) of the primary surface determines which C++ operations are required.
 
-If the stride equals the horizontal resolution (i.e. there are no extraneous elements to the memory row) then one can call e.g.:
+If the stride equals the horizontal resolution (i.e. there are no extraneous elements to the memory row) then one can call `memcpy()` e.g.:
 
 ```cpp
 // UCHAR is an unsigned 8-bit int
@@ -256,9 +256,17 @@ UCHAR * doubleBuffer = new UCHAR[640*480];
 memcpy((void *) primaryBuffer, (void *) doubleBuffer, 640*480); 
 ```
 
-If the stride is greater than the horizontal resolution, then one needs to skip the extraneous elements with an iterative approach:
+If the stride is greater than the horizontal resolution, then one needs to skip the extraneous elements by advancing a pointer:
 
 ```cpp
+// UCHAR is an unsigned 8-bit int
+UCHAR * primaryBuffer;
+// ...assume the primary buffer is already initialised
+
+UCHAR * doubleBuffer = new UCHAR[640*480];
+// ...assume the double buffer is filled later...
+// e.g. doubleBuffer[x + (640*y)] = someColour
+
 for (int y = 0; y < 480; y++){
 	
 	// copy the first 640 bytes (each pixel is one byte or 8-bits)
