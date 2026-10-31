@@ -368,3 +368,170 @@ Both the back buffer and primary surface must be unlocked before the primary sur
 // this approach allows for repeated attempts
 while(FAILED(lpddsprimary->Flip(NULL,  DDFLIP_WAIT)));
 ```
+
+### The blitter (bit block transfers)
+
+From a basic standpoint, drawing a bitmap to a surface involves can involve copying each pixel. 
+For example, an 8x8 256-colour (8-bit) bitmap can be copied to a 640*480 surface at position (x,y) by the blitter as follows:
+
+```cpp
+UCHAR *videoBuffer;
+// assume this is initialised with an 8x8 image
+UCHAR *bitmap;
+
+int x;
+int y;
+
+// for each row of the bitmap
+for (int bmY = 0; bmY < 8; bmY++){ 
+
+	// for each pixel along a row
+	for (int bmX = 0; bmX < 8; bmX++){
+		// pitch is 640 pixels; the origin (top-left) of the bitmap is at (x,y) on the surface
+		// and fills the surface to the right and below relative to this
+		videoBuffer[(x + bmX) + (y + bmY)*640] = bitmap[bmX + (bmY*8)];
+	}
+}
+```
+
+The above code will copy everything over, including pixels that should be ignored i.e. transparent pixels (value of 0).
+
+The above can be optimised to remove some of the addition and multiplication operators (in favour of bitwise operators) 
+and ignore transparent pixels, with:
+
+```cpp
+UCHAR *videoBuffer;
+// assume this is initialised with an 8x8 image
+UCHAR *bitmap;
+
+int x;
+int y;
+
+// get the starting point on the surface
+// i.e. videoBuffer += (x + (y)*640)
+videoBuffer += (x + (y << 9) + (y << 7));
+
+// used to read/write pixels
+UCHAR currentPixel;
+
+for (int bmY = 0; bmY < 8; bmY++){ 
+
+	// for each pixel along a row
+	for (int bmX = 0; bmX < 8; bmX++){
+		if (currentPixel = bitmap[bmX]){
+			// currentPixel > 0, not transparent
+			videoBuffer[bmX] = currentPixel
+		}
+	}
+
+	bitmap += 8; // next row
+	videoBuffer += 640; // next line
+}
+```
+
+The hardware blitter frees up the processor to work on other aspects.
+
+DirectDraw provides two bitting methods, `IDIRECTDRAWSURFACE7::Blt()` and ``IDIRECTDRAWSURFACE7::BltFast()`. The former is more comprehensive, supporting additional features such as clipping, while the latter is simpler and consequently faster in simpler contexts.
+
+```cpp
+HRESULT Blt(
+	LPRECT lpDestRect,
+	LPDIRECTDRAWSURFACE7 lpDDSrcSurface,
+	LPRECT lpSrcRect,
+	DWORD dwFlags,
+	LPDDBLTFX lpDDBltFx
+)
+```
+
++ `LPRECT lpDestRect` - the rectangle (portion of destination surface) to blit to (if NULL then blit to the entire surface)
++ `LPDIRECTDRAWSURFACE7 lpDDSrcSurface` - the address to the source surface
++ `LPRECT lpSrcRect` - the rectangle (portion of source surface) to blit from (if NULL then blit from the entire surface)
++ `DWORD dwFlags` - defines blitting behaviour or operations, e.g. scaling, rotation
++ `LPDDBLTFX lpDDBltFx` - an extensive structure detailing blitting properties e.g. special effects, what operations are supported
+
+As mentioned, `BltFast()` is simpler:
+
+```cpp
+HRESULT BltFast(
+	DWORD dwX,
+	DWORD dwY
+	LPDIRECTDRAWSURFACE7 lpDDSrcSurface,
+	LPRECT lpSrcRect,
+	DWORD dwTrans
+)
+```
+
+The parameters `dwX` and `dwY` represent the x and y coordinates to blit to (on the destination surface). The last parameter `dwTrans` defines the type of blitter operation e.g. whether to adopt the source or destinations colour key 
+(which colours should be treated as transparent), or just copy with no transparency.
+
+#### Filling a surface with a colour with the blitter
+
+To fill a region of an 8-bit colour surface:
+
+```cpp
+DDBLTFX ddBltFx;
+RECT destRect;
+
+// initialise the FX structure
+memset(&ddBltFx, 0, sizeof(ddBltFx));
+ddBltFx.dwSize = sizeof(ddBltFx);
+
+// for 8-bit mode only e.g. colourIndex some value 0-255
+// (actual colour is palette dependent);
+// for higher modes e.g. for 16-bit mode green use
+// ddBltFx.dwFillColor = __RGB16BIT565(0, 255, 0);
+ddBltFx.dwFillColor = colourIndex;
+
+// upper-left inclusive, these pixels are included
+destRect.left = x1;
+destRect.top = y1;
+
+// lower-right exclusive, these pixels are a boundary,
+// so really (x2 - 1) and (y2 - 1) are the lower right pixels
+// included
+destRect.right = x2;
+destRect.bottom = y2;
+
+lpddsPrimary->Blt(
+	destRect,
+	NULL,
+	NULL,
+	DDBLT_COLORFILL | DDBLT_WAIT,
+	&ddBltFx
+);
+```
+
+The `dwFlags` `DDBLT_COLORFILL` and `DDBLT_WAIT` passed instruct the application to fill the destination surface with an RGB colour and wait until blitting is completed.
+
+#### Blitting from a back buffer to the primary surface
+
+The power of blitting is really the domain of moving bitmaps in blocks. This is often useful for _sprites_ (bitmaps that
+move around the screen).
+
+Blitting can only take place if the source and destination surfaces are defined. One can also blit from surfaces that are not related to the primary surface, though in the next example, we will blit from a back buffer (secondary surface) to the primary surface. (Later, when handling bitmaps is covered, this example can be extended to blit bitmaps.)
+
+Following a slight modification to the colour fill blitter example:
+
+```cpp
+// we don't require the Blt FX structure
+
+RECT sourceRect, destRect;
+
+sourceRect.left = x1;
+sourceRect.top = y1;
+sourceRect.right = x2;
+sourceRect.bottom = y2;
+
+destRect.left = x3;
+destRect.top = y3;
+destRect.right = x4;
+destRect.bottom = y4;
+
+lpddsPrimary->Blt(
+	destRect,
+	NULL,
+	&sourceRect,
+	DDBLT_WAIT,
+	NULL
+);
+```
