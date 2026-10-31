@@ -420,7 +420,7 @@ for (int bmY = 0; bmY < 8; bmY++){
 	for (int bmX = 0; bmX < 8; bmX++){
 		if (currentPixel = bitmap[bmX]){
 			// currentPixel > 0, not transparent
-			videoBuffer[bmX] = currentPixel
+			videoBuffer[bmX] = currentPixel;
 		}
 	}
 
@@ -534,4 +534,150 @@ lpddsPrimary->Blt(
 	DDBLT_WAIT,
 	NULL
 );
+```
+
+### Clipping
+
+_Clipping_ is the process of ignoring or omitting pixels or parts of an image that would otherwise be out of bounds of
+the viewport or window. DirectDraw does not support clipping of pixels or lines, so this must be implemented manually. DirectDraw does however support clipping of bitmaps.
+
+#### Clipping on a pixel basis
+
+To illustrate, one can define a rectangular region outside of which pixels will not be rendered.
+
+```cpp
+// assume these define the upper-left and lower-right boundaries
+// and are inclusive (pixels can occupy the boundary too)
+int x1, y1, x2, y2;
+
+// attempt to plot a pixel at (x, y) on a 640x480 8-bit surface
+void plotPixelAndClip(
+	int x,
+	int y,
+	UCHAR colour,
+	UCHAR *videoBuffer){
+		
+		if (x >= x1 && x <= x2 && y >= y1 && y <= y2){
+			videoBuffer[x + (y*640)];
+		}
+}
+```
+
+To take into account the viewport dimensions, one can generalise the above as follows:
+
+```cpp
+// assume these define the upper-left boundaries
+// and are inclusive (pixels can occupy the boundary too)
+int x1, y1;
+
+// assume these viewport dimensions are already defined;
+// we don't allow pixels to occupy the right and bottom boundaries
+int width, height;
+
+// attempt to plot a pixel at (x, y) on a 640x480 8-bit surface
+void plotPixelAndClip(
+	int x,
+	int y,
+	UCHAR colour,
+	UCHAR *videoBuffer){
+		
+		if (x >= x1 && x < width && y >= y1 && y < height){
+			videoBuffer[x + (y*640)];
+		}
+}
+```
+
+#### Clipping bitmaps
+
+As mentioned, DirectDraw support bitmap clipping. First, we review how to clip in software mode.
+
+This can be achieved by overlaying the bitmap on the destination surface (e.g. the primary surface)
+and then clipping the bitmap where it lies outside of the viewport.
+
+Let us assume the bitmap of dimensions `width` x `height` is first overlayed at a point (x, y) which may or may not reside in the viewport, with dimensions `viewWidth` x `viewHeight`. We overlay the bitmap, then identify the portion of the bitmap that does lie inside the viewport and only draw what lies inside the viewport.
+
+```cpp
+int viewWidth = 640;
+int viewHeight = 480;
+
+void blitClipped(
+	int x,
+	int y,
+	int width,
+	int height,
+	UCHAR *bitmap,
+	UCHAR *videoBuffer,
+	int memPitch){
+		// make sure the bitmap top-left (origin) isn't out of the viewport
+		// or bitmap bottom-right isn't above and to the left of the viewport origin
+		if ((x >= viewWidth) || (y >= viewHeight) || (x + width <= 0) || (y + height) <= 0){
+			return;
+		}
+
+		// some of the bitmap is in the viewport, overlay it
+		// and find out, from the viewport's perspective, where the top-left
+		// and bottom-right of the bitmap are (exclusive)
+		int x1 = x;
+		int y1 = y;
+		int x2 = x1 + width - 1;
+		int y2 = y1 + height - 1;
+
+		// now check both corners
+		if (x1 < 0){
+			// can't draw top-left any further to the left
+			x1 = 0;
+		}
+
+		if (y1 < 0){
+			// can't draw top-left any further upwards
+			y1 = 0;
+		}
+
+		if (x2 >= viewWidth){
+			// can't draw bottom-right any further to the right
+			x2 = viewWidth - 1;
+		}
+
+		if (y2 >= viewHeight){
+			// can't draw bottom-right any further downwards
+			y2 = viewHeight - 1;
+		}
+
+		// now determine the (offset) origin of the bitmap
+		// that will reside in the viewport
+		int xOff = x1 - x;
+		int yOff = y1 - y;
+		
+		// determine the no. of columns and rows
+		// of the bitmap to blit (this defines the 
+		// area of the clipped bitmap)
+		int dx = x2 - x1 + 1;
+		int dy = y2 - y1 + 1;
+
+		// determine where blitting starts
+		// within the viewport (buffer)
+		videoBuffer += (x1 + (y1 * memPitch));
+
+		// determine where bitmap scanning 
+		// starts (within the bitmap array)
+		bitmap += (xOff + (yOff * width));
+
+		// clipping prepared, start blitting
+		UCHAR currentPixel;
+
+		// for each row in the clipped bitmap
+		for (int bmY = 0; bmY < dy; bmY++){ 
+
+			// for each pixel along a row
+			for (int bmX = 0; bmX < dx; bmX++){
+				if (currentPixel = bitmap[bmX]){
+					// currentPixel > 0, not transparent
+					videoBuffer[bmX] = currentPixel;
+				}
+			}
+
+			bitmap += memPitch; // next row
+			videoBuffer += width; // next line
+		}
+	}
 ```
