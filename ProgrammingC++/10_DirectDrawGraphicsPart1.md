@@ -788,8 +788,7 @@ LPDIRECTDRAWCLIPPER attachClipper(
 
 	int index;                         // looping var
 	LPDIRECTDRAWCLIPPER lpddclipper;   // pointer to the newly created dd clipper
-	LPRGNDATA regionData;             // pointer to the region data that contains
-									// the header and clip list
+	LPRGNDATA regionData;             // pointer to the region data
 
 	// first create the DirectDraw clipper
 	if (FAILED(lpdd7->CreateClipper(0, &lpddclipper, NULL)))
@@ -859,4 +858,238 @@ Calling the function is straighforward to the back buffer:
 
 ```cpp
 LPDIRECTDRAWCLIPPER lpddclipper = attachClipper(lpddsback, 3, rectList);
+```
+
+### Bitmaps
+
+There are numerous examples of bitmap files, including `.pcx` (PC Paint), `.tga` (Targa), `.png` (Portable Network Graphics) and (native to Windows) `.bmp`. This section applies solely on the latter.
+
+A bitmap is composed of three parts, with an associated Win32 data structure:
+
++ Bitmap file header, `BITMAPFILEHEADER`
++ Bitmap info section, `BITMAPINFOHEADER`
++ Bitmap data area, byte stream (array)
+
+The bitmap file header is defined as:
+
+```cpp
+typedef struct tagBITMAPFILEHEADER {
+	WORD bfType; // file type, 0x4D42 for .bmp
+	DWORD bfSize; // file size in bytes
+	WORD bfReserved1; // leave as 0
+	WORD bfReserved2; // leave as 0
+	DWORD bfOffBits; // offset or size of bitmap info in bytes
+} BITMAPFILEHEADER;
+```
+
+The bitmap info section is composed of `BITMAPINFOHEADER` and (if required) `RGBQUAD`, the RGB palette information.
+
+```cpp
+typedef struct tagBITMAPINFOHEADER {
+  DWORD biSize;		// no. of bytes required by this struct
+  LONG  biWidth;	// bitmap width in pixels
+  LONG  biHeight;	// bitmap height in pixels (see below re. orientation)
+  WORD  biPlanes;	// no. of colour planes, must be 1
+  WORD  biBitCount; // bits per pixel i.e. 1, 4, 8, 16, 24 or 32
+  DWORD biCompression;	// type of compression, use BI_RGB for most cases
+  DWORD biSizeImage;	// image size in bytes
+  LONG  biXPelsPerMeter;	// no. of pixels per meter along x-axis
+  LONG  biYPelsPerMeter;	// no. of pixels per meter along y-axis
+  DWORD biClrUsed;	// no. of colours used by the this bitmap, 
+  					// usually 256 for 8-bit and 0 for higher
+  DWORD biClrImportant;	// no. of important colours used by this bitmap,
+						// usually 256 for 8-bit and 0 for higher
+} BITMAPINFOHEADER;
+```
+
+The palette applies to 8-bit colour modes and would then require an `RGBQUAD` instance:
+
+```cpp
+typedef struct tagRGBQUAD{
+	BYTE rgbBlue;
+	BYTE rgbGreen;
+	BYTE rgbRed;
+	BYTE rgbReserved;
+}
+```
+
+If the parameter `biHeight` is negative then the bitmap is _top-down DIB_ (device-independent bitmap) with an origin
+at the top-left corner. Contrastingly, a positive `biHeight` is a _bottom-up DIB_ with the origin at the lower-left corner. Most bitmaps are bottom-up.
+
+The bitmap data area is byte stream that defines the image pixels, in a line-by-line order. As implied by `biHeight`, the image will be upside-down if `biHeight` is positive. Some paint programs save updates to a bitmap in reverse order so the final output appears upside-down, with a postive `biHeight`. Later the application will know it is upside-down and reorientate it when loaded again.
+
+In general (and in particular during development when changes are frequent), bitmaps are loaded from disk rather than embedding them into the exectuable as a resource. A Win32 API function that can load bitmaps is:
+
+```cpp
+HANDLE LoadImage(
+	HINSTANCE hinst, // handle to the instance with the image (set to NULL)
+	LPCTSTR lpszName, // file name of image (filename or full path)
+	UINT uType, // image type (set to IMAGE_BITMAP)
+	int cxDesired, // desired width
+	int cyDesired, // desired height
+	UINT fuLoad // load flags
+);
+```
+
+The desired width and height can be set to match the actual bitmap so that the application will not 
+scale the bitmap. Otherwise, set this to zero and set the desired view dimensions later.
+
+The load flags can normally be set to `LR_LOADFROMFILE | LR_CREATEDIBSECTION` to instruct the application to 
+load the image according to the filename (`lpszName`) and to not translate the bitmap data to the current display device's colour characteristics.
+
+#### Loading bitmaps from disk and to memory
+
+Once the bitmap file is loaded by the application, it is quite a lot of effort to get through each header and finally the byte stream. The following custom function handles all of this.
+
+The following custom methods relate to a custom structure that stores a loaded bitmap:
+
+```cpp
+typedef struct BITMAP_FILE_TAG{
+	BITMAPFILEHEADER bitmapfileheader;  // bitmap file header
+    BITMAPINFOHEADER bitmapinfoheader;  // bitmap file info (inc. palette if necessary)
+    PALETTEENTRY     palette[256];
+    UCHAR            *buffer;           // pointer to the bitmap data
+} BITMAP_FILE, *BITMAP_FILE_PTR;
+```
+
+__To load a bitmap__:
+
+```cpp
+int loadBitmapFile(BITMAP_FILE_PTR bitmap, char *filename){
+
+	int fileHandle, index;
+	OFSTRUCT fileData;       // the file data information
+
+	// open the file if it exists
+	if ((fileHandle = OpenFile(filename, &fileData, OF_READ)) == -1)
+	   return(0);
+
+	// now load the bitmap file header
+	_lread(fileHandle, &bitmap->bitmapfileheader, sizeof(BITMAPFILEHEADER));
+
+	// test if this is a bitmap file
+	if (bitmap->bitmapfileheader.bfType != BITMAP_ID){
+	   _lclose(fileHandle);
+	   return(0);
+	}
+
+	// first the bitmap infoheader
+
+	// now load the bitmap file header
+	_lread(fileHandle, &bitmap->bitmapinfoheader, sizeof(BITMAPINFOHEADER));
+
+	// now load the color palette if there is one
+	if (bitmap->bitmapinfoheader.biBitCount == 8){
+	   _lread(fileHandle, &bitmap->palette, MAX_COLORS_PALETTE * sizeof(PALETTEENTRY));
+
+	   // now set all the flags in the palette correctly and fix the reversed 
+	   // BGR RGBQUAD data format
+	   for (index = 0; index < MAX_COLORS_PALETTE; index++){
+		   // reverse the red and green fields
+		   int tempColour = bitmap->palette[index].peRed;
+		   bitmap->palette[index].peRed  = bitmap->palette[index].peBlue;
+		   bitmap->palette[index].peBlue = tempColour;
+	       
+		   // always set the flags word to this
+		   bitmap->palette[index].peFlags = PC_NOCOLLAPSE;
+	   }
+
+	}
+
+	// finally the image data itself
+	_lseek(fileHandle, -(int)(bitmap->bitmapinfoheader.biSizeImage), SEEK_END);
+
+	// now read in the image, if the image is 8 or 16 bit then simply read it
+	// but if its 24 bit then read it into a temporary area and then convert
+	// it to a 16 bit image
+
+	if (bitmap->bitmapinfoheader.biBitCount == 8 || 
+		bitmap->bitmapinfoheader.biBitCount == 16 || 
+		bitmap->bitmapinfoheader.biBitCount == 24){
+
+	   // delete the last image if there was one
+	   if (bitmap->buffer)
+		   free(bitmap->buffer);
+
+	   // allocate the memory for the image
+	   if (!(bitmap->buffer = (UCHAR *)malloc(bitmap->bitmapinfoheader.biSizeImage))){
+		  _lclose(fileHandle);
+		  return(0);
+		}
+
+	   // now read it in
+	   _lread(fileHandle, bitmap->buffer, bitmap->bitmapinfoheader.biSizeImage);
+
+	} else {
+	   // serious problem
+	   return(0);
+	}
+
+	#if 0
+	// write the file info out 
+	printf("\nfilename:%s \nsize=%d \nwidth=%d \nheight=%d 
+			\nbitsperpixel=%d \ncolors=%d \nimpcolors=%d",
+			filename,
+			bitmap->bitmapinfoheader.biSizeImage,
+			bitmap->bitmapinfoheader.biWidth,
+			bitmap->bitmapinfoheader.biHeight,
+			bitmap->bitmapinfoheader.biBitCount,
+			bitmap->bitmapinfoheader.biClrUsed,
+			bitmap->bitmapinfoheader.biClrImportant);
+	#endif
+
+	// close the file
+	_lclose(fileHandle);
+
+	// flip the bitmap
+	flipBitmap(bitmap->buffer, 
+				bitmap->bitmapinfoheader.biWidth * 
+					(bitmap->bitmapinfoheader.biBitCount/8), 
+				bitmap->bitmapinfoheader.biHeight);
+
+	// return success
+	return(1);
+}
+```
+
+__To unload a bitmap file__:
+
+```cpp
+int unloadBitmapFile(BITMAP_FILE_PTR bitmap){
+	if (bitmap->buffer){
+	   free(bitmap->buffer);
+	   bitmap->buffer = NULL;
+	}
+
+	// return success
+	return(1);
+}
+```
+
+__To flip a bitmap__:
+
+```cpp
+int flipBitmap(UCHAR *image, int bytesPerLine, int height){
+
+	UCHAR *buffer; // used to perform the image processing
+	int index;
+
+	// allocate the temporary buffer
+	if (!(buffer = (UCHAR *)malloc(bytesPerLine * height)))
+	   return(0);
+
+	// copy image to work area
+	memcpy(buffer, image, bytesPerLine * height);
+
+	// flip vertically
+	for (index = 0; index < height; index++)
+		memcpy(&image[((height-1) - index) * bytesPerLine],
+			   &buffer[index * bytesPerLine], 
+			   bytesPerLine);
+
+	free(buffer);
+
+	// return success
+	return(1);
+}
 ```
