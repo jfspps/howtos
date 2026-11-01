@@ -596,6 +596,8 @@ and then clipping the bitmap where it lies outside of the viewport.
 
 Let us assume the bitmap of dimensions `width` x `height` is first overlayed at a point (x, y) which may or may not reside in the viewport, with dimensions `viewWidth` x `viewHeight`. We overlay the bitmap, then identify the portion of the bitmap that does lie inside the viewport and only draw what lies inside the viewport.
 
+![](./MSVC2005/bitmap_clipping.png)
+
 ```cpp
 int viewWidth = 640;
 int viewHeight = 480;
@@ -619,10 +621,14 @@ void blitClipped(
 		// and bottom-right of the bitmap are (exclusive)
 		int x1 = x;
 		int y1 = y;
+
+		// bottom-right at most is determined by width
+		// and height
 		int x2 = x1 + width - 1;
 		int y2 = y1 + height - 1;
 
-		// now check both corners
+		// now check both corners don't reside outside
+		// the viewport and adjust if so
 		if (x1 < 0){
 			// can't draw top-left any further to the left
 			x1 = 0;
@@ -644,7 +650,7 @@ void blitClipped(
 		}
 
 		// now determine the (offset) origin of the bitmap
-		// that will reside in the viewport
+		// from the viewport's perspective
 		int xOff = x1 - x;
 		int yOff = y1 - y;
 		
