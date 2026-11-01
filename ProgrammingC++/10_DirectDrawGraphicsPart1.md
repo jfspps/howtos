@@ -587,7 +587,7 @@ void plotPixelAndClip(
 }
 ```
 
-#### Clipping bitmaps
+#### Clipping without DirectDraw
 
 As mentioned, DirectDraw support bitmap clipping. First, we review how to clip in software mode.
 
@@ -612,7 +612,8 @@ void blitClipped(
 	int memPitch){
 		// make sure the bitmap top-left (origin) isn't out of the viewport
 		// or bitmap bottom-right isn't above and to the left of the viewport origin
-		if ((x >= viewWidth) || (y >= viewHeight) || (x + width <= 0) || (y + height) <= 0){
+		if ((x >= viewWidth) || (y >= viewHeight) || 
+				(x + width <= 0) || (y + height) <= 0){
 			return;
 		}
 
@@ -686,4 +687,176 @@ void blitClipped(
 			videoBuffer += width; // next line
 		}
 	}
+```
+
+#### Clipping with DirectDraw
+
+Instead of invoking a custom clipper, as above, one can utilise methods from the `IDirectDrawClipper` interface. To clip with DirectDraw:
+
+1. Create a clipper with `IDirectDrawClipper::CreateClipper()`
+2. Create a _clipping list_: a list of `RECT` structures for each clipped bitmap in the viewport [so the above example would involve two rectangles]. DirectDraw will only blit within the rectangles i.e. the _clip list_.
+3. Set the clip list to the clipper
+4. Attach the clipper to the surface or window
+
+The method `IDIRECTDRAW7::CreateClipper()` can in most cases be used without consideration to the parameters, as:
+
+```cpp
+// assume DIRECTDRAW7 lpdd7 was initialised
+
+// this will refer to the clipper
+LPDIRECTDRAWCLIPPER lpddclipper = NULL;
+
+if (FAILED(lpdd7->CreateClipper(0, &lpddclipper, NULL))){
+	// failed to create clipper, clean up and leave
+	return(0);
+}
+```
+
+Creating a clipping list involves using a rather old data structure `RGNDATA`:
+
+```cpp
+typedef struct _RGNDATA{
+	RGNDATAHEADER rdh;
+	char Buffer[1];
+} RGNDATA;
+```
+
+The rectangles (the clipping list) is stored in a `Buffer` array (which can change in length dynamically). The
+array is stored in the stack and must be allocated appropriately before building the clipping list.
+
+The `RGNDATAHEADER` acts as the header of a `RGNDATA` instance (_region data_) and is followed immediately (and continuously) by the `Buffer` array. The header contains information related to the array:
+
+```cpp
+typedef struct _RGNDATAHEADER {
+	DWORD dwSize; // size of header in bytes
+	DWORD iType; // type of region data
+	DWORD nCount; // number of rectangles as RECTs
+	DWORD nRgnSize; // size of Buffer[]
+	RECT rcBound; // a bounding box around all RECTs
+} RGNDATAHEADER;
+```
+
+(An example of initialising the clipping list will be given shortly.)
+
+With the clipping list initialised, one then sets the clipping list with `IDIRECTDRAWCLIPPER::SetClipList()`. 
+Finally, one then attaches the clipper to the surface with `IDIRECTDRAWSURFACE7::SetClipper()` (again, there is usually one one way to call these methods so the prototypes are not given here).
+
+```cpp
+// assume DIRECTDRAW7 lpdd7 was initialised
+
+// this will refer to the clipper
+LPDIRECTDRAWCLIPPER lpddclipper = NULL;
+
+if (FAILED(lpdd7->CreateClipper(0, &lpddclipper, NULL))){
+	// failed to create clipper, clean up and leave
+	return(0);
+}
+
+// initialise the clipping list 
+// (skipped here for now)
+
+// assume this holds both the header and Buffer of RECTs
+LPRGNDATA regionData;
+
+if (FAILED(lpddclipper->SetClipList(&regionData, 0))){
+	// failed to set clipping list to clipper, clean up and leave
+	return (0);
+}
+
+// now attach clipper to surface (assume it is lpddsurface)
+if (FAILED(lpddsurface->SetClipper(&lpddclipper))){
+	// failed to set clipper to surface, clean up and leave
+	return (0);
+}
+```
+
+The clip list would take the form of an array of RECTs, for example:
+
+```cpp
+RECT rectList[3] = {
+	{10, 10, 50, 50},
+	{100, 100, 200, 200},
+	{300, 300, 500, 450}
+};
+```
+
+The code to set up the region data based on the above array is best managed by a function:
+
+```cpp
+LPDIRECTDRAWCLIPPER attachClipper(
+	LPDIRECTDRAWSURFACE7 lpdds, int numRects, LPRECT clipList){
+
+	int index;                         // looping var
+	LPDIRECTDRAWCLIPPER lpddclipper;   // pointer to the newly created dd clipper
+	LPRGNDATA regionData;             // pointer to the region data that contains
+									// the header and clip list
+
+	// first create the DirectDraw clipper
+	if (FAILED(lpdd7->CreateClipper(0, &lpddclipper, NULL)))
+		return(NULL);
+
+	// create the clip list....
+
+	// first allocate memory for region data
+	regionData = 
+		(LPRGNDATA)malloc(sizeof(RGNDATAHEADER) + (numRects * sizeof(RECT)));
+
+	// now copy the rects into region data
+	memcpy(regionData->Buffer, clipList, (numRects * sizeof(RECT)));
+
+	// set up fields of header
+	regionData->rdh.dwSize          = sizeof(RGNDATAHEADER);
+	regionData->rdh.iType           = RDH_RECTANGLES;
+	regionData->rdh.nCount          = numRects;
+	regionData->rdh.nRgnSize        = numRects * sizeof(RECT);
+
+	// set the bounding rectangle
+	regionData->rdh.rcBound.left    =  64000;
+	regionData->rdh.rcBound.top     =  64000;
+	regionData->rdh.rcBound.right   = -64000;
+	regionData->rdh.rcBound.bottom  = -64000;
+
+	// find bounds of all clipping regions
+	for (index = 0; index < numRects; index++){
+		// test if the next rectangle unioned with the current bound is larger
+		if (clipList[index].left < regionData->rdh.rcBound.left)
+		regionData->rdh.rcBound.left = clipList[index].left;
+
+		if (clipList[index].right > regionData->rdh.rcBound.right)
+		regionData->rdh.rcBound.right = clipList[index].right;
+
+		if (clipList[index].top < regionData->rdh.rcBound.top)
+		regionData->rdh.rcBound.top = clipList[index].top;
+
+		if (clipList[index].bottom > regionData->rdh.rcBound.bottom)
+		regionData->rdh.rcBound.bottom = clipList[index].bottom;
+
+	}
+
+	// now we have computed the bounding rectangle region and set up the data
+	// now let's set the clipping list
+
+	if (FAILED(lpddclipper->SetClipList(regionData, 0))){
+		// release memory and return error
+		free(regionData);
+		return(NULL);
+	}
+
+	// now attach the clipper to the surface
+	if (FAILED(lpdds->SetClipper(lpddclipper))){
+		// release memory and return error
+		free(regionData);
+		return(NULL);
+	}
+
+	// all is well, so release memory and send back the pointer to the new clipper
+	free(regionData);
+	return(lpddclipper);
+}
+```
+
+Calling the function is straighforward to the back buffer:
+
+```cpp
+LPDIRECTDRAWCLIPPER lpddclipper = attachClipper(lpddsback, 3, rectList);
 ```
