@@ -954,6 +954,48 @@ typedef struct BITMAP_FILE_TAG{
 
 __To load a bitmap__:
 
+This custom function introduces several new `Winbase.h` functions, `OpenFile()`, `_lread()`, `_lseek()` and `lclose()`.
+
+`OpenFile()` is a somewhat general function used for creating, opening, reopening, or deleting files based on the `uStyle` parameter:
+
+```cpp
+HFILE OpenFile(
+  LPCSTR     lpFileName, 	// the name of the file
+  LPOFSTRUCT lpReOpenBuff,	// a pointer to the OFSTRUCT structure that 
+  							// receives information about a file when 
+							// it is first opened
+  UINT       uStyle			// the action to be taken
+);
+```
+
+`_lread()` reads data from a specified file. This a 16-bit function that tends to be used for backwards compatibility. 32-bit applications should use `ReadFile()` instead.
+
+```cpp
+UINT _lread(
+  HFILE  hFile, 	// the file
+  LPVOID lpBuffer,	// pointer to a buffer that contains the data read from the file
+  UINT   uBytes		// the number of bytes to be read from the file
+);
+```
+
+`_lclose()` closes a file, making it unavailable for reading or writing. Like `_lread()`, this is a 16-bit function which can be replaced for 32-bit applications with `CloseHandle()` instead.
+
+```cpp
+HFILE _lclose(
+  HFILE hFile	// the file to close
+);
+```
+
+`_lseek()` moves a file pointer to a specific location:
+
+```cpp
+long _lseek(
+   int fd,		// File descriptor referring to an open file
+   long offset,	// Number of bytes from origin
+   int origin	// Initial position
+);
+```
+
 ```cpp
 int loadBitmapFile(BITMAP_FILE_PTR bitmap, char *filename){
 
@@ -1012,7 +1054,7 @@ int loadBitmapFile(BITMAP_FILE_PTR bitmap, char *filename){
 		   free(bitmap->buffer);
 
 	   // allocate the memory for the image
-	   if (!(bitmap->buffer = (UCHAR *)malloc(bitmap->bitmapinfoheader.biSizeImage))){
+	   if (!(bitmap->buffer = (UCHAR *) malloc(bitmap->bitmapinfoheader.biSizeImage))){
 		  _lclose(fileHandle);
 		  return(0);
 		}
@@ -1075,7 +1117,7 @@ int flipBitmap(UCHAR *image, int bytesPerLine, int height){
 	int index;
 
 	// allocate the temporary buffer
-	if (!(buffer = (UCHAR *)malloc(bytesPerLine * height)))
+	if (!(buffer = (UCHAR *) malloc(bytesPerLine * height)))
 	   return(0);
 
 	// copy image to work area
