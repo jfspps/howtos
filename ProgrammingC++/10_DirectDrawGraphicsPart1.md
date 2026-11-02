@@ -961,9 +961,9 @@ This custom function introduces several new `Winbase.h` functions, `OpenFile()`,
 ```cpp
 HFILE OpenFile(
   LPCSTR     lpFileName, 	// the name of the file
-  LPOFSTRUCT lpReOpenBuff,	// a pointer to the OFSTRUCT structure that 
-  							// receives information about a file when 
-							// it is first opened
+  LPOFSTRUCT lpReOpenBuff,	// pointer to an OFSTRUCT structure that 
+  				// receives file info when 
+				// the file is first opened
   UINT       uStyle			// the action to be taken
 );
 ```
@@ -1135,3 +1135,51 @@ int flipBitmap(UCHAR *image, int bytesPerLine, int height){
 	return(1);
 }
 ```
+
+#### Working with bitmaps
+
+2D sprites can be animated based on single images or an image as a matrix of individual images, known as a _template_. Single images can be updated on the fly and accessed immediately in memory, whereas templates reduce the number of file loading for sprite animation. Templates artistically involve more work, and must be set out accurately and consistently; technically, they require additional extraction utilities.
+
+__Loading 8-bit images__ is straightforward (see below). It is possible (sometimes necessary) to modify the DirectDraw surface palette to match it with the artist's palette and overall yield the desired look, with `IDIRECTDRAWPALETTE::SetEntries()`.
+
+The following snippet demonstrates 8-bit image handling and palette entry updates based on the custom functions described so far:
+
+```cpp
+BITMAP_FILE bitmap;
+
+if (!(loadBitmapFile(&bitmap, "path:\filename.bmp"))){
+	// error loading bitmap
+	return(0);
+}
+
+// set surface palette entries based on the bitmap palette
+if (FAILED(lpddpal->SetEntries(0, 0, MAX_COLORS_PALETTE, bitmap.palette))){
+	// error setting palette entries, clean up and leave
+	return(0);
+}
+
+// do what's needed with bitmap.buffer etc.
+
+// clean up
+unloadBitmap(&bitmap);
+```
+
+__Loading 16-bit images__ is relatively rare because very few paint applications support 16-bit images. Nonetheless, the approach is nearly identical to the above 8-bit methods (excluding palette entries). 
+
+When loading 24-bit images onto a 16-bit surface, one will need to apply a colour-scaling algorithm to 
+convert the 24-bit word to a 16-bit word. This will be described in some detail in the next part.
+
+__Loading 24-bit images__ is straightforward with `loadBitmapFile()`. The bitmap buffer will hold the 3-byte word in the [order](#24-bit-and-32-bit-colour-modes) blue, then green and then red. 
+
+As already mentioned, some GPUs will not support 24-bit surfaces and so it will be necessary to set up a 32-bit surface and pad the fourth byte (of a 32-bit colour word) with zeros.
+
+```cpp
+#define _RGB32BIT(alpha, r, g, b) (b + (g << 8) + (r << 16) + (alpha << 24))
+
+// when defining the pixel is needed...
+
+// this builds a 32 bit color value in A.8.8.8 format (8-bit alpha mode)
+DWORD pixel = _RGB32BIT(0, red, green, blue);
+```
+
+This will also be described in some detail in the next part.
