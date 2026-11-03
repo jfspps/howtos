@@ -1233,9 +1233,9 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurface(
 
 	lpddsOff->SetColorKey(DDCKEY_SRCBLT, &colourKey);
 
-	// now create the primary surface, and initialise lpddsprimary
+	// now create the offscreen surface
 	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
-		// failed to build the primary surface, clean up and exit
+		// failed to build the offscreen surface, clean up and exit
 		return(0);
 	}
 
@@ -1320,9 +1320,9 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurfaceSrcBlitting(
 	ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = lowColourKeyValue;
 	ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = highColourKeyValue;
 
-	// now create the primary surface, and initialise lpddsprimary
+	// now create the offscreen surface
 	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
-		// failed to build the primary surface, clean up and exit
+		// failed to build the offscreen surface, clean up and exit
 		return(0);
 	}
 
@@ -1389,9 +1389,9 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurfaceDestBlitting(
 	ddsd.ddckCKDestBlt.dwColorSpaceLowValue = lowColourKeyValue;
 	ddsd.ddckCKDestBlt.dwColorSpaceHighValue = highColourKeyValue;
 
-	// now create the primary surface, and initialise lpddsprimary
+	// now create the offscreen surface
 	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
-		// failed to build the primary surface, clean up and exit
+		// failed to build the offscreen surface, clean up and exit
 		return(0);
 	}
 
@@ -1410,3 +1410,65 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurfaceDestBlitting(
 	return lpddsOff;
 }
 ```
+
+#### Blitting from offscreen surfaces to other surfaces
+
+Combining many of the topics covered so far, applying source color keying based on `memFlags`:
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7, and surfaces for lpddsprimary 
+// and lpddsback have been initialised
+
+DDSURFACEDESC2 ddsd;
+LPDIRECTDRAWSURFACE7 offscreenSurface;
+
+RECT destRect;
+RECT sourceRect;
+
+// initialise the FX structure
+memset(&ddsd, 0, sizeof(ddsd));
+ddsd.dwSize = sizeof(ddsd);
+
+ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CKSRCBLT;
+
+// prep the offscreen surface dimensions based on the
+// bitmap
+ddsd.dwWidth = 64;
+ddsd.dwHeight = 64;
+
+ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | memFlags;
+
+// set the offscreen colour key DDSD_CKSRCBLT
+ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = 0;
+ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = 0;
+
+// now create the offscreen surface
+if (FAILED(lpdd7->CreateSurface(&ddsd, &offscreenSurface, NULL))){
+	// failed to build the offscreen surface, clean up and exit
+	return(0);
+}
+
+// now assume we want to blit to back buffer, lpddsback at (x, y)
+destRect.left = x;
+destRect.top = x;
+destRect.right = x + 64 - 1;
+destRect.bottom = y + 64 - 1;
+
+// blit the entire source area
+sourceRect.left = 0;
+sourceRect.top = 0;
+sourceRect.right = 64 - 1;
+sourceRect.bottom = 64 - 1;
+
+if (FAILED(lpddsback->Blt(
+	&destRect,
+	offscreenSurface,
+	(DDBLT | DDBLT_KEYSRC),
+	NULL))){
+	// error blitting from offscreen to back buffer
+	return (0);
+}
+```
+
+The flag `DDBLT_KEYSRC` makes sure the blitter uses the colour key associated with the source surface, and is necessary
+even though the surface already has a colour key (of 0) defined.
