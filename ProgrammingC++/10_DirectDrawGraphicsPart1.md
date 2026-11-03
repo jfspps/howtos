@@ -1277,9 +1277,7 @@ colourKey.dwColorSpaceLowValue = _RGB16BIT565(0, 0, 0);
 colourKey.dwColorSpaceHighValue = _RGB16BIT565(16, 0, 0);
 ```
 
-__Source colour keying__ defines the source surface colours that _are not_ blitted to the destination surface. In effect, such source colours are considered transparent at the destination. 
-
-This tends to be useful without concern for the destination surface point of view. The source colour key simply states which source pixels should not be blitted e.g. elements of the image which are considered the background.
+__Source colour keying__ defines the source surface colours that _are not_ blitted to the destination surface. In effect, the colour key defines source colours that are considered transparent at the destination (i.e. which elements of the image should be replaced by pixels from the destination).
 
 Updating `createOffscreenSurface()` with colour key settings:
 
@@ -1342,9 +1340,7 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurfaceSrcBlitting(
 }
 ```
 
-__Destination colour keying__ is the opposite of source colour keying. It defines the source surface colours _are_ blitted on to the destination surface. If the destination pixel matches the color key, DirectDraw replaces it with the pixel from the source image.
-
-This tends to be useful without concern for the source surface point of view. The destination colour key simply states which source pixels should be blitted. All other colours on the destination surface take precendence and effectively mask the source image pixels.
+__Destination colour keying__ is the opposite of source colour keying. It defines the source surface colours that _are_ blitted on to the destination surface. If the destination pixel matches the color key, DirectDraw replaces it with the pixel from the source image (other destination surface colours take precendence and effectively mask the source image pixels).
 
 Destination colour keying is only supported by hardware (HAL) and not supported by emulation (HEL). 
 
@@ -1448,7 +1444,9 @@ if (FAILED(lpdd7->CreateSurface(&ddsd, &offscreenSurface, NULL))){
 	return(0);
 }
 
-// now assume we want to blit to back buffer, lpddsback at (x, y)
+// now assume we want to blit to back buffer, lpddsback at (x, y)...
+
+// copy to (x, y)
 destRect.left = x;
 destRect.top = x;
 destRect.right = x + 64 - 1;
