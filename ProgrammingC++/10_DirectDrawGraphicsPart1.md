@@ -462,7 +462,7 @@ HRESULT BltFast(
 ```
 
 The parameters `dwX` and `dwY` represent the x and y coordinates to blit to (on the destination surface). The last parameter `dwTrans` defines the type of blitter operation e.g. whether to adopt the source or destinations colour key 
-(which colours should be treated as transparent), or just copy with no transparency.
+(which colours should be treated as transparent, see [later](#colour-keys)), or just copy with no transparency.
 
 #### Filling a surface with a colour with the blitter
 
@@ -1138,7 +1138,7 @@ int flipBitmap(UCHAR *image, int bytesPerLine, int height){
 
 #### Working with bitmaps
 
-2D sprites can be animated based on single images or an image as a matrix of individual images, known as a _template_. Single images can be updated on the fly and accessed immediately in memory, whereas templates reduce the number of file loading for sprite animation. Templates artistically involve more work, and must be set out accurately and consistently; technically, they require additional extraction utilities.
+2D sprites can be animated based on single images or an image as a matrix of individual image cells, known as a _template_. Single images can be updated on the fly and accessed immediately in memory, whereas templates reduce the number of file loading for sprite animation. Templates artistically involve more work, and must be set out accurately and consistently; technically, they require additional extraction utilities.
 
 __Loading 8-bit images__ is straightforward (see below). It is possible (sometimes necessary) to modify the DirectDraw surface palette to match it with the artist's palette and overall yield the desired look, with `IDIRECTDRAWPALETTE::SetEntries()`.
 
@@ -1183,3 +1183,230 @@ DWORD pixel = _RGB32BIT(0, red, green, blue);
 ```
 
 This will also be described in some detail in the next part.
+
+### Offscreen surfaces
+
+Offscreen surfaces are useful, hardware accelerated holding points for bitmaps that only need to have the same dimensions as the bitmap they store. 
+
+The colour depth is matched to the primary surface, so there is no need to set this. It is necessary to set the colour key of offscreen surfaces (see snippet below). Colour keys are discussed in the next section, before moving on to blitting.
+
+#### Creating offscreen surfaces
+
+Creating offscreen surfaces that are neither the primary surface nor a (related) back buffer is somewhat similar to [creating a primary surface](9_DirectDraw.md#b-building-a-display-surface), with a few alterations:
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7 has been initialised
+
+LPDIRECTDRAWSURFACE7 createOffscreenSurface(
+	int width,
+	int height,
+	int memTypeFlag){
+
+	// pointer to the offscreen surface
+	LPDIRECTDRAWSURFACE7 lpddsOff = NULL;
+
+	// initialise the surface description
+	DDSURFACEDESC2 ddsd;
+	memset(&ddsd, 0, sizeof(ddsd));
+
+	// start initialising the structure's fields
+
+	// decide which valid fields will be provided or required
+	// for the offscreen surface
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+
+	// we need to define the width and height of all offscreen surfaces
+	// (this is usually set to handle whatever bitmap is stored, not
+	// necessarily the entire viewport)
+	ddsd.dwWidth = width;
+	ddsd.dwHeight = height;
+
+	// now set the capabilities for an offscreen surface description, 
+	// to occupy DDSCAPS_VIDEOMEMORY for video memory or
+	// DDSCAPS_SYSTEMMEMORY for system memory
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | memTypeFlag;
+
+	// set the offscreen colour key...(updated shortly, below)
+	DDCOLORKEY colourKey;
+	colourKey.dwColorSpaceLowValue = 0;
+	colourKey.dwColorSpaceHighValue = 0;
+
+	lpddsOff->SetColorKey(DDCKEY_SRCBLT, &colourKey);
+
+	// now create the primary surface, and initialise lpddsprimary
+	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
+		// failed to build the primary surface, clean up and exit
+		return(0);
+	}
+
+	return lpddsOff;
+}
+```
+
+#### Colour keys
+
+Bitmaps are contained in rectangular cells though not all bitmap art is rectangular. When blitting bitmaps, it
+is only necessary to copy the part of the bitmap that illustrates the character or object, leaving all other pixels. To do this one can set a transparent colour, so that the destination surface pixels are not overlapped.
+
+For this discussion, there are two ways of implementing transparency: _source colour keying_ and _destination colour keying_. (Other colour keying, i.e. _source overlay_ and _destination overlay_ colour keying, can be used for video processing but are not discussed here.)
+
+The colour key is handled by a structure, `DDCOLORKEY`, and will be needed when setting the colour key of the surface:
+
+```cpp
+typedef struct _DDCOLORKEY{
+	DWORD dwColorSpaceLowValue;
+	DWORD dwColorSpaceHighValue;
+} DDCOLORKEY, FAR* LPDDCOLORKEY;
+```
+
+The low and high values are colour depth dependent. For 8-bit these represent the colour indices. For high colour depths, these should be RGB encoded DWORDs e.g. `__RGB16BIT565(0, 0, 32)`.
+
+To set one colour, simply assign the same low and high value (they are both inclusive):
+
+```cpp
+// black
+colourKey.dwColorSpaceLowValue = 0;
+colourKey.dwColorSpaceHighValue = 0;
+```
+
+To set a range of colours, apply inclusive values:
+
+```cpp
+// 16-bit colour key range black to a red colour
+colourKey.dwColorSpaceLowValue = _RGB16BIT565(0, 0, 0);
+colourKey.dwColorSpaceHighValue = _RGB16BIT565(16, 0, 0);
+```
+
+__Source colour keying__ defines the source surface colours that _are not_ blitted to the destination surface. In effect, such source colours are considered transparent at the destination. 
+
+This tends to be useful without concern for the destination surface point of view. The source colour key simply states which source pixels should not be blitted e.g. elements of the image which are considered the background.
+
+Updating `createOffscreenSurface()` with colour key settings:
+
+```cpp
+LPDIRECTDRAWSURFACE7 createOffscreenSurfaceSrcBlitting(
+	LPDIRECTDRAW7 lpdd7,
+	int width,
+	int height,
+	int memTypeFlag,
+	int lowColourKeyValue,
+	int highColourKeyValue){
+
+	// pointer to the offscreen surface
+	LPDIRECTDRAWSURFACE7 lpddsOff = NULL;
+
+	// initialise the surface description
+	DDSURFACEDESC2 ddsd;
+	memset(&ddsd, 0, sizeof(ddsd));
+
+	// start initialising the structure's fields
+
+	// decide which valid fields will be provided or required
+	// for the offscreen surface (with source colour key blitting)
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CKSRCBLT;
+
+	// we need to define the width and height of all offscreen surfaces
+	// (this is usually set to handle whatever bitmap is stored, not
+	// necessarily the entire viewport)
+	ddsd.dwWidth = width;
+	ddsd.dwHeight = height;
+
+	// now set the capabilities for an offscreen surface description, 
+	// to occupy DDSCAPS_VIDEOMEMORY for video memory or
+	// DDSCAPS_SYSTEMMEMORY for system memory
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | memTypeFlag;
+
+	// set the offscreen colour key DDSD_CKSRCBLT
+	ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = lowColourKeyValue;
+	ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = highColourKeyValue;
+
+	// now create the primary surface, and initialise lpddsprimary
+	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
+		// failed to build the primary surface, clean up and exit
+		return(0);
+	}
+
+	// now set the colour key for surface itself, with source blitting
+	DDCOLORKEY colourKey;
+	colourKey.dwColorSpaceLowValue = lowColourKeyValue;
+	colourKey.dwColorSpaceHighValue = highColourKeyValue;
+
+	if (lowColourKeyValue < highColourKeyValue){
+		// range of transparent colors required
+		lpddsOff->SetColorKey(DDCKEY_SRCBLT | DDCKEY_COLORSPACE, &colourKey);
+	} else {
+		lpddsOff->SetColorKey(DDCKEY_SRCBLT, &colourKey);
+	}
+
+	return lpddsOff;
+}
+```
+
+__Destination colour keying__ is the opposite of source colour keying. It defines the source surface colours _are_ blitted on to the destination surface. If the destination pixel matches the color key, DirectDraw replaces it with the pixel from the source image.
+
+This tends to be useful without concern for the source surface point of view. The destination colour key simply states which source pixels should be blitted. All other colours on the destination surface take precendence and effectively mask the source image pixels.
+
+Destination colour keying is only supported by hardware (HAL) and not supported by emulation (HEL). 
+
+Updating `createOffscreenSurface()` with colour key settings:
+
+```cpp
+// assume the DirectDraw interface pointer lpdd7 has been initialised
+
+LPDIRECTDRAWSURFACE7 createOffscreenSurfaceDestBlitting(
+	LPDIRECTDRAW7 lpdd7,
+	int width,
+	int height,
+	int memTypeFlag,
+	int lowColourKeyValue,
+	int highColourKeyValue){
+
+	// pointer to the offscreen surface
+	LPDIRECTDRAWSURFACE7 lpddsOff = NULL;
+
+	// initialise the surface description
+	DDSURFACEDESC2 ddsd;
+	memset(&ddsd, 0, sizeof(ddsd));
+
+	// start initialising the structure's fields
+
+	// decide which valid fields will be provided or required
+	// for the offscreen surface (with source colour key blitting)
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CKDESTBLT;
+
+	// we need to define the width and height of all offscreen surfaces
+	// (this is usually set to handle whatever bitmap is stored, not
+	// necessarily the entire viewport)
+	ddsd.dwWidth = width;
+	ddsd.dwHeight = height;
+
+	// now set the capabilities for an offscreen surface description, 
+	// to occupy DDSCAPS_VIDEOMEMORY for video memory or
+	// DDSCAPS_SYSTEMMEMORY for system memory
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | memTypeFlag;
+
+	// set the offscreen colour key DDSD_CKSRCBLT
+	ddsd.ddckCKDestBlt.dwColorSpaceLowValue = lowColourKeyValue;
+	ddsd.ddckCKDestBlt.dwColorSpaceHighValue = highColourKeyValue;
+
+	// now create the primary surface, and initialise lpddsprimary
+	if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsOff, NULL))){
+		// failed to build the primary surface, clean up and exit
+		return(0);
+	}
+
+	// now set the colour key for surface itself, with destination blitting
+	DDCOLORKEY colourKey;
+	colourKey.dwColorSpaceLowValue = lowColourKeyValue;
+	colourKey.dwColorSpaceHighValue = highColourKeyValue;
+
+	if (lowColourKeyValue < highColourKeyValue){
+		// range of transparent colors required
+		lpddsOff->SetColorKey(DDCKEY_DESTBLT | DDCKEY_COLORSPACE, &colourKey);
+	} else {
+		lpddsOff->SetColorKey(DDCKEY_DESTBLT, &colourKey);
+	}
+
+	return lpddsOff;
+}
+```
