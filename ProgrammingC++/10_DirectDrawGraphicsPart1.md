@@ -1541,7 +1541,7 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurface(
 	LPDIRECTDRAWSURFACE7 lpdds;  // temporary surface
 		
 	// set to access caps, width, and height
-	memset(&ddsd,0,sizeof(ddsd));
+	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize  = sizeof(ddsd);
 	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
 
@@ -1632,4 +1632,99 @@ scanImageIntoSurface(&bitmap, offscreenSurface, 0, 0);
 
 // unload the bitmap file, we no longer need it
 unloadBitmapFile(&bitmap);
+```
+
+### Bitmap rotation
+
+Bitmap rotation is complicated and expensive, and as a result is only supported by DirectDraw via HAL. If the GPU does not support this (quite rare), then one will need to resort to writing their own algorithm in software.
+
+To rotate bitmaps with DirectDraw, pass the flag `DDBLT_ROTATIONANGLE` and update the `dwRotationAngle` property of `DDBLTFX`:
+
+```cpp
+DDBLTFX ddbltfx;
+
+memset(&ddbltfx, 0, sizeof(ddbltfx));
+ddbltfx.dwSize  = sizeof(ddbltfx);
+
+// units of 1/100 of a degree e.g. 45 degrees
+ddbltfx.swRotationAngle = 4500;
+
+// assume lpddsback and offscreenSurface are initialised;
+// note ddbltfx is passed
+if (FAILED(lpddsback->Blt(
+	&destRect,
+	offscreenSurface,
+	&sourceRect,
+	(DDBLT | DDBLT_KEYSRC | DDBLT_ROTATIONANGLE),
+	ddbltfx))){
+	// error blitting from offscreen to back buffer
+	return (0);
+}
+```
+
+### Bitmap scaling
+
+Bitmap scaling can be accomplished by increasing the destination rectangle (struct) and blitting a 64x64 pixel image surface (back buffer or offscreen) to another surface.
+
+For example, to scale to the dimensions `m`x`n`:
+
+```cpp
+destRect.left = x;
+destRect.top = x;
+destRect.right = x + m - 1;
+destRect.bottom = y + m - 1;
+
+// blit the entire source area
+sourceRect.left = 0;
+sourceRect.top = 0;
+sourceRect.right = 64 - 1;
+sourceRect.bottom = 64 - 1;
+
+// assume lpddsback and offscreenSurface are initialised
+if (FAILED(lpddsback->Blt(
+	&destRect,
+	offscreenSurface,
+	&sourceRect,
+	(DDBLT | DDBLT_KEYSRC),
+	NULL))){
+	// error blitting from offscreen to back buffer
+	return (0);
+}
+```
+
+#### Discrete sampling theory and bilinear filtering
+
+Scaling bitmaps is not only applicable to image sizing but also part of more general operations e.g. texture mapping. Textures have to scaled to fit inside a polygon.
+
+There are two types of mappings: _forward mapping_ and _inverse mapping_. 
+
+Forward mapping takes each source pixel, passes them all through a mapping function and maps (plots) them on the destination surface. The mapping function determines which source pixels are reproduced on the destination, and this need not be all pixels e.g. when a source image is scaled down (some source pixels are effectively discarded by the function).
+
+Inverse mapping works the other way, taking each destination pixel and then determining which source pixel(s) (plural being important here) should be used to in place of the destination pixel. In some cases, there may not be a suitable source pixel available, and so the affected pixel will have to replicated from a neighbouring destination pixel. For example, when an image is scaled up, some of the source pixels are duplicated at the destination.
+
+In both cases, rather than copy the colour of the source pixel literally, it is more realistic to take an average (gradient) of adjacent source pixel colours before rendering the destination image. This gradient is handled by a _bilinear filter_.
+
+![](./MSVC2005/bilinear_filtering.png)
+
+Filtering is discussed in more detail later. 
+
+For now, bitmap scaling can be performed in software, taking a sample (hence the title) of the previous pixel to determine the colour the next pixel as the scaled image is rendered.
+
+```cpp
+float sourceHeight;
+float destHeight;
+
+// doubled scale (factor of two increase), sampleRate = 0.5
+// or scale down by a third (four pixels to three pixels),
+// sampleRate is approx. 1.3
+float sampleRate = sourceHeight / destHeight;
+
+float sampleIndex = 0;
+
+for (int index = 0; index < destHeight; index++){
+	destBitmapBuffer[index] = sourceBitmap[(int) sampleIndex];
+
+	// sampleIndex represents the next sourceBitmap pixel to copy
+	sampleIndex += sampleRate;
+}
 ```
