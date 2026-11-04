@@ -1216,6 +1216,13 @@ if (FAILED(lpddpal->SetEntries(0, 0, MAX_COLORS_PALETTE, bitmap.palette))){
 unloadBitmap(&bitmap);
 ```
 
+Regarding the four parameters of `IDIRECTDRAWPALETTE::SetEntries()`:
+
+1. Always set to zero, not used
+2. First colour entry to be set
+3. Number of entries to update/set
+4. An array of PALETTEENTRY structures that contains the palette entries that `SetEntries()` uses to update the current object
+
 __Loading 16-bit images__ is relatively rare because very few paint applications support 16-bit images. Nonetheless, the approach is nearly identical to the above 8-bit methods (excluding palette entries). 
 
 When loading 24-bit images onto a 16-bit surface, one will need to apply a colour-scaling algorithm to 
@@ -1727,4 +1734,239 @@ for (int index = 0; index < destHeight; index++){
 	// sampleIndex represents the next sourceBitmap pixel to copy
 	sampleIndex += sampleRate;
 }
+```
+
+### Colour effects
+
+During the early days of DirectDraw development, developers were required to mainly target 8-bit colour applications. This obviously presented a number of limitations given that a 256 colour palette. 
+
+A number of strategies to diversify the colour schemes involved dynamically updating the colour palette at runtime. While modern day applications are not limited to 8-bit colour modes anymore, we go over these ideas in brief.
+
+#### 8-bit colour animation
+
+_Colour animation_ refers to the modification or shifting of colour palette entries at runtime. This provides effects for e.g. blinking lights, glowing objects.
+
+The pixel where blinking can occur is handled by a custom structure:
+
+```cpp
+typedef struct BLINKER_TYP {
+	int colourIndex;         // palette index of colour to blink
+	PALETTEENTRY onColour;   // "on" RGB value
+	PALETTEENTRY offColour;  // "off" RGB value
+	int onTime;             // no. of frames to keep "on" 
+	int offTime;            // no. of frames to keep "off"
+
+	// internal member
+	int counter;             // counter for state transitions
+	int state;               // state of light, -1 off, 1 on, 0 dead
+} BLINKER, *BLINKER_PTR;
+```
+
+A function which blinks lights (pixels) takes in a `command` flag with a pointer to the above structure, which is stored statically in `lights`.
+
+```cpp
+#define BLINKER_ADD           0    // add a light to database  
+#define BLINKER_DELETE        1    // delete a light from database
+#define BLINKER_UPDATE        2    // update a light
+#define BLINKER_RUN           3    // run normal
+
+// ...
+
+int blinkColours(int command, BLINKER_PTR newLight, int id){
+
+	static BLINKER lights[256]; // supports up to 256 blinking lights
+	static int initialised = 0; // tracks if function has initialised
+
+	if (!initialised){
+		initialised = 1;
+
+		// clear out all structures
+		memset((void *)lights, 0, sizeof(lights));
+	}
+
+	switch (command){
+		case BLINKER_ADD: {
+			for (int index = 0; index < 256; index++){
+				if (lights[index].state == 0){
+					// set light up
+					lights[index] = *newLight;
+
+					// set internal fields up
+					lights[index].counter =  0;
+					lights[index].state   = -1; // off
+
+					// update palette entry
+					lpddpal->SetEntries(
+						0, lights[index].colourIndex, 1, &lights[index].offColour);
+
+					return(index);
+				}
+			}
+		} break;
+
+		case BLINKER_DELETE: {
+			if (lights[id].state != 0){
+				// kill the light
+				memset((void *)&lights[id], 0, sizeof(BLINKER));
+
+				return(id);
+			} else
+				return(-1);
+		} break;
+
+		case BLINKER_UPDATE: { 
+			if (lights[id].state != 0){
+				// update on/off parms only
+				lights[id].onColour  = newLight->onColour; 
+				lights[id].offColour = newLight->offColour;
+				lights[id].onTime   = newLight->onTime;
+				lights[id].offTime  = newLight->offTime; 
+
+				// update palette entry
+				if (lights[id].state == -1) {
+					lpddpal->SetEntries(
+						0, lights[id].colourIndex, 1, &lights[id].offColour);
+				} else
+					lpddpal->SetEntries(
+						0, lights[id].colourIndex, 1, &lights[id].onColour);
+
+				return(id);
+			} else
+				return(-1);
+		} break;
+
+		case BLINKER_RUN: {
+			// process each light
+			for (int index = 0; index < 256; index++) {
+				if (lights[index].state == -1) {
+					// off
+
+					// advance the counter and switch on if counter catches up 
+					// with offTime during this cycle
+					if (++lights[index].counter >= lights[index].offTime){
+						lights[index].counter = 0;
+						lights[index].state = -lights[index].state;               
+
+						// update colour
+						lpddpal->SetEntries(
+							0, lights[index].colourIndex, 1, &lights[index].onColour);
+					}
+					
+				} else if (lights[index].state == 1) {
+					// on
+
+					// advance the counter and switch off if counter catches up 
+					// with offTime during this cycle
+					if (++lights[index].counter >= lights[index].onTime){
+						lights[index].counter = 0;
+						lights[index].state = -lights[index].state;               
+
+						// update colour
+						lpddpal->SetEntries(
+							0, lights[index].colourIndex, 1, &lights[index].offColour);
+					}
+				}
+			}
+		} break;
+		
+		default: break;
+	} 
+	
+	return(1);
+}
+```
+
+To start animation _run_ of lights (but not necessarily blink all):
+
+```cpp
+blinkLights(BLINKER_RUN, NULL, 0);
+```
+
+To create a new (red) light:
+
+```cpp
+BLINKER temp;
+
+PALETTEENTRY red   = {255, 0, 0, PC_NOCOLLAPSE};
+PALETTEENTRY green = {0, 255, 0, PC_NOCOLLAPSE};
+PALETTEENTRY black = {0, 0, 0, PC_NOCOLLAPSE};
+
+temp.colorIndex = 253;
+temp.onColour    = red;
+temp.offColour   = black;
+temp.onTime     = 30; // 30 cycles at 30fps = 1 sec
+temp.offTime    = 30;
+
+int red_id = blinkColours(BLINKER_ADD, &temp, 0);
+```
+
+To update the (above red) light:
+
+```cpp
+BLINKER temp;
+
+temp.onColour    = {255, 255, 0, PC_NOCOLLAPSE};;
+temp.offColour   = {0, 0, 0, PC_NOCOLLAPSE};
+temp.onTime     = 100; // 30 cycles at 30fps = 1 sec
+temp.offTime    = 200;
+
+blinkColours(BLINKER_UPDATE, &temp, red_id);
+```
+
+To delete the (above red) light:
+
+```cpp
+blinkColours(BLINKER_DELETE, NULL, red_id);
+```
+
+#### 8-bit colour rotation or shifting
+
+This technique involves updating the palette, taking a collection of colour entries (registers or range) and then (in effect) updating any pixel that has a colour from the collection with another colour from the collection. With an appropriate delay, it is possible to give the image the feeling of motion.
+
+`IDIRECTDRAWPALETTE::SetEntries()` was described [above](#working-with-bitmaps). Another related method `IDIRECTDRAWPALETTE::GetEntries()` also has four parameters, as follows:
+
+1. Always set to zero, not used
+2. First colour entry to be retrieved
+3. Number of entries to retrieve
+4. An array of PALETTEENTRY structures that receives palette entries from the current object
+
+To rotate or shift colours:
+
+```cpp
+int rotateColours(int startIndex, int endIndex){
+	int colourCount = endIndex - startIndex + 1;
+	PALETTEENTRY workingPalette[256];
+
+	// init workingPalette with the current palette's entries
+	// in the range [startIndex to endIndex]
+	lpddpal->GetEntries(0, startIndex, colourCount, workingPalette);
+
+	// update the current palette, shifting the colours by one 
+	// (move along to the adjacent colour entry), 
+	// except for the last entry
+	lpddpal->SetEntries(0, startIndex + 1, colourCount - 1, workingPalette);
+
+	// handle that last colour (take it back to the beginning of the collection)
+	lpddpal->SetEntries(0, startIndex, 1, &workingPalette[colourCount - 1]);
+
+	// optional for now: update the shadow palette (discussed later)
+	// lpddpal->GetEntries(0, 0, 256, shadowPalette);
+
+	return(1);
+}
+```
+
+For example, animating a waterfall:
+
+```cpp
+// ...back in the game loop...
+
+// e.g. the water colour entries (indices) are at 133-143
+// in the palette
+rotateColours(133, 143);
+
+// wait 33 ms
+Sleep(33);
+
+// ...out of the game loop
 ```
