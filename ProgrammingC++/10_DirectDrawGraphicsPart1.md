@@ -1459,7 +1459,7 @@ LPDIRECTDRAWSURFACE7 createOffscreenSurfaceDestBlitting(
 }
 ```
 
-#### Blitting from offscreen surfaces to other surfaces
+#### Blitting from offscreen surfaces with Blt()
 
 Combining many of the topics covered so far, applying source color keying based on `memFlags`:
 
@@ -1516,6 +1516,7 @@ sourceRect.bottom = 64 - 1;
 if (FAILED(lpddsback->Blt(
 	&destRect,
 	offscreenSurface,
+	&sourceRect,
 	(DDBLT | DDBLT_KEYSRC),
 	NULL))){
 	// error blitting from offscreen to back buffer
@@ -1525,3 +1526,110 @@ if (FAILED(lpddsback->Blt(
 
 The flag `DDBLT_KEYSRC` makes sure the blitter uses the colour key associated with the source surface, and is necessary
 even though the surface already has a colour key (of 0) defined.
+
+#### Loading (scanning) bitmaps into a surface
+
+One can load a bitmap (into a buffer with `loadBitmapFile()`) and then create a surface, scanning the bitmap into the surface's buffer. The following outlines how this could be done with the offscreen buffer.
+
+The following custom method `createOffscreenSurface()` creates an offscreen surface with dimensions that match a bitmap image as `width`x`height`:
+
+```cpp
+LPDIRECTDRAWSURFACE7 createOffscreenSurface(
+	int width, int height, int memFlags, int color_key = 0){
+
+	DDSURFACEDESC2 ddsd;         // working description for the new surface
+	LPDIRECTDRAWSURFACE7 lpdds;  // temporary surface
+		
+	// set to access caps, width, and height
+	memset(&ddsd,0,sizeof(ddsd));
+	ddsd.dwSize  = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+
+	ddsd.dwWidth  = width;
+	ddsd.dwHeight = height;
+
+	// set surface to offscreen plain
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | memFlags;
+
+	// create the surface
+	if (FAILED(lpdd->CreateSurface(&ddsd,&lpdds,NULL)))
+		return(NULL);
+
+	if (color_key >= 0){
+		DDCOLORKEY color_key;
+		color_key.dwColorSpaceLowValue  = 0;
+		color_key.dwColorSpaceHighValue = 0;
+
+		// now set the color key for source blitting
+		lpdds->SetColorKey(DDCKEY_SRCBLT, &color_key);
+	} 
+
+	return(lpdds);
+}
+```
+
+The following method scans a cell of bitmap template into an existing surface. It is possible to start at a different 
+point (i.e. cell of a template) within the bitmap by passing non-zero values for `cx` and `cy`.
+
+```cpp
+int scanBitmapToSurface(
+	BITMAP_FILE_PTR bitmap, LPDIRECTDRAWSURFACE7 lpdds, int cx, int cy){
+
+	UCHAR *sourcePtr, *destPtr;
+
+	DDSURFACEDESC2 ddsd;  // direct draw surface description 
+
+	ddsd.dwSize = sizeof(ddsd);
+
+	// manual blit here, so lock the surface
+	lpdds->Lock(NULL,
+				&ddsd,
+				DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR,
+				NULL);
+
+	// get the cell (or entire bitmap) coords 
+	// from the surface lpdds description;
+	// compute position to start scanning bits from
+	cx = cx*(ddsd.dwWidth + 1) + 1;
+	cy = cy*(ddsd.dwHeight + 1) + 1;
+
+	// get the starting point along the linear bitmap buffer
+	sourcePtr = bitmap->buffer + (cx + cy*bitmap->bitmapinfoheader.biWidth);
+
+	// assign a pointer to the memory surface for manipulation
+	destPtr = (UCHAR *) ddsd.lpSurface;
+
+	// copy each line
+	for (int bitmapY = 0 ; bitmapY < ddsd.dwHeight; bitmapY++){
+		memcpy(destPtr, sourcePtr, ddsd.dwWidth);
+
+		// advance pointers
+		destPtr   += (ddsd.lPitch); // (ddsd.dwWidth);
+		sourcePtr += bitmap->bitmapinfoheader.biWidth;
+	}
+
+	// unlock the surface 
+	lpdds->Unlock(NULL);
+
+	return(1);
+}
+```
+
+To load the bitmap into an offscreen surface, first load the bitmap (i.e. initialise `bitmap`), build an offscreen surface and finally scan the image into said surface.
+
+```cpp
+LPDIRECTDRAWSURFACE7 offscreenSurface;
+
+// load the 8-bit image
+if (!loadBitmapFile(&bitmap, "filename.bmp"))
+   return(0);
+
+// create a surface e.g. 64x64, with defaults
+offscreenSurface = createOffscreenSurface(64, 64, 0);
+
+// scan the bitmap from the origin
+scanImageIntoSurface(&bitmap, offscreenSurface, 0, 0);
+
+// unload the bitmap file, we no longer need it
+unloadBitmapFile(&bitmap);
+```
