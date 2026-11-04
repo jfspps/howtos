@@ -152,7 +152,38 @@ inline void plotPixel16(
 	}
 ```
 
-In general, it is preferable to lock the buffer and draw all that is required before unlocking the buffer. The following shows this in action, and would be applied during a game loop:
+In general, it is preferable to lock the buffer and draw all that is required before unlocking the buffer. The following shows this in action, and would be applied during a [game loop](9_DirectDraw.md#2-setting-the-cooperative-level-with-windows):
+
+```cpp
+int gameMain(void * params = NULL, int numParams = 0){
+	// check if user has pressed ESC this time around
+	if (KEYDOWN(VK_ESCAPE)){
+		SendMessage(mainWindowHandle, WM_CLOSE, 0, 0);
+	}
+
+	// surface desription init
+	memset(&ddsd, 0, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+
+	if (FAILED(lpddsprimary->Lock(NULL, $ddsd, DDLOCK_SURFACEPTR || DDLOCK_WAIT, NULL))){
+		// problem locking the primary surface
+		return(0);
+	}
+
+	int lPitch16 = (int) (ddsd->lPitch >> 1);
+	USHORT * videoBuffer = (USHORT *) ddsd.lpSurface;
+
+	// now set each pixel colour and plot to the buffer with
+	// plotPixel16()...
+
+	// ..done, now unlock the primary surface
+	if (FAILED(lpddsprimary->Unlock(NULL))){
+		return(0);
+	}
+
+	return(1);
+}
+```
 
 #### 24-bit and 32-bit colour modes
 
@@ -387,7 +418,8 @@ for (int bmY = 0; bmY < 8; bmY++){
 
 	// for each pixel along a row
 	for (int bmX = 0; bmX < 8; bmX++){
-		// pitch is 640 pixels; the origin (top-left) of the bitmap is at (x,y) on the surface
+		// pitch is 640 pixels; the origin (top-left) 
+		// of the bitmap is at (x,y) on the surface
 		// and fills the surface to the right and below relative to this
 		videoBuffer[(x + bmX) + (y + bmY)*640] = bitmap[bmX + (bmY*8)];
 	}
