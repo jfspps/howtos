@@ -141,14 +141,22 @@ Like 8-bit colour modes, we still need to lock (and unlock) the video buffer. In
 inline void plotPixel16(
 	int x, int y,
 	int red, int green, int blue,
-	USHORT *videoBuffer, int lPitch)
+	USHORT *videoBuffer, int lPitch, bool is16bitPitch)
 	{
 		USHORT pixel = _RGB16BIT565(red, green, blue);
 
-		// write the data;
-		// recall lPitch is the memory width in bytes (8-bit blocks);
-		// we adjust to a 16-bit block with a right-shift 
-		videoBuffer[x + y*(lPitch >> 1)] = pixel;
+		// write the data
+		if (!is16bitPitch){
+			// recall lPitch is the memory width in bytes 
+			// (8-bit blocks) but in 16-bit colour mode, pixels
+			// are stored in 16-bit words not 8-bit words,
+			// so we locate the next pixel every 16-bits and
+			// therfore adjust to a 16-bit 
+			// block with a right-shift
+			videoBuffer[x + y*(lPitch >> 1)] = pixel;
+		} else {
+			videoBuffer[x + y*lPitch] = pixel;
+		}
 	}
 ```
 
@@ -165,16 +173,26 @@ int gameMain(void * params = NULL, int numParams = 0){
 	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
 
-	if (FAILED(lpddsprimary->Lock(NULL, $ddsd, DDLOCK_SURFACEPTR || DDLOCK_WAIT, NULL))){
+	if (FAILED(lpddsprimary->Lock(
+		NULL, $ddsd, DDLOCK_SURFACEPTR || DDLOCK_WAIT, NULL))){
 		// problem locking the primary surface
 		return(0);
 	}
 
-	int lPitch16 = (int) (ddsd->lPitch >> 1);
 	USHORT * videoBuffer = (USHORT *) ddsd.lpSurface;
 
-	// now set each pixel colour and plot to the buffer with
-	// plotPixel16()...
+	// now plot randomly located pixels with random colours
+	for (int index = 0; index < 1000; index++){
+		int red = rand() % 256;
+		int green = rand() % 256;
+		int blue = rand() % 256;
+
+		int x = rand() % 640;
+		int y = rand() % 480;
+
+		plotPixel16(
+			x, y, red, green, blue, videoBuffer, ddsd->lPitch, false);
+	}
 
 	// ..done, now unlock the primary surface
 	if (FAILED(lpddsprimary->Unlock(NULL))){
@@ -495,6 +513,8 @@ HRESULT BltFast(
 
 The parameters `dwX` and `dwY` represent the x and y coordinates to blit to (on the destination surface). The last parameter `dwTrans` defines the type of blitter operation e.g. whether to adopt the source or destinations colour key 
 (which colours should be treated as transparent, see [later](#colour-keys)), or just copy with no transparency.
+
+__Never call `Blt()` on a locked surface.__ Locking (and unlocking) a surface is only required when one requires direct read-write access to the surface and would only be needed for manual (non-DirectDraw) based blitting. Simply call DirectDraw's blitting methods without locking.
 
 #### Filling a surface with a colour with the blitter
 
@@ -1489,6 +1509,9 @@ sourceRect.left = 0;
 sourceRect.top = 0;
 sourceRect.right = 64 - 1;
 sourceRect.bottom = 64 - 1;
+
+// no need to lock the surface if 
+// calling DirectDraw's Blt()
 
 if (FAILED(lpddsback->Blt(
 	&destRect,
