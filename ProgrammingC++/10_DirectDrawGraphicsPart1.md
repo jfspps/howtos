@@ -1993,3 +1993,80 @@ DirectDraw (since version 5.0) provides some support for gamma and colour contro
 + `IDirectDrawColorControl`. this gives programmers control over the brightness, contrast, hue, saturation, sharpness and gamma of the entire primary surface or _overlay_ (essentially, another surface overlapping a part of the primary surface)
 
 Not all legacy GPUs support the above interfaces.
+
+## Running GDI with DirectDraw
+
+In some cases, it may be necessary to access GDI grapical functions during development or prototyping. GDI
+graphical functions are much slower than DirectX functions, and long term would not normally be part of the application.
+
+To invoke GDI methods etc. in DirectDraw applications, first get the GDI device context on an unlocked surface (only) with `IDIRECTDRAWSURFACE7::GetDC()`:
+
+```cpp
+LPDIRECTDRAWSURFACE7 lpdds;
+
+HDC xdc;
+
+// make sure the surface is not locked
+
+if (FAILED(lpdds->GetDC(&xdc))){
+	// error getting GDI device context
+	return(0);
+}
+
+// surface now locked by GDI;
+// do stuff with GDI e.g. invoke GDI graphical functions
+
+COLORREF oldForeColour = SetTextColor(xdc, RGB(0,255,0));
+COLORREF oldBackColour = SetBkColor(xdc, RGB(0,0,0));
+
+int oldTransparencyMode = SetBkMode(xdc, TRANSPARENT);
+
+TextOut(
+	xdc,
+	20,
+	30,
+	"GDI in DirectDraw app",
+	strlen("GDI in DirectDraw app")
+);
+
+// ...now release resources
+if (FAILED(lpdds->ReleaseDC(xdc))){
+	// problem trying to release GDI
+	return(0);
+}
+
+// all done, surface no longer locked
+// by GDI
+```
+
+From an example perspective, the above is not optimal. `COLORREF`s are 24-bit RGB encoded, and hence running this
+on e.g. an 8-bit colour depth will cause DirectX to spend time trying to find the closest colour match.
+
+## Getting hardware supported features
+
+Sometimes it is necessary to determine the state or capability of the GPU hardware with respect to DirectX at runtime. Both the HEL and HAL featureset can be queried with `IDIRECTDRAW7::GetCaps()`:
+
+```cpp
+HRESULT GetCaps(
+	LPDDCAPS lpDDriverCaps, // HAL
+	LPDDCAPS lpDDHELCaps	// HEL
+);
+```
+
+The `DDCAPS` structure (pointed to by `LPDDCAPS`) is extensive and to a degree self-explanatory. Some examples of fields include:
+
++ `dwCKeyCaps` - color key caps (capabilities)
++ `dwFXCaps` - stretching and effects caps
++ `dwPalCaps` - palette caps
++ `dwAlphaBltConstBitDepths` - one of several alpha bit-depth caps
++ `dwVidMemTotal` - total video memory
++ `dwVidMemFree` - total free video memory
++ `dwCurrVisibleOverlays` - no. of overlays currently visible
++ `dwMaxVideoPorts` - max. no. of live video ports
++ `ddsCaps` - general surface caps
+
+Some useful surface related queries include:
+
+- `HRESULT IDIRECTDRAW7::GetDisplayMode(LPDDSURFACEDESC2 lpDDSurfaceDesc2)` - useful to find out if the system is currently in windowed mode
+- `HRESULT IDIRECTDRAWSURFACE7::GetSurfaceDesc(LPDDSURFACEDESC2 lpDDSurfaceDesc)` - more details about a surface
+- `HRESULT IDIRECTDRAWPALETTE::GetCaps(LPDWORD lpdwCaps)` - returns `DWORD` flags that describe the palette's capabilities e.g. `DDCAPS_8BIT` (supports 8-bit colour palettes), `DDCAPS_ALPHA` (supports an alpha component to each entry) and `DDCAPS_PRIMARYSURFACE` (palette is attached to a primary surface)
