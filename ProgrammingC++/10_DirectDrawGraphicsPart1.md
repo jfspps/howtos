@@ -1970,3 +1970,26 @@ Sleep(33);
 
 // ...out of the game loop
 ```
+
+### Gamma correction
+
+For 16-bit colour depth (or higher) DirectDraw applications, an RGB colour intensity `I` can be roughly equated to:
+
+```
+I * pixel(r, g, b) = pixel(I*r, I*g, I*b);
+```
+
+As shown, the relationship is linear. However, monitors are non-linear in respect of light intensity. The displayed intensities are shifted in accordance with an exponential, monitor response curve. 
+
+To correct for such nonlinearities, applications can apply _gamma correction_. Gamma correction is a nonlinear operation that controls the luminance (roughly, light intensity) of a video signal, without affecting the red, green or blue components. 
+
+Gamma correction across a targetted area is usually more optimal (rather than updating every pixel on the surface) can give the impression of colour animation (e.g. lightening or darkening) but is still a fairly expensive operation. One approach is via a 2D matrix, as a lookup table.
+
+The lookup table can represent a limited RGB value range, where each row `m` represents one colour and each element in that row `n` represents each shade of said colour. One can then lookup the required shade for all colours in `m` by looking up a given intensity in `n`. This approach with lookup tables is used for several features, including transparency. 
+
+DirectDraw (since version 5.0) provides some support for gamma and colour control:
+
++ `IDirectDrawGammaControl` - this gives programmers control over the red, green and blue _gamma ramps_ (gamma curves, represented in practice by the aforementioned lookup tables)
++ `IDirectDrawColorControl`. this gives programmers control over the brightness, contrast, hue, saturation, sharpness and gamma of the entire primary surface or _overlay_ (essentially, another surface overlapping a part of the primary surface)
+
+Not all legacy GPUs support the above interfaces.
