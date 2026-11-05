@@ -1774,105 +1774,105 @@ A function which blinks lights (pixels) takes in a `command` flag with a pointer
 
 int blinkColours(int command, BLINKER_PTR newLight, int id){
 
-	static BLINKER lights[256]; // supports up to 256 blinking lights
-	static int initialised = 0; // tracks if function has initialised
+  static BLINKER lights[256]; // supports up to 256 blinking lights
+  static int initialised = 0; // tracks if function has initialised
 
-	if (!initialised){
-		initialised = 1;
+  if (!initialised){
+	initialised = 1;
 
-		// clear out all structures
-		memset((void *)lights, 0, sizeof(lights));
-	}
+	// clear out all structures
+	memset((void *)lights, 0, sizeof(lights));
+  }
 
-	switch (command){
-		case BLINKER_ADD: {
-			for (int index = 0; index < 256; index++){
-				if (lights[index].state == 0){
-					// set light up
-					lights[index] = *newLight;
+  switch (command){
+    case BLINKER_ADD: {
+	  for (int index = 0; index < 256; index++){
+		  if (lights[index].state == 0){
+			// set light up
+			lights[index] = *newLight;
 
-					// set internal fields up
-					lights[index].counter =  0;
-					lights[index].state   = -1; // off
+			// set internal fields up
+			lights[index].counter =  0;
+			lights[index].state   = -1; // off
 
-					// update palette entry
-					lpddpal->SetEntries(
-						0, lights[index].colourIndex, 1, &lights[index].offColour);
+			// update palette entry
+			lpddpal->SetEntries(
+				0, lights[index].colourIndex, 1, &lights[index].offColour);
 
-					return(index);
-				}
-			}
-		} break;
+			return(index);
+		  }
+	  }
+    } break;
 
-		case BLINKER_DELETE: {
-			if (lights[id].state != 0){
-				// kill the light
-				memset((void *)&lights[id], 0, sizeof(BLINKER));
+    case BLINKER_DELETE: {
+	  if (lights[id].state != 0){
+		// kill the light
+		memset((void *)&lights[id], 0, sizeof(BLINKER));
 
-				return(id);
-			} else
-				return(-1);
-		} break;
+		return(id);
+	  } else
+		return(-1);
+    } break;
 
-		case BLINKER_UPDATE: { 
-			if (lights[id].state != 0){
-				// update on/off parms only
-				lights[id].onColour  = newLight->onColour; 
-				lights[id].offColour = newLight->offColour;
-				lights[id].onTime   = newLight->onTime;
-				lights[id].offTime  = newLight->offTime; 
+	case BLINKER_UPDATE: { 
+	  if (lights[id].state != 0){
+		// update on/off parms only
+		lights[id].onColour  = newLight->onColour; 
+		lights[id].offColour = newLight->offColour;
+		lights[id].onTime   = newLight->onTime;
+		lights[id].offTime  = newLight->offTime; 
 
-				// update palette entry
-				if (lights[id].state == -1) {
-					lpddpal->SetEntries(
-						0, lights[id].colourIndex, 1, &lights[id].offColour);
-				} else
-					lpddpal->SetEntries(
-						0, lights[id].colourIndex, 1, &lights[id].onColour);
+		// update palette entry
+		if (lights[id].state == -1) {
+			lpddpal->SetEntries(
+				0, lights[id].colourIndex, 1, &lights[id].offColour);
+		} else
+			lpddpal->SetEntries(
+				0, lights[id].colourIndex, 1, &lights[id].onColour);
 
-				return(id);
-			} else
-				return(-1);
-		} break;
+		return(id);
+	  } else
+		return(-1);
+    } break;
 
-		case BLINKER_RUN: {
-			// process each light
-			for (int index = 0; index < 256; index++) {
-				if (lights[index].state == -1) {
-					// off
+    case BLINKER_RUN: {
+	  // process each light
+	  for (int index = 0; index < 256; index++) {
+		if (lights[index].state == -1) {
+		  // off
 
-					// advance the counter and switch on if counter catches up 
-					// with offTime during this cycle
-					if (++lights[index].counter >= lights[index].offTime){
-						lights[index].counter = 0;
-						lights[index].state = -lights[index].state;               
+		  // advance the counter and switch on if counter catches up 
+		  // with offTime during this cycle
+		  if (++lights[index].counter >= lights[index].offTime){
+			lights[index].counter = 0;
+			lights[index].state = -lights[index].state;               
 
-						// update colour
-						lpddpal->SetEntries(
-							0, lights[index].colourIndex, 1, &lights[index].onColour);
-					}
-					
-				} else if (lights[index].state == 1) {
-					// on
+			// update colour
+			lpddpal->SetEntries(
+				0, lights[index].colourIndex, 1, &lights[index].onColour);
+		  }
+			
+		} else if (lights[index].state == 1) {
+		  // on
 
-					// advance the counter and switch off if counter catches up 
-					// with offTime during this cycle
-					if (++lights[index].counter >= lights[index].onTime){
-						lights[index].counter = 0;
-						lights[index].state = -lights[index].state;               
+		  // advance the counter and switch off if counter catches up 
+		  // with offTime during this cycle
+		  if (++lights[index].counter >= lights[index].onTime){
+			lights[index].counter = 0;
+			lights[index].state = -lights[index].state;               
 
-						// update colour
-						lpddpal->SetEntries(
-							0, lights[index].colourIndex, 1, &lights[index].offColour);
-					}
-				}
-			}
-		} break;
-		
-		default: break;
-	} 
+			// update colour
+			lpddpal->SetEntries(
+				0, lights[index].colourIndex, 1, &lights[index].offColour);
+		  }
+		}
+	  }
+    } break;
 	
-	return(1);
+    default: break;
+  } 
+
+  return(1);
 }
 ```
 
@@ -2305,7 +2305,7 @@ if (FAILED(lpddsprimary->Unlock(NULL)))
 
 ### Windowed 8-bit DirectDraw applications
 
-As alluded, one will need to forgoe a handle of palette entries when running 256-colour DirectDraw applications in windowed mode. This is because of the _Windows Palette Manager_. When the DirectDraw application gets focus, Windows will start mapping this application's palette to a hardware (physical) palette, which in turn applies to all other applications on screen.
+As alluded to, one will need to forgoe a handle of palette entries when running 256-colour DirectDraw applications in windowed mode. This is because of the _Windows Palette Manager_. When the DirectDraw application gets focus, Windows will start mapping this application's palette to a hardware (physical) palette, which in turn applies to all other applications on screen.
 
 Windows needs the first 10 and the last 10 entries for all other applications to look somewhat reasonable. (Therefore, if the DirectDraw application was always going to have the option to run in 8-bit windowed mode, then one would design a palette of 236, not 256, colours.)
 
