@@ -449,7 +449,7 @@ This normally involves defining palette data structure as an array of 256 `PALET
 ```cpp
 PALETTENTRY palette[256];
 
-for (int colour = 1; colour < 255; coloir++){
+for (int colour = 1; colour < 255; colour++){
     palette[colour].peRed = rand() % 256;
     palette[colour].peGreen = rand() % 256;
     palette[colour].peBlue = rand() % 256;

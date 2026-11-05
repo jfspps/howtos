@@ -2070,3 +2070,298 @@ Some useful surface related queries include:
 - `HRESULT IDIRECTDRAW7::GetDisplayMode(LPDDSURFACEDESC2 lpDDSurfaceDesc2)` - useful to find out if the system is currently in windowed mode
 - `HRESULT IDIRECTDRAWSURFACE7::GetSurfaceDesc(LPDDSURFACEDESC2 lpDDSurfaceDesc)` - more details about a surface
 - `HRESULT IDIRECTDRAWPALETTE::GetCaps(LPDWORD lpdwCaps)` - returns `DWORD` flags that describe the palette's capabilities e.g. `DDCAPS_8BIT` (supports 8-bit colour palettes), `DDCAPS_ALPHA` (supports an alpha component to each entry) and `DDCAPS_PRIMARYSURFACE` (palette is attached to a primary surface)
+
+## Windowed mode
+
+Running DirectDraw applications in windowed mode is more involved than running applications in fullscreen mode. The resolution and colour depth of the desktop may not always match the DirectDraw application design/requirements.
+
+There are several points/limitations to consider:
+
++ With windowed applications, the primary surface is the entire screen display. Thus, drawing to the primary surface will require consideration to other windows running/open on screen. In such cases, it is necessary to first determine the exact location of the DirectDraw application (the client window) before drawing to the DirectDraw client area.
++ Blitting to a windowed application is also more involved, since the blitter will need to be told where to clip to make sure regions outside of the client window are not affected. 
++ The above two problems are compounded by the fact that the windowed application can be resized and moved around!
++ Running a windowed 8-bit colour depth application will also need to utilise a palette that other applications on screen remain unaffected. That is, one will need to reserve a number of palette entries for system colours, so that other applications can be understood by the user. This is outlined at the [end of this section](#windowed-8-bit-directdraw-applications).
++ Complex surfaces, secondary back buffers and page flipping cannot be used in windowed mode. (This also explains why windowed DirectX applications are generally slower than fullscreen applications.)
+
+It is possible to create an offscreen buffer (surface) and blit from that to the primary surface (the whole screen).
+
+### Setting up a windowed DirectDraw application
+
+Recall from the section re. [Cooperative level](9_DirectDraw.md#2-setting-the-cooperative-level-with-windows), we now need to use the `DDSCL_NORMAL` level:
+
+```cpp
+// assume these are global
+HWND mainWindowHandle = NULL;
+RECT clientAreaRequired = {0, 0, 640, 480};
+
+
+HINSTANCE hinstance; // part of WinMain params
+
+// in WinMain()...
+HWND hwnd;	 // generic window handle
+
+// create the window with
+// WS_OVERLAPPED -> fixed size window with a title
+// of dimensions 800 x 600 (this will be adjusted shortly)
+if (!(hwnd = CreateWindowEx(
+	NULL, WINDOW_CLASS_NAME, "DirectDraw Windowed Demo", WS_OVERLAPPED | WS_VISIBLE,
+	0, 0,	  // initial position (x, y)
+	800, 600, NULL, NULL, hInstance, NULL)))
+		return(0);
+
+// save main window handle
+mainWindowHandle = hwnd;
+
+// now make sure the client area is fixed at 640x480
+// with AdjustWindowRectEx()
+AdjustWindowRectEx(
+	clientAreaRequired, 
+	GetWindowStyle(mainWindowHandle), 
+	GetMenu(mainWindowHandle) != NULL,
+	GetWindowExStyle(mainWindowHandle));
+
+// move the window a bit with MoveWindow()
+// to get it to size automatically
+MoveWindow(
+	mainWindowHandle,
+	CW_USEDEFAULT,
+	CW_USEDEFAULT,
+	clientAreaRequired.right - clientAreaRequired.left, // resized width
+	clientAreaRequired.bottom - clientAreaRequired.top, // resized height
+	false);
+
+
+// in gameInit()...
+LPDIRECTDRAW7 lpdd = NULL;
+
+// create IDirectDraw interface 7.0 object and test for error
+if (FAILED(DirectDrawCreateEx(NULL, (void **)&lpdd, IID_IDirectDraw7, NULL)))
+	return(0);
+
+// set cooperation to normal for windowed applications
+if (FAILED(lpdd->SetCooperativeLevel(mainWindowHandle, DDSCL_NORMAL))){
+	// error setting cooperative level
+	return(0);
+};
+
+// then continue with the DirectDraw init...
+
+// pointer to the surface interface
+LPDIRECTDRAWSURFACE7 lpddsprimary = NULL;
+
+// the surface description
+DDSURFACEDESC2 ddsd;
+
+memset(&ddsd, 0, sizeof(ddsd));
+ddsd.dwSize = sizeof(ddsd);
+
+ddsd.dwFlags = DDSD_CAPS;
+ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+if (FAILED(lpdd7->CreateSurface(&ddsd, &lpddsprimary, NULL))){
+    // failed to build the primary surface, clean up and exit
+	return(0);
+}
+
+// now attach a clipper to the primary surface
+LPDIRECTDRAWCLIPPER lpddclipper = NULL;
+
+if (FAILED(lpdd->CreateClipper(0, &lpddclipper, NULL))){
+	// error creating clipper
+	return(0);
+}
+
+// now set the clippers window handle via mainhandleWindow
+if (FAILED(lpddclipper->SetHWnd(0, mainWindowHandle))){
+	// failed to set clipper window handle
+	return(0);
+}
+
+// finally, attach the clipper to the primary surface
+if (FAILED(lpddsprimary->SetClipper(lpddclipper))){
+	// failed to attach clipper
+	return(0);
+}
+
+// okay, good to go...
+```
+
+The remaining discussion assumes the application is set up as above, in particular, the fixed window size with
+a client area guaranteed to be 640x480 (the window size can be whatever it needs to be).
+
+Note that in order to release the clipper (with e.g. `lpddclipper->Release()`), this must be done twice: before __and__ after releasing the surface. This is because, technically, there are two references to the clipper, one from `CreateClipper()` and the other from `SetClipper()`.
+
+### Getting the window coordinates and colour depth
+
+Given that the user can move the windowed application anywhere on the screen (after `WinMain()` has started), we need to retrieve the current coordinates before drawing to the client area.
+
+To get the upper-left coordinates of the window, which includes any controls and borders:
+
+```cpp
+BOOL GetWindowRect(
+	HWND hWnd,	// window handle
+	LPRECT lpRect	// address of coords structure
+);
+```
+
+Next, we need to get the colour depth (pixel format) of screen.
+
+```cpp
+// still in gameInit()...
+
+int pixelFormat = 0;
+DDPIXELFORMAT ddpixelFormat;
+
+memset(&ddpixelFormat, 0, sizeof(ddpixelFormat));
+ddpixelFormat.dwSize = sizeof(ddpixelFormat);
+
+// continuing with the primary surface lpddsprimary
+lpddsprimary->GetPixelFormat(&ddpixelFormat);
+
+pixelFormat = ddpixelFormat.dwRGBBitCount;
+```
+
+### Drawing to the client area
+
+This involves finding the client area of the window (i.e. without the title bar, controls or borders) before 
+drawing pixels/lines etc.
+
+Continuing from the previous section:
+
+```cpp
+// now in the game loop, about to draw something...
+
+DDSURFACEDESC2 ddsd;    // surface description
+RECT           client;  // used to hold client rectangle
+
+// make sure this isn't executed again
+if (window_closed)
+   return(0);
+
+// for now test if user is hitting ESC and send WM_CLOSE
+if (KEYDOWN(VK_ESCAPE)){
+   PostMessage(mainWindowHandle, WM_CLOSE, 0, 0);
+   window_closed = 1;
+}
+
+// get the window's client rectangle in screen coordinates
+GetWindowRect(mainWindowHandle, &client);
+
+// initialize structure
+memset(&ddsd, 0, sizeof(ddsd));
+ddsd.dwSize = sizeof(ddsd);
+
+// lock the primary surface
+lpddsprimary->Lock(NULL, &ddsd, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL);
+
+// get video pointer to primary surface
+// cast to VOID * since we don't know what we are
+// dealing with yet
+UCHAR *primaryBuffer = (UCHAR *)ddsd.lpSurface;       
+
+// assume pixelFormat is global and initialised;
+// with any pixelFormat, draw 10 random pixels at (x, y)
+int x, y;
+
+if (pixelFormat == 32){
+    for (int index = 0; index < 10; index++){
+        x = rand() % (client.right - client.left) + client.left;
+        y = rand() % (client.bottom - client.top) + client.top;
+        DWORD color = _RGB32BIT(0, rand() % 256, rand() % 256, rand() % 256);
+        *((DWORD *)(primaryBuffer + x*4 + y*ddsd.lPitch)) = color;
+    }
+
+} else if (pixelFormat == 24){
+    for (int index = 0; index < 10; index++){
+        x = rand() % (client.right - client.left) + client.left;
+        y = rand() % (client.bottom - client.top) + client.top;
+        ((primaryBuffer + x*3 + y*ddsd.lPitch))[0] = rand() % 256;
+        ((primaryBuffer + x*3 + y*ddsd.lPitch))[1] = rand() % 256;
+        ((primaryBuffer + x*3 + y*ddsd.lPitch))[2] = rand() % 256;
+    } 
+
+} else if (pixelFormat == 16){
+    for (int index = 0; index < 10; index++){
+        x = rand() % (client.right - client.left) + client.left;
+        y = rand() % (client.bottom - client.top) + client.top;
+        USHORT color = _RGB16BIT565(rand()%256, rand()%256, rand()%256);
+        *((USHORT *)(primaryBuffer + x*2 + y*ddsd.lPitch)) = color;
+    }
+
+} else {
+    // assume 8-bit mode
+    for (int index = 0; index < 10; index++){
+        x = rand() %(client.right - client.left) + client.left;
+        y = rand() %(client.bottom - client.top) + client.top;
+        UCHAR color = rand() % 256;
+        primaryBuffer[x + y*ddsd.lPitch] = color;
+    }
+}
+
+// unlock primary buffer
+if (FAILED(lpddsprimary->Unlock(NULL)))
+   return(0);
+```
+
+### Windowed 8-bit DirectDraw applications
+
+As alluded, one will need to forgoe a handle of palette entries when running 256-colour DirectDraw applications in windowed mode. This is because of the _Windows Palette Manager_. When the DirectDraw application gets focus, Windows will start mapping this application's palette to a hardware (physical) palette, which in turn applies to all other applications on screen.
+
+Windows needs the first 10 and the last 10 entries for all other applications to look somewhat reasonable. (Therefore, if the DirectDraw application was always going to have the option to run in 8-bit windowed mode, then one would design a palette of 236, not 256, colours.)
+
+Revisting [palette entry initialisation](9_DirectDraw.md#a-setting-up-an-8-bit-palette):
+
+```cpp
+PALETTENTRY palette[256];
+
+int upperColour;
+
+// deal with Windows Palette Manager first...
+for (int colour = 0; colour < 10; colour++){
+	// doesn't matter what these are assigned, they're never used
+	// by the DirectDraw app
+    palette[colour].peRed = colour;
+    palette[colour].peGreen = 0;
+    palette[colour].peBlue = 0;
+
+    // do not map this entry to the physical palette
+	// i.e. other Windows applications should ignore
+	// this entry (use this if the DirectDraw app palette
+	// is likely to change following e.g. colour animation)
+    palette[colour].peFlags = PC_EXPLICIT;
+
+	// work on the final ten entries similarly...
+	upperColour = colour + 246;
+	palette[upperColour].peRed = upperColour;
+    palette[upperColour].peGreen = 0;
+    palette[upperColour].peBlue = 0;
+	palette[upperColour].peFlags = PC_EXPLICIT;
+}
+
+// start at the 11th entry and finish at element 245
+for (int colour = 10; colour < 246; colour++){
+    palette[colour].peRed = rand() % 256;
+    palette[colour].peGreen = rand() % 256;
+    palette[colour].peBlue = rand() % 256;
+
+    // PC_NOCOLLAPSE prevents Windows or DirectX from
+    // automatically optimising the palette;
+	// PC_RESERVED instructs Windows not to map other 
+	// Windows app colours to this entry
+    palette[colour].peFlags = PC_NOCOLLAPSE | PC_RESERVED;
+}
+
+// the palette interface received
+LPDIRECTDRAWPALETTE lpddpal = NULL;
+
+if (FAILED(lpdd7->CreatePalette(
+    DDCAPS_8BIT | DDCAPS_INITIALIZE,
+    palette,
+    &lpddpal,
+    NULL
+))){
+    // problem setting up the display palette, clean up and exit
+}
+
+// okay, all ready...
+```
