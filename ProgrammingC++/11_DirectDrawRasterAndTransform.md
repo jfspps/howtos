@@ -26,9 +26,9 @@ This article outlines the topics of rasterisation and 2D transformations:
 
 ## Drawing lines
 
-Drawing lines on a grid will almost always involve approximations. A line will almost certainly not cross pixels exactly, it may cross two or more, and then comes the questions how or which pixels should be part of the line.
+_Rasterisation_ in this context is the process of taking a vector based description of a geometric entity and filling (plotting) pixels from one point to another that most closely fit to the real line. This definition is also extended to other primitives, including triangles (or polygons in general).
 
-_Rasterisation_ in this context is the process of filling (plotting) pixels from one point to another that most closely fit to the real line. 
+Drawing lines on a grid will almost always involve approximations. A line will almost certainly not cross pixels exactly, it may cross two or more, and then comes the questions how or which pixels should be part of the rasterised line.
 
 ![](./MSVC2005/bresenhams_line_drawing_algorithm.jpg)
 
@@ -39,24 +39,27 @@ Taking the equation to a straight line _y = mx + c_ (where _x_ and _y_ are integ
 3. determine the next value of (x, y) from the gradient _m = (y - y<sub>0</sub>)/(x - x<sub>0</sub>)_
 4. repeat until all values of (x, y) until done at (x<sub>f</sub>, y<sub>f</sub>)
 
-The problem with this approach is that the rasterised line will likely contain gaps, particularly if the line is steep.
+The problem with this approach is that the rasterised line will likely contain gaps, particularly if the line is steep. To get around this, one could simply calculate values of y for smaller changes to x. This however still won't work for very steep gradients.
 
-To get around this, one could simply calculate values of y for smaller changes to x. This however still won't work for very steep gradients. 
+The gradient of the line will ultimately determine the approach taken. If the gradient is greater than one then evidently all rows (y) must have one pixel drawn; similarly, if the gradient is less than one then all columns (x) must be assigned a pixel. 
 
-Another approach is handled by _Bresenham's algorithm_ which attempts to select a y-value that lies closest to the line. All rasterised points must be integers.
+The process of pixel selection can be handled by _Bresenham's algorithm_. This attempts to select a point (on the rasterised line) that lies closest to the true line. All rasterised points discussed here will be integer based.
+
+A _decision term_ `decX` (and `decY`) is applied and constantly updated based on the previously plotted point.
 
 ```cpp
+// two endpoints at (x0, y0) and (x2, y1)
 int drawLine8bit(
   int x0, int y0, int x1, int y1, UCHAR colour, UCHAR *videoBuffer, int lpitch) {
 
-  int dx,       // difference in x's
-      dy,       // difference in y's
-      dx2,      // dx * 2, error term, scaled to int
-      dy2,      // dy * 2, error term, scaled to int
-      xInc,     // amount in pixel space to move during drawing
-      yInc,     // amount in pixel space to move during drawing
-      error,    // the discriminant i.e. error i.e. decision variable
-      index;    // used for looping
+  int dx,         // difference in x's
+      dy,         // difference in y's
+      dx2,        // equals (dx*2), used to calc. decX
+      dy2,        // equals (dy*2), used to calc. decY
+      xInc,       // no. of pixels to move along x-axis
+      yInc,       // no. of pixels to move along y-axis
+      decX,       // the decision variable in x
+      decY;       // the decision variable in y
 
   // pre-compute first pixel address in video buffer
   videoBuffer = videoBuffer + x0 + y0*lpitch;
@@ -72,6 +75,8 @@ int drawLine8bit(
     xInc = -1;
 
     dx = -dx;  // need |dx|
+  } else {
+    xInc = 0;
   }
 
   // test which direction the line is going in 
@@ -82,58 +87,57 @@ int drawLine8bit(
     yInc = -lpitch;
 
     dy = -dy;  // need |dy|
+  } else {
+    yInc = 0;
   }
 
-  // compute (dx, dy) * 2
+  // constants required for the decision terms
   dx2 = dx << 1;
   dy2 = dy << 1;
 
-  // draw the line based on the delta dx or dy
+  // now draw the line based on the gradient
   if (dx > dy){
-    // x-dominant line, |m| < 1
+    // |m| < 1, eventually we will 
+    // move one unit along the x-axis
 
-    error = dy2 - dx; 
-
-    for (index = 0; index <= dx; index++){
+    // initialise, then update decision in y
+    for (decY = dy2 - dx; /**/; x += incX, decY += dy2){
       // plot pixel
       *videoBuffer = colour;
 
-      // test if error has overflowed
-      if (error >= 0){
-        error -= dx2;
+      if (x == x1){
+        // at an endpoint, leave
+        break;
+      }
 
-        // move pointer to next line
+      if (decY >= 0){
+        decY -= dx2;
+
+        // move pointer to next row
         videoBuffer += yInc;
       }
-
-      // adjust the error term
-      error += dy2;
-
-      // move pointer to the next pixel
-      videoBuffer += xInc;
     }
+
   } else {
-    // y-dominant line, |m| > 1
+    // |m| >= 1, eventually we will 
+    // move one unit along the y-axis
 
-    error = dx2 - dy; 
-
-    for (index=0; index <= dy; index++){
+    // initialise, then update decision in x
+    for (decX = dx2 - dy; /**/; y += incY, decX += dx2){
       // plot pixel
       *videoBuffer = colour;
 
-      // test if error overflowed
-      if (error >= 0){
-        error -= dy2;
-
-        // move to next line
-        videoBuffer += xInc;
+      if (y == y1){
+        // at an endpoint, leave
+        break;
       }
 
-      // adjust the error term
-      error += dx2;
+      if (decX >= 0){
+        decX -= dy2;
 
-      // move to the next scan line
-      videoBuffer += yInc;
+        // move pointer to next column
+        videoBuffer += xInc;
+      }
     }
   } 
 
