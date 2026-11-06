@@ -1,16 +1,16 @@
 ---
-title: DirectDraw Graphics Part 1
+title: DirectDraw - Setup
 nav_order: 10
 parent: Programming in C++
 ---
 
-# DirectDraw Graphics Part 1
+# DirectDraw - Setup
 
 This article extends the DirectDraw setup and foundation from [the previous section](9_DirectDraw.md), covering topics such as:
 
 + High-colour modes
 + Double buffering and page flipping
-+ The _blitter_ (part of the microprocesser that transfer and modifies data in memory, for the CPU)
++ Blitting
 + Clipping
 + Bitmaps
 + Colour animation
