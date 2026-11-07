@@ -52,14 +52,15 @@ A _decision term_ `decX` (and `decY`) is applied and constantly updated based on
 int drawLine8bit(
   int x0, int y0, int x1, int y1, UCHAR colour, UCHAR *videoBuffer, int lpitch) {
 
-  int dx,         // difference in x's
-      dy,         // difference in y's
-      dx2,        // equals (dx*2), used to calc. decX
-      dy2,        // equals (dy*2), used to calc. decY
-      xInc,       // no. of pixels to move along x-axis
-      yInc,       // no. of pixels to move along y-axis
-      decX,       // the decision variable in x
-      decY;       // the decision variable in y
+  int x, y, 
+	  dx,         // difference in x's
+    dy,         // difference in y's
+    dx2,        // equals (dx*2), used to calc. decX
+    dy2,        // equals (dy*2), used to calc. decY
+    xInc,       // no. of pixels to move along x-axis
+    yInc,       // no. of pixels to move along y-axis
+    decX,       // the decision variable in x
+    decY;       // the decision variable in y
 
   // pre-compute first pixel address in video buffer
   videoBuffer = videoBuffer + x0 + y0*lpitch;
@@ -71,7 +72,7 @@ int drawLine8bit(
   // and then expect x to change by one unit
   if (dx >= 0){
     xInc = 1;
-  } else {
+  } else if (dx < 0) {
     xInc = -1;
 
     dx = -dx;  // need |dx|
@@ -83,7 +84,7 @@ int drawLine8bit(
   // and then expect y to change by one scan line (pitch)
   if (dy >= 0){
     yInc = lpitch;
-  } else {
+  } else if (dy < 0){
     yInc = -lpitch;
 
     dy = -dy;  // need |dy|
@@ -103,7 +104,7 @@ int drawLine8bit(
     // in this case
 
     // initialise, then update decision in y
-    for (decY = dy2 - dx; /**/; x += incX, decY += dy2){
+    for (decY = dy2 - dx; /**/; x += xInc, decY += dy2){
       // plot pixel
       *videoBuffer = colour;
 
@@ -128,7 +129,7 @@ int drawLine8bit(
     // in this case
 
     // initialise, then update decision in x
-    for (decX = dx2 - dy; /**/; y += incY, decX += dx2){
+    for (decX = dx2 - dy; /**/; y += yInc, decX += dx2){
       // plot pixel
       *videoBuffer = colour;
 
