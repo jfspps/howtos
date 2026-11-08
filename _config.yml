@@ -15,3 +15,5 @@ plugins:
 permalink: pretty
 
 enable_copy_code_button: true
+
+math: katex
