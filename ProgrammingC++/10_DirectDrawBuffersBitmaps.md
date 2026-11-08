@@ -1,10 +1,10 @@
 ---
-title: DirectDraw - Setup
+title: DirectDraw - Buffers and Bitmaps
 nav_order: 10
 parent: Programming in C++
 ---
 
-# DirectDraw - Setup
+# DirectDraw - Buffers and Bitmaps
 
 This article extends the DirectDraw setup and foundation from [the previous section](9_DirectDraw.md), covering topics such as:
 

@@ -599,3 +599,85 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 	return(1);
 }
 ```
+
+## Wireframe polygons
+
+Wireframe polygons are polygons that are not filled, or are hollowed. Polygons consist of three or more points (vertices) each joined by an edge, and are always closed. Polygons can be _concave_ (there exists a connecting line between two edges where the line falls outside the polygon) and _convex_ (in short, are not concave).
+
+Polygons will not always have a fixed point count, so the data structure that stores polygons will utilise the heap to a degree. Each vertex can be represented by a structure:
+
+```cpp
+typedef struct VERTEX2DI_TYP {
+	int x, y;
+} VERTEX2DI, *VERTEX2DI_PTR;
+```
+
+Each vertex is stored in a array of type `VERTEX2DI_TYP`, in another structure:
+
+```cpp
+typedef struct POLYGON2D_TYP {
+	int state;
+	int numVerts;
+	int x0, y0;
+	int xv, yv;
+	DWORD colour;
+	VERTEX2DI *vList;
+} POLYGON2D, *POLYGON2D_PTR;
+```
+
+To initialise e.g. a triangle:
+
+```cpp
+POLYGON2D triangle;
+
+triangle.state = 1; // e.g. enabled/viewable
+triangle.numVerts = 3;
+triangle.x0 = 100;
+triangle.y0 = 100;
+triangle.xv = 0; // initial velocity
+triangle.yv = 0;
+triangle.colour = 50; // assuming 8-bit, colour index 50
+triangle.vList = new VERTEX2DI[triangle.numVerts];
+```
+
+The central point (x0, y0) tends to be used to translate the polygon _en masse_, preserving the
+relative position of the vertices. The _local coordinates_ are coordinates relative to the central point 
+and each vertex is normally described as local coordinates. A polygon is transformed via _global coordinates_ (discussed later).
+
+Drawing a polygon is an extension of drawing lines and is given below:
+
+```cpp
+int draw2DPolygon8Bit(POLYGON2D_PTR polygon, UCHAR *videoBuffer, int lPitch){
+	if (polygon->state){
+		int index;
+		for (index = 0; index < polygon->numVerts - 1; index++){
+			drawClipLine8bit(
+				// first endpoint
+				polygon->vList[index].x + polygon->x0,
+				polygon->vList[index].y + polygon->y0,
+				// next endpoint
+				polygon->vList[index + 1].x + polygon->x0,
+				polygon->vList[index + 1].y + polygon->y0,
+				polygon->colour,
+				videoBuffer,
+				lPitch);
+		}
+
+		// close the polygon
+		drawClipLine8bit(
+				// first endpoint
+				polygon->vList[0].x + polygon->x0,
+				polygon->vList[0].y + polygon->y0,
+				// next endpoint
+				polygon->vList[index].x + polygon->x0,
+				polygon->vList[index].y + polygon->y0,
+				polygon->colour,
+				videoBuffer,
+				lPitch);
+
+		return(1);
+	}
+
+	return(0);
+}
+```
