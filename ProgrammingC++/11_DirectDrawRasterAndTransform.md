@@ -24,7 +24,7 @@ This article outlines the topics of rasterisation and 2D transformations:
 + Timing and synchronisation
 + Scrolling and panning
 
-## Drawing lines
+## Drawing lines with Bresenham's Algorithm
 
 _Rasterisation_ in this context is the process of taking a vector based description of a geometric entity and filling (plotting) pixels from one point to another that most closely fit to the real line. This definition is also extended to other primitives, including triangles (or polygons in general).
 
@@ -305,4 +305,294 @@ Then the solutions are
 ```
 x = (c1*b2 - b1*c2)/(a1*b2 - b1*a2)
 y = (a1*c2 - c1*c2)/(a1*b2 - b1*a2)
+```
+
+### Clipping lines with the Cohen-Sutherland Algorithm
+
+To reiterate, an clipping algorithm needs to determine:
+
+a. if a line segment (i.e. both endpoints) lies completely within the clipping rectangle
+b. if a line segment lies completely outside the clipping rectangle
+c. otherwise perform intersection calculations with one or more clipping boundaries
+
+To reduce unnecessary calculations, the _Cohen-Sutherland Algorithm_ breaks up the task by defining sectors external to the clipping region. Any line segments or parts of line segments located in these sectors are omitted from the viewport.
+
+![](MSVC2005/cohen_sutherland.png)
+
+Each distinct sector is typically given a clip code so as to determine quickly what clipping is required.
+
+The complete function `clipLine()` is given below. Taking a couple of examples, for the endpoint (x1, y1) found to reside in Clip code NORTH and SOUTH:
+
+![](MSVC2005/cohen_sutherland_2.png)
+
+
+```cpp
+case CLIP_CODE_N:
+  {
+    // deduced: y1 > maxClipY
+
+    // make sure y1 does not exceed upper limit
+    y1Clipped = maxClipY;
+
+    // offset x accordingly
+    x1Clipped = x1 + 0.5 + (maxClipY-y1)*(x2-x1)/(y2-y1);
+  } break;
+```
+
+The complete function:
+
+```cpp
+/*
+* Clips a line by updating the endpoints (x1, y1) and (x2, y2)
+*/
+int clipLine(int &x1, int &y1, int &x2, int &y2){
+
+	// internal clipping codes
+	#define CLIP_CODE_C  0x0000 // completely in clipping region
+	#define CLIP_CODE_N  0x0008 // crosses top edge (bits 1000)
+	#define CLIP_CODE_S  0x0004 // crosses bottom edge (bits 0100)
+	#define CLIP_CODE_E  0x0002 // crosses right edge (bits 0010)
+	#define CLIP_CODE_W  0x0001 // crosses left edge (bits 0001)
+
+	#define CLIP_CODE_NE 0x000a // bits 1010
+	#define CLIP_CODE_SE 0x0006 // bits 0110
+	#define CLIP_CODE_NW 0x0009 // bits 1001
+	#define CLIP_CODE_SW 0x0005 // bits 0101
+
+	// this function updates the passed coords;
+	// store them here temporarily and update
+	// at the end if all OK
+	int x1Clipped = x1, 
+		y1Clipped = y1, 
+		x2Clipped = x2, 
+		y2Clipped = y2;
+
+	// points 1 and 2 clip codes
+	int p1_code = 0, 
+		p2_code = 0;
+
+	// determine codes for p1 and p2
+	if (y1 < minClipY)
+		p1_code |= CLIP_CODE_S;
+	else
+	if (y1 > maxClipY)
+		p1_code |= CLIP_CODE_N;
+
+	if (x1 < minClipX)
+		p1_code |= CLIP_CODE_W;
+	else
+	if (x1 > maxClipX)
+		p1_code |= CLIP_CODE_E;
+
+	if (y2 < minClipY)
+		p2_code |= CLIP_CODE_S;
+	else
+	if (y2 > maxClipY)
+		p2_code |= CLIP_CODE_N;
+
+	if (x2 < minClipX)
+		p2_code |= CLIP_CODE_W;
+	else
+	if (x2 > maxClipX)
+		p2_code |= CLIP_CODE_E;
+
+	// try and trivially reject
+	if ((p1_code & p2_code)) 
+		return(0);
+
+	// test for totally visible, if so leave points untouched
+	if (p1_code == 0 && p2_code == 0)
+		return(1);
+
+	// determine end clip point for p1
+	switch(p1_code){
+		case CLIP_CODE_C: 
+			break;
+
+		case CLIP_CODE_N:
+			{
+				y1Clipped = maxClipY;
+				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+			} break;
+
+		case CLIP_CODE_S:
+			{
+				y1Clipped = minClipY;
+				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+			} break;
+
+		case CLIP_CODE_W:
+			{
+				x1Clipped = minClipX;
+				y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);
+			} break;
+
+		case CLIP_CODE_E:
+			{
+				x1Clipped = maxClipX;
+				y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+			} break;
+
+		// these cases are more complex, must compute 2 intersections
+		case CLIP_CODE_NE:
+			{
+				// north hline intersection
+				y1Clipped = maxClipY;
+				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+
+				// test if intersection is valid, of so then done, else compute next
+				if (x1Clipped < minClipX || x1Clipped > maxClipX){
+					// east vline intersection
+					x1Clipped = maxClipX;
+					y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+				}
+			} break;
+
+		case CLIP_CODE_SE:
+			{
+				// south hline intersection
+				y1Clipped = minClipY;
+				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x1Clipped < minClipX || x1Clipped > maxClipX){
+					// east vline intersection
+					x1Clipped = maxClipX;
+					y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+				}
+			} break;
+		 
+		case CLIP_CODE_NW:
+			{
+				// north hline intersection
+				y1Clipped = maxClipY;
+				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x1Clipped < minClipX || x1Clipped > maxClipX){
+					x1Clipped = minClipX;
+					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);	
+				}
+			} break;
+		
+		case CLIP_CODE_SW:
+			{
+				// south hline intersection
+				y1Clipped = minClipY;
+				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x1Clipped < minClipX || x1Clipped > maxClipX){
+					x1Clipped = minClipX;
+					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);
+				}
+			} break;
+		
+		default:break;
+	}
+
+	// determine clip point for p2
+	switch(p2_code){
+		case CLIP_CODE_C: break;
+
+		case CLIP_CODE_N:
+			{
+				y2Clipped = maxClipY;
+				x2Clipped = x2 + (maxClipY-y2)*(x1-x2)/(y1-y2);
+			} break;
+		
+		case CLIP_CODE_S:
+			{
+				y2Clipped = minClipY;
+				x2Clipped = x2 + (minClipY-y2)*(x1-x2)/(y1-y2);
+			} break;
+		
+		case CLIP_CODE_W:
+			{
+				x2Clipped = minClipX;
+				y2Clipped = y2 + (minClipX-x2)*(y1-y2)/(x1-x2);
+			} break;
+		
+		case CLIP_CODE_E:
+			{
+				x2Clipped = maxClipX;
+				y2Clipped = y2 + (maxClipX-x2)*(y1-y2)/(x1-x2);
+			} break;
+			
+		// these cases are more complex, must compute 2 intersections
+		case CLIP_CODE_NE:
+			{
+				// north hline intersection
+				y2Clipped = maxClipY;
+				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x2Clipped < minClipX || x2Clipped > maxClipX){
+					// east vline intersection
+					x2Clipped = maxClipX;
+					y2Clipped = y2 + 0.5 + (maxClipX-x2)*(y1-y2)/(x1-x2);
+				}
+			} break;
+		
+		case CLIP_CODE_SE:
+			{
+				// south hline intersection
+				y2Clipped = minClipY;
+				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
+				
+				// test if intersection is valid, of so then done, else compute next
+				
+				if (x2Clipped < minClipX || x2Clipped > maxClipX){
+					// east vline intersection
+					x2Clipped = maxClipX;
+					y2Clipped = y2 + 0.5 + (maxClipX-x2)*(y1-y2)/(x1-x2);
+				}
+			} break;
+		
+		case CLIP_CODE_NW:
+			{
+				// north hline intersection
+				y2Clipped = maxClipY;
+				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x2Clipped < minClipX || x2Clipped > maxClipX){
+					x2Clipped = minClipX;
+					y2Clipped = y2 + 0.5 + (minClipX-x2)*(y1-y2)/(x1-x2);
+				}
+			} break;
+		
+		case CLIP_CODE_SW:
+			{
+				// south hline intersection
+				y2Clipped = minClipY;
+				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
+				
+				// test if intersection is valid, of so then done, else compute next
+				if (x2Clipped < minClipX || x2Clipped > maxClipX)
+				{
+					x2Clipped = minClipX;
+					y2Clipped = y2 + 0.5 + (minClipX-x2)*(y1-y2)/(x1-x2);
+				}
+			} break;
+		
+		default:break;
+	}
+
+	// do bounds check
+	if ((x1Clipped < minClipX) || (x1Clipped > maxClipX) ||
+		(y1Clipped < minClipY) || (y1Clipped > maxClipY) ||
+		(x2Clipped < minClipX) || (x2Clipped > maxClipX) ||
+		(y2Clipped < minClipY) || (y2Clipped > maxClipY) ){
+			return(0);
+	} 
+
+	// update coords
+	x1 = x1Clipped;
+	y1 = y1Clipped;
+	x2 = x2Clipped;
+	y2 = y2Clipped;
+
+	return(1);
+}
 ```
