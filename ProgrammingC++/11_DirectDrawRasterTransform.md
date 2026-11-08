@@ -32,12 +32,12 @@ Drawing lines on a grid will almost always involve approximations. A line will a
 
 ![](./MSVC2005/bresenhams_line_drawing_algorithm.jpg)
 
-Taking the equation to a straight line _y = mx + c_ (where _x_ and _y_ are integers), one can draw a line by
+Taking the equation to a straight line $y = mx + c$ (where _x_ and _y_ are integers), one can draw a line by
 
-1. determining the gradient _m = (y<sub>f</sub> - y<sub>0</sub>)/(<sub>f</sub> - x<sub>0</sub>) 
-2. plot the initial point at (x<sub>0</sub>, y<sub>0</sub>)x
-3. determine the next value of (x, y) from the gradient _m = (y - y<sub>0</sub>)/(x - x<sub>0</sub>)_
-4. repeat until all values of (x, y) until done at (x<sub>f</sub>, y<sub>f</sub>)
+1. determining the gradient $m = \frac{y_{f} - y_{0}}{x_{f} - x_{0}}$
+2. plot the initial point at $(x_{0}, y_{0})$
+3. determine the next value of (x, y) from the gradient $m = \frac{y - y_{0}}{x - x_{0}}$
+4. repeat until all values of (x, y) until done at $(x_{f}, y_{f})$
 
 The problem with this approach is that the rasterised line will likely contain gaps, particularly if the line is steep. To get around this, one could simply calculate values of y for smaller changes to x. This however still won't work for very steep gradients.
 
@@ -184,30 +184,33 @@ Before outlining line clipping, we review a few basic mathematical prerequisites
 
 Using the point-slope form of the equation to a line:
 
-```
-(y - y0) = m*(x - x0)
-```
+$$
+y - y_{0} = m(x - x_{0})
+$$
 
 We have the point of intersection (x, y) for lines that have segments `p0` and `p1` with gradients `m0` and `mq` respectively:
 
-```
-(y1 - y0) = m0*(x1 - x0)
-(y3 - y2) = m1*(x3 - x2)
-```
+$$
+y_{1} - y_{0} = m0(x_{1} - x_{0}) \\
+y_{3} - y_{2} = m1(x_{3} - x_{2})
+$$
 
 Or for any point along each line with, for example:
 
-```
-(y - y0) = m0*(x - x0)
-(y - y2) = m1*(x - x2)
-```
+$$
+y - y_{0} = m_{0}(x - x_{0}) \\
+y - y_{2} = m_{1}(x - x_{2})
+$$
 
 Solving for a point of intesection at (x, y):
 
-```
-x = (-m0/(m1 - m0))*x2 + m0*(y2 - y0) + x0
-y = (m0*y0 - m1y2 + x2 - x0)/(m0 - m1)
-```
+$$
+x = \frac{-m_{0}x_{2}}{m_{1} - m_{0}} + m_{0}(y_{2} - y_{0}) + x_{0}
+$$
+
+$$
+y = \frac{m_{0}y_{0} - m_{1}y_{2} + x_{2} - x_{0}}{m_{0} - m_{1}}
+$$
 
 Note from above that if both lines are parallel, then `|m1| = |m0|` and they cannot intersect. The above
 equations would yield zero as denominators.
@@ -216,99 +219,125 @@ equations would yield zero as denominators.
 
 Using the general form of the equation to a line:
 
-```
-a*x + b*y = c
-```
+$$
+ax + by = c
+$$
 
 Or for some other value of `c` as:
 
-```
-a*x + b*y + c = 0
-```
+$$
+ax + by + c = 0
+$$
 
 Taking the above point-slope form and equating coefficients `a`, `b` and `c` in terms of the gradients `m`, and an intercept at `x = 0`, we
 have:
 
-```
-(y - y0) = m*(x - x0)
-y - y0 = m*x - mx0
-```
+$$
+y - y_{0} = m(x - x_{0}) \\
+y - y_{0} = mx - mx_{0}
+$$
 
 Then we have the general form for the line:
 
-```
--m*x + y = y0 - mx0
-m*x - y = mx0 - y0
-```
+$$
+-mx + y = y_{0} - mx_{0} \\
+$$
 
-Then the intercept is `mx0 - y0`.
+Then as:
+
+$$
+mx - y = mx_{0} - y_{0}
+$$
+
+The intercept is $mx_{0} - y_{0}$.
 
 #### Finding the intersection of two lines in Matrix form
 
 Two lines in general form can be expressed as a matrix.
 
-```
-a1*x + b1*y = c1
-a2*x + b2*y = c2
-```
+$$
+a_{1}x + b_{1}y = c_{1} \\
+a_{2}x + b_{2}y = c_{2}
+$$
 
 The matrix is given by: __Ax__ = __Y__, with __A__:
 
-```
-A = |a1 b1|
-    |a2 b2|
-```
+__A__ = 
+$$
+\begin{bmatrix}
+a1 & b1 \\
+a2 & b2
+\end{bmatrix}
+$$
 
-and __x__:
+and __x__ = 
 
-```
-x = |x|
-    |y|
-```
+$$
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+$$
 
-and finally __Y__:
+and finally __Y__ =
 
-```
-Y = |c1|
-    |c2|
-```
+$$
+\begin{bmatrix}
+c1 \\
+c2
+\end{bmatrix}
+$$
 
 To solve for the intersection at (x, y) one can use determinants:
 
-```
-x = Det(A1)/Det(A)
-y = Det(A2)/Det(A)
-```
+$$
+x = \frac{det(A1)}{det(A)}
+$$
+
+$$
+y = \frac{det(A2)}{det(A)}
+$$
 
 The matrices A1 (in y) and A2 (in x) are defined here as:
 
-```
-A1 = |c1 b1|
-     |c2 b2|
+__A1__ =
+$$
+\begin{vmatrix}
+c1 & b1 \\
+c2 & b2
+\end{vmatrix}
+$$
 
-A2 = |a1 c1|
-     |a2 c2|
-```
+__A2__ = 
+$$
+\begin{vmatrix}
+a1 & c1 \\
+a2 & c2
+\end{vmatrix}
+$$
 
 The determinant (a scalar) for a 2x2 matrix for e.g. A1 and A2 are
 
-```
-Det(A1) = c1*b2 - b1*c2
-Det(A2) = a1*c2 - c1*c2
-```
+$$
+det(A1) = c_{1}b_{2} - b_{1}c_{2} \\
+det(A2) = a_{1}c_{2} - c_{1}a_{2}
+$$
 
 Then knowing 
 
-```
-Det(A) = a1*b2 - b1*a2
-```
+$$
+det(A) = a_{1}b_{2} - b_{1}a_{2}
+$$
 
 Then the solutions are
 
-```
-x = (c1*b2 - b1*c2)/(a1*b2 - b1*a2)
-y = (a1*c2 - c1*c2)/(a1*b2 - b1*a2)
-```
+$$
+x = \frac{c_{1}b_{2} - b_{1}c_{2}}{a_{1}b_{2} - b_{1}a_{2}} 
+$$
+
+$$
+y = \frac{a_{1}c_{2} - c_{1}c_{2}}{a_{1}b_{2} - b_{1}a_{2}} 
+$$
 
 ### Clipping lines with the Cohen-Sutherland Algorithm
 
@@ -615,20 +644,22 @@ typedef struct VERTEX2DI_TYP {
 Each vertex is stored in a array of type `VERTEX2DI_TYP`, in another structure:
 
 ```cpp
-typedef struct POLYGON2D_TYP {
+typedef struct POLYGON2DI_TYP {
 	int state;
 	int numVerts;
 	int x0, y0;
 	int xv, yv;
 	DWORD colour;
 	VERTEX2DI *vList;
-} POLYGON2D, *POLYGON2D_PTR;
+} POLYGON2DI, *POLYGON2DI_PTR;
 ```
+
+The naming convention `2DI` emphasises `int` (x, y). This is fine for now but will be updated to support `float` (x, y) as `2DF`, to maintain some level of accuracy during transformations (demonstrated later).
 
 To initialise e.g. a triangle:
 
 ```cpp
-POLYGON2D triangle;
+POLYGON2DI triangle;
 
 triangle.state = 1; // e.g. enabled/viewable
 triangle.numVerts = 3;
@@ -647,7 +678,7 @@ and each vertex is normally described as local coordinates. A polygon is transfo
 Drawing a polygon is an extension of drawing lines and is given below:
 
 ```cpp
-int draw2DPolygon8Bit(POLYGON2D_PTR polygon, UCHAR *videoBuffer, int lPitch){
+int draw2DIPolygon8Bit(POLYGON2DI_PTR polygon, UCHAR *videoBuffer, int lPitch){
 	if (polygon->state){
 		int index;
 		for (index = 0; index < polygon->numVerts - 1; index++){
@@ -679,5 +710,172 @@ int draw2DPolygon8Bit(POLYGON2D_PTR polygon, UCHAR *videoBuffer, int lPitch){
 	}
 
 	return(0);
+}
+```
+
+## Transformations
+
+### Translation
+
+A _translation_ is a bout moving an object from one point to another. The global coordinates assume the origin is at the top-left corner of the viewport. It then follows that the translation by `(dx, dy)` to give the new global coordinates `(xt, yt)` is:
+
+$$
+xt = x + dx; \\
+yt = y + dy;
+$$
+
+A translation to a position to the lower-right would require `dx > 0` and `dy > 0`. Similarly, a translation to the lower-left position would require `dx < 0` and `dy > 0`.
+
+```cpp
+int translatePolygon2D(POLYGON2D_PTR polygon, int dx, int dy){
+	if (!polygon){
+		return (0);
+	}
+
+	polygon->x0 += dx;
+	polygon->y0 += dy;
+
+	return(1);
+}
+```
+
+### Rotation
+
+Rotation is a more involved operation. Taking a standard cartesian coordinate system:
+
+![](MSVC2005/trig_cast.PNG)
+
++ Quadrant I - sine(x), cosine(x) and tangent(x) are all positive
++ Quadrant II - sine(x) > 0
++ Quadrant I - tangent(x) > 0
++ Quadrant I - cosine(x) > 0
+
+Some conventions in 2D:
+
++ rotation occurs about an axis perpendicular to the 2D plane in a clockwise motion
++ C and C++ sine and cosine functions work with radians only
+
+It is also worth noting the following trigonometric identities with C and C++:
+
++ `csc(theta) = 1/sin(theta)`
++ `sec(theta) = 1/cos(theta)`
++ `cot(theta) = 1/tan(theta)`
+
+Other useful identities include:
+
++ $sin^{2}{\theta} + cos^{2}{\theta} = 1$
++ for conversion, $sin{\theta} = cos{(\theta - \frac{\pi}{2})}$
++ for reflection:
+  - $sin{\theta} = -sin{\theta}$
+  - $cos{(-\theta)} = cos{\theta}$
++ for addition
+  - $sin{(\theta_{1} + \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} + cos{\theta_{1}}sin{\theta_{2}}$
+  - $cos{(\theta_{1} + \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} - sin{\theta_{1}}sin{\theta_{2}}$
+  - $sin{(\theta_{1} - \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} - cos{\theta_{1}}sin{\theta_{2}}$
+  - $cos{(\theta_{1} - \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} + sin{\theta_{1}}sin{\theta_{2}}$
+
+Referring to quadrant 1 for the moment, for a circle of radius `r`, one can characterise the polar coordinates of a point (or vertex) as:
+
+$$
+x = r cos{\theta} \\
+y = r sin{\theta}
+$$
+
+Pictorially:
+
+![](MSVC2005/r_sin_cos_theta.jpg)
+
+If one were to rotate an additional $\alpha$ radians, then the resultant polar coordinates on the same axes would be:
+
+$$
+x_{rot} = r cos{(\theta + \alpha)} \\
+y_{rot} = r sin{(\theta + \alpha)}
+$$
+
+It would be reasonable to see that on rotating anticlockwise, one can state $x_{rot} < x$ and $y_{rot} > y$. Taking the addition identity, rotating (x, y) by some angle $\alpha$, then along the abscissa:
+
+$$
+x_{rot} = r cos{(\theta + \alpha)} \\
+x_{rot} = r (cos{\theta}cos{\alpha} - sin{\theta}sin{\alpha}) \\
+x_{rot} = xcos{\alpha} - ysin{\alpha}
+$$
+
+Along the ordinate:
+
+$$
+y_{rot} = r sin{(\theta + \alpha)} \\
+y_{rot} = r (sin{\theta}cos{\alpha} + cos{\theta}sin{\alpha}) \\
+y_{rot} = ycos{\alpha} + xsin{\alpha}
+$$
+
+To conclude:
+
+$$
+x_{rot} = xcos{\alpha} - ysin{\alpha} \\ 
+y_{rot} = xsin{\alpha} + ycos{\alpha}
+$$
+
+Before, writing the algorithm, one should devise a lookup table to convert between degrees and radians, to reduce demand at runtime:
+
+```cpp
+const double PI = 3.1415926535
+
+float cosLookup[360];
+float sinLookup[360];
+
+for (int ang = 0; ang < 360; ang++){
+    // convert ang to radians
+    float thetaRad = (float)ang*PI/(float)180;
+
+    // insert next entry into table
+    cosLookup[ang] = cos(thetaRad);
+    sinLookup[ang] = sin(thetaRad);
+}
+```
+
+Thus, looking up e.g. `cosLookup[5]` is equivalent to finding the $cos{(5)}$, for some angle 5 degrees.
+
+Given that there would be a loss of accuracy when determining new coordinates (x, y) for small rotations, the above vertex list should be defined as a `float` (x, y) version, as:
+
+```cpp
+typedef struct VERTEX2DF_TYP {
+	int x, y;
+} VERTEX2DF, *VERTEX2DF_PTR;
+```
+
+Each vertex is stored in a array of type `VERTEX2DF_TYP` (F for `float`), in another structure:
+
+```cpp
+typedef struct POLYGON2DF_TYP {
+	int state;
+	int numVerts;
+	int x0, y0;
+	int xv, yv;
+	DWORD colour;
+	VERTEX2DF *vList;
+} POLYGON2DF, *POLYGON2DF_PTR;
+```
+The rotation function then would take the form:
+
+```cpp
+int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
+
+	if (!poly)
+		return(0);
+
+	for (int currVert = 0; currVert < poly->numVerts; currVert++){
+		
+		float xr = (float) poly->vList[currVert].x*cosLookup[thetaDeg] - 
+						(float) poly->vList[currVert].y*sinLookup[thetaDeg];
+
+		float yr = (float)poly->vList[currVert].x*sinLookup[thetaDeg] + 
+						(float)poly->vList[currVert].y*cosLookup[thetaDeg];
+
+		poly->vList[currVert].x = xr;
+		poly->vList[currVert].y = yr;
+	}
+
+	// return success
+	return(1);
 }
 ```
