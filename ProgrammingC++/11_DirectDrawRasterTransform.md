@@ -765,18 +765,39 @@ Other useful identities include:
 
 $$sin^{2}{\theta} + cos^{2}{\theta} = 1$$
 
-For conversion
-$$sin{\theta} = cos{(\theta - \frac{\pi}{2})}$$
+For conversion: 
+
+$$
+sin{\theta} = cos{(\theta - \frac{\pi}{2})}
+$$
 
 For reflection:
-$$sin{\theta} = -sin{\theta}$$
-$$cos{(-\theta)} = cos{\theta}$$
 
-For addition
-$$sin{(\theta_{1} + \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} + cos{\theta_{1}}sin{\theta_{2}}$$
-$$cos{(\theta_{1} + \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} - sin{\theta_{1}}sin{\theta_{2}}$$
-$$sin{(\theta_{1} - \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} - cos{\theta_{1}}sin{\theta_{2}}$$
-$$cos{(\theta_{1} - \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} + sin{\theta_{1}}sin{\theta_{2}}$$
+$$
+sin{\theta} = -sin{\theta}
+$$
+
+$$
+cos{(-\theta)} = cos{\theta}
+$$
+
+For addition:
+
+$$
+sin{(\theta_{1} + \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} + cos{\theta_{1}}sin{\theta_{2}}
+$$
+
+$$
+cos{(\theta_{1} + \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} - sin{\theta_{1}}sin{\theta_{2}}
+$$
+
+$$
+sin{(\theta_{1} - \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} - cos{\theta_{1}}sin{\theta_{2}}
+$$
+
+$$
+cos{(\theta_{1} - \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} + sin{\theta_{1}}sin{\theta_{2}}
+$$
 
 Referring to quadrant 1 for the moment, for a circle of radius `r`, one can characterise the polar coordinates of a point (or vertex) as:
 
