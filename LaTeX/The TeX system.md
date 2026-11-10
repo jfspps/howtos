@@ -27,3 +27,9 @@ A project is typically composed of:
 
 Authors typically update and save the source file (not the auxiliary file), then typeset the document. LaTeX will use the auxiliary file from the previous session (if it exists) and usually build a PDF. It then updates the
 auxiliary file. (Consequently, any changes to referencing will not normally appear until the author typesets the document twice).
+
+## Typesetting markdown
+
+Authors can typeset markdown templates with LaTeX using e.g. [KaTeX](https://katex.org/). An example is shown [here](https://github.com/just-the-docs/just-the-docs-tests/blob/main/collections/_components/math/katex/tests.md). For configuration under Just The Docs, see [here](https://just-the-docs.github.io/just-the-docs-tests/components/math/katex/config/).
+
+A HowTos article demonstrating KaTeX can be found [here](/ProgrammingC%2B%2B/11_DirectDrawRasterTransform.md).
