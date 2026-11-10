@@ -32,4 +32,4 @@ auxiliary file. (Consequently, any changes to referencing will not normally appe
 
 Authors can typeset markdown templates with LaTeX using e.g. [KaTeX](https://katex.org/). An example is shown [here](https://github.com/just-the-docs/just-the-docs-tests/blob/main/collections/_components/math/katex/tests.md). For configuration under Just The Docs, see [here](https://just-the-docs.github.io/just-the-docs-tests/components/math/katex/config/).
 
-A HowTos article demonstrating KaTeX can be found [here](/ProgrammingC++/11_DirectDrawRasterTransform.md).
+A HowTos article demonstrating KaTeX can be found [here](../ProgrammingC++/11_DirectDrawRasterTransform.md).

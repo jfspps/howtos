@@ -752,8 +752,10 @@ Rotation is a more involved operation. Taking a standard cartesian coordinate sy
 
 Some conventions in 2D:
 
-+ rotation occurs about an axis perpendicular to the 2D plane in a clockwise motion
++ rotation occurs about an axis perpendicular to the 2D plane in a anticlockwise motion
 + C and C++ sine and cosine functions work with radians only
+
+Later, we will outline how to map (transform) the standard viewport (with the origin at the top-left) with the four quadrants shown above.
 
 It is also worth noting the following trigonometric identities with C and C++:
 
@@ -763,7 +765,9 @@ It is also worth noting the following trigonometric identities with C and C++:
 
 Other useful identities include:
 
-$$sin^{2}{\theta} + cos^{2}{\theta} = 1$$
+$$
+sin^{2}{\theta} + cos^{2}{\theta} = 1
+$$
 
 For conversion: 
 
@@ -840,10 +844,10 @@ x_{rot} = xcos{\alpha} - ysin{\alpha} \\
 y_{rot} = xsin{\alpha} + ycos{\alpha}
 $$
 
-Before, writing the algorithm, one should devise a lookup table to convert between degrees and radians, to reduce demand at runtime:
+To reduce demand on the application, one should devise a lookup table to convert between degrees and radians during initialisation:
 
 ```cpp
-const double PI = 3.1415926535
+const double PI = 3.1415926535;
 
 float cosLookup[360];
 float sinLookup[360];
@@ -880,21 +884,55 @@ typedef struct POLYGON2DF_TYP {
 	VERTEX2DF *vList;
 } POLYGON2DF, *POLYGON2DF_PTR;
 ```
-The rotation function then would take the form:
+
+The draw and rotation functions would take the form:
 
 ```cpp
-int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
+int draw2DFPolygon8Bit(POLYGON2DF_PTR polygon, UCHAR *videoBuffer, int lPitch){
+	if (polygon->state){
+		int index;
+		for (index = 0; index < polygon->numVerts - 1; index++){
+			drawClipLine8bit(
+				// first endpoint
+				polygon->vList[index].x + polygon->x0,
+				polygon->vList[index].y + polygon->y0,
+				// next endpoint
+				polygon->vList[index + 1].x + polygon->x0,
+				polygon->vList[index + 1].y + polygon->y0,
+				polygon->colour,
+				videoBuffer,
+				lPitch);
+		}
 
+		// close the polygon
+		drawClipLine8bit(
+				// first endpoint
+				polygon->vList[0].x + polygon->x0,
+				polygon->vList[0].y + polygon->y0,
+				// next endpoint
+				polygon->vList[index].x + polygon->x0,
+				polygon->vList[index].y + polygon->y0,
+				polygon->colour,
+				videoBuffer,
+				lPitch);
+
+		return(1);
+	}
+
+	return(0);
+}
+
+int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
 	if (!poly)
 		return(0);
 
 	for (int currVert = 0; currVert < poly->numVerts; currVert++){
 		
-		float xr = (float) poly->vList[currVert].x*cosLookup[thetaDeg] - 
-						(float) poly->vList[currVert].y*sinLookup[thetaDeg];
+		float xr = (float) poly->vList[currVert].x * cosLookup[thetaDeg] - 
+						(float) poly->vList[currVert].y * sinLookup[thetaDeg];
 
-		float yr = (float)poly->vList[currVert].x*sinLookup[thetaDeg] + 
-						(float)poly->vList[currVert].y*cosLookup[thetaDeg];
+		float yr = (float)poly->vList[currVert].x * sinLookup[thetaDeg] + 
+						(float)poly->vList[currVert].y * cosLookup[thetaDeg];
 
 		poly->vList[currVert].x = xr;
 		poly->vList[currVert].y = yr;
@@ -904,3 +942,5 @@ int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
 	return(1);
 }
 ```
+
+Generally, one should rotate the central point (about an axis) of a polygon and then refer to the local coordinates when rendering the new position of the polygon. Otherwise, with multiple rotations and loss of accuracy, it's possible to distort the original shape of the polygon.
