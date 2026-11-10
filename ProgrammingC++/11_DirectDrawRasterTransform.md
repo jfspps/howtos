@@ -2,7 +2,6 @@
 title: DirectDraw - Rasterisation and 2D Transformations
 nav_order: 11
 parent: Programming in C++
-math: katex
 ---
 
 # DirectDraw - Rasterisation and 2D Transformations
@@ -33,12 +32,12 @@ Drawing lines on a grid will almost always involve approximations. A line will a
 
 ![](./MSVC2005/bresenhams_line_drawing_algorithm.jpg)
 
-Taking the equation to a straight line $y = mx + c$ (where _x_ and _y_ are integers), one can draw a line by
+Taking the equation to a straight line $$y = mx + c$$ (where _x_ and _y_ are integers), one can draw a line by
 
-1. determining the gradient $m = \frac{y_{f} - y_{0}}{x_{f} - x_{0}}$
-2. plot the initial point at $(x_{0}, y_{0})$
-3. determine the next value of (x, y) from the gradient $m = \frac{y - y_{0}}{x - x_{0}}$
-4. repeat until all values of (x, y) until done at $(x_{f}, y_{f})$
+1. determining the gradient $$m = \frac{y_{f} - y_{0}}{x_{f} - x_{0}}$$
+2. plot the initial point at $$(x_{0}, y_{0})$$
+3. determine the next value of (x, y) from the gradient $$m = \frac{y - y_{0}}{x - x_{0}}$$
+4. repeat until all values of (x, y) until done at $$(x_{f}, y_{f})$$
 
 The problem with this approach is that the rasterised line will likely contain gaps, particularly if the line is steep. To get around this, one could simply calculate values of y for smaller changes to x. This however still won't work for very steep gradients.
 
@@ -764,16 +763,16 @@ It is also worth noting the following trigonometric identities with C and C++:
 
 Other useful identities include:
 
-+ $sin^{2}{\theta} + cos^{2}{\theta} = 1$
-+ for conversion, $sin{\theta} = cos{(\theta - \frac{\pi}{2})}$
++ $$sin^{2}{\theta} + cos^{2}{\theta} = 1$$
++ for conversion, $$sin{\theta} = cos{(\theta - \frac{\pi}{2})}$$
 + for reflection:
-  - $sin{\theta} = -sin{\theta}$
-  - $cos{(-\theta)} = cos{\theta}$
+  - $$sin{\theta} = -sin{\theta}$$
+  - $$cos{(-\theta)} = cos{\theta}$$
 + for addition
-  - $sin{(\theta_{1} + \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} + cos{\theta_{1}}sin{\theta_{2}}$
-  - $cos{(\theta_{1} + \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} - sin{\theta_{1}}sin{\theta_{2}}$
-  - $sin{(\theta_{1} - \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} - cos{\theta_{1}}sin{\theta_{2}}$
-  - $cos{(\theta_{1} - \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} + sin{\theta_{1}}sin{\theta_{2}}$
+  - $$sin{(\theta_{1} + \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} + cos{\theta_{1}}sin{\theta_{2}}$$
+  - $$cos{(\theta_{1} + \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} - sin{\theta_{1}}sin{\theta_{2}}$$
+  - $$sin{(\theta_{1} - \theta_{2})} = sin{\theta_{1}}cos{\theta_{2}} - cos{\theta_{1}}sin{\theta_{2}}$$
+  - $$cos{(\theta_{1} - \theta_{2})} = cos{\theta_{1}}cos{\theta_{2}} + sin{\theta_{1}}sin{\theta_{2}}$$
 
 Referring to quadrant 1 for the moment, for a circle of radius `r`, one can characterise the polar coordinates of a point (or vertex) as:
 
@@ -786,14 +785,14 @@ Pictorially:
 
 ![](MSVC2005/r_sin_cos_theta.jpg)
 
-If one were to rotate an additional $\alpha$ radians, then the resultant polar coordinates on the same axes would be:
+If one were to rotate an additional $$\alpha$$ radians, then the resultant polar coordinates on the same axes would be:
 
 $$
 x_{rot} = r cos{(\theta + \alpha)} \\
 y_{rot} = r sin{(\theta + \alpha)}
 $$
 
-It would be reasonable to see that on rotating anticlockwise, one can state $x_{rot} < x$ and $y_{rot} > y$. Taking the addition identity, rotating (x, y) by some angle $\alpha$, then along the abscissa:
+It would be reasonable to see that on rotating anticlockwise, one can state $$x_{rot} < x$$ and $$y_{rot} > y$$. Taking the addition identity, rotating (x, y) by some angle $$\alpha$$, then along the abscissa:
 
 $$
 x_{rot} = r cos{(\theta + \alpha)} \\
@@ -834,7 +833,7 @@ for (int ang = 0; ang < 360; ang++){
 }
 ```
 
-Thus, looking up e.g. `cosLookup[5]` is equivalent to finding the $cos{(5)}$, for some angle 5 degrees.
+Thus, looking up e.g. `cosLookup[5]` is equivalent to finding the $$cos{(5)}$$, for some angle 5 degrees.
 
 Given that there would be a loss of accuracy when determining new coordinates (x, y) for small rotations, the above vertex list should be defined as a `float` (x, y) version, as:
 
