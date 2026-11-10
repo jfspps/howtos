@@ -2,6 +2,7 @@
 title: DirectDraw - Rasterisation and 2D Transformations
 nav_order: 11
 parent: Programming in C++
+math: katex
 ---
 
 # DirectDraw - Rasterisation and 2D Transformations
