@@ -444,25 +444,29 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 		case CLIP_CODE_N:
 			{
 				y1Clipped = maxClipY;
-				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (maxClipY-y1)*(x2-x1)/(y2-y1);
 			} break;
 
 		case CLIP_CODE_S:
 			{
 				y1Clipped = minClipY;
-				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (minClipY-y1)*(x2-x1)/(y2-y1);
 			} break;
 
 		case CLIP_CODE_W:
 			{
 				x1Clipped = minClipX;
-				y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);
+				y1Clipped = y1 + 0.5 + 
+				  (minClipX-x1)*(y2-y1)/(x2-x1);
 			} break;
 
 		case CLIP_CODE_E:
 			{
 				x1Clipped = maxClipX;
-				y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+				y1Clipped = y1 + 0.5 + 
+				  (maxClipX-x1)*(y2-y1)/(x2-x1);
 			} break;
 
 		// these cases are more complex, must compute 2 intersections
@@ -470,13 +474,15 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// north hline intersection
 				y1Clipped = maxClipY;
-				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (maxClipY-y1)*(x2-x1)/(y2-y1);
 
 				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					// east vline intersection
 					x1Clipped = maxClipX;
-					y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+					y1Clipped = y1 + 0.5 + 
+					  (maxClipX-x1)*(y2-y1)/(x2-x1);
 				}
 			} break;
 
@@ -484,13 +490,15 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// south hline intersection
 				y1Clipped = minClipY;
-				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (minClipY-y1)*(x2-x1)/(y2-y1);
 				
 				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					// east vline intersection
 					x1Clipped = maxClipX;
-					y1Clipped = y1 + 0.5+(maxClipX-x1)*(y2-y1)/(x2-x1);
+					y1Clipped = y1 + 0.5 + 
+					  (maxClipX-x1)*(y2-y1)/(x2-x1);
 				}
 			} break;
 		 
@@ -498,12 +506,14 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// north hline intersection
 				y1Clipped = maxClipY;
-				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (maxClipY-y1)*(x2-x1)/(y2-y1);
 				
 				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					x1Clipped = minClipX;
-					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);	
+					y1Clipped = y1 + 0.5 + 
+					  (minClipX-x1)*(y2-y1)/(x2-x1);	
 				}
 			} break;
 		
@@ -511,12 +521,14 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// south hline intersection
 				y1Clipped = minClipY;
-				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
+				x1Clipped = x1 + 0.5 + 
+				  (minClipY-y1)*(x2-x1)/(y2-y1);
 				
 				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					x1Clipped = minClipX;
-					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);
+					y1Clipped = y1 + 0.5 + 
+					  (minClipX-x1)*(y2-y1)/(x2-x1);
 				}
 			} break;
 		
@@ -556,13 +568,15 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// north hline intersection
 				y2Clipped = maxClipY;
-				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
+				x2Clipped = x2 + 0.5 + 
+				  (maxClipY-y2)*(x1-x2)/(y1-y2);
 				
 				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					// east vline intersection
 					x2Clipped = maxClipX;
-					y2Clipped = y2 + 0.5 + (maxClipX-x2)*(y1-y2)/(x1-x2);
+					y2Clipped = y2 + 0.5 + 
+					  (maxClipX-x2)*(y1-y2)/(x1-x2);
 				}
 			} break;
 		
@@ -570,13 +584,15 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// south hline intersection
 				y2Clipped = minClipY;
-				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
+				x2Clipped = x2 + 0.5 + 
+				  (minClipY-y2)*(x1-x2)/(y1-y2);
 				
 				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					// east vline intersection
 					x2Clipped = maxClipX;
-					y2Clipped = y2 + 0.5 + (maxClipX-x2)*(y1-y2)/(x1-x2);
+					y2Clipped = y2 + 0.5 + 
+					  (maxClipX-x2)*(y1-y2)/(x1-x2);
 				}
 			} break;
 		
@@ -584,12 +600,14 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// north hline intersection
 				y2Clipped = maxClipY;
-				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
+				x2Clipped = x2 + 0.5 + 
+				  (maxClipY-y2)*(x1-x2)/(y1-y2);
 				
 				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					x2Clipped = minClipX;
-					y2Clipped = y2 + 0.5 + (minClipX-x2)*(y1-y2)/(x1-x2);
+					y2Clipped = y2 + 0.5 + 
+					  (minClipX-x2)*(y1-y2)/(x1-x2);
 				}
 			} break;
 		
@@ -597,13 +615,15 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 			{
 				// south hline intersection
 				y2Clipped = minClipY;
-				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
+				x2Clipped = x2 + 0.5 + 
+				  (minClipY-y2)*(x1-x2)/(y1-y2);
 				
 				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX)
 				{
 					x2Clipped = minClipX;
-					y2Clipped = y2 + 0.5 + (minClipX-x2)*(y1-y2)/(x1-x2);
+					y2Clipped = y2 + 0.5 + 
+					  (minClipX-x2)*(y1-y2)/(x1-x2);
 				}
 			} break;
 		
