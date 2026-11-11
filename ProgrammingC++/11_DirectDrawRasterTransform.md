@@ -472,7 +472,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y1Clipped = maxClipY;
 				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
 
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					// east vline intersection
 					x1Clipped = maxClipX;
@@ -486,7 +486,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y1Clipped = minClipY;
 				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					// east vline intersection
 					x1Clipped = maxClipX;
@@ -500,7 +500,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y1Clipped = maxClipY;
 				x1Clipped = x1 + 0.5+(maxClipY-y1)*(x2-x1)/(y2-y1);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					x1Clipped = minClipX;
 					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);	
@@ -513,7 +513,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y1Clipped = minClipY;
 				x1Clipped = x1 + 0.5+(minClipY-y1)*(x2-x1)/(y2-y1);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x1Clipped < minClipX || x1Clipped > maxClipX){
 					x1Clipped = minClipX;
 					y1Clipped = y1 + 0.5+(minClipX-x1)*(y2-y1)/(x2-x1);
@@ -558,7 +558,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y2Clipped = maxClipY;
 				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					// east vline intersection
 					x2Clipped = maxClipX;
@@ -572,8 +572,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y2Clipped = minClipY;
 				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
 				
-				// test if intersection is valid, of so then done, else compute next
-				
+				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					// east vline intersection
 					x2Clipped = maxClipX;
@@ -587,7 +586,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y2Clipped = maxClipY;
 				x2Clipped = x2 + 0.5 + (maxClipY-y2)*(x1-x2)/(y1-y2);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX){
 					x2Clipped = minClipX;
 					y2Clipped = y2 + 0.5 + (minClipX-x2)*(y1-y2)/(x1-x2);
@@ -600,7 +599,7 @@ int clipLine(int &x1, int &y1, int &x2, int &y2){
 				y2Clipped = minClipY;
 				x2Clipped = x2 + 0.5 + (minClipY-y2)*(x1-x2)/(y1-y2);
 				
-				// test if intersection is valid, of so then done, else compute next
+				// test if intersection is valid
 				if (x2Clipped < minClipX || x2Clipped > maxClipX)
 				{
 					x2Clipped = minClipX;
@@ -928,11 +927,13 @@ int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
 
 	for (int currVert = 0; currVert < poly->numVerts; currVert++){
 		
-		float xr = (float) poly->vList[currVert].x * cosLookup[thetaDeg] - 
-						(float) poly->vList[currVert].y * sinLookup[thetaDeg];
+		float xr = 
+			(float) poly->vList[currVert].x * cosLookup[thetaDeg] - 
+				(float) poly->vList[currVert].y * sinLookup[thetaDeg];
 
-		float yr = (float)poly->vList[currVert].x * sinLookup[thetaDeg] + 
-						(float)poly->vList[currVert].y * cosLookup[thetaDeg];
+		float yr = 
+			(float)poly->vList[currVert].x * sinLookup[thetaDeg] + 
+				(float)poly->vList[currVert].y * cosLookup[thetaDeg];
 
 		poly->vList[currVert].x = xr;
 		poly->vList[currVert].y = yr;
