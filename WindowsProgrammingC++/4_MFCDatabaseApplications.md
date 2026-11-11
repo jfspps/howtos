@@ -1,7 +1,7 @@
 ---
 title: MFC Database applications
 nav_order: 4
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # MFC Database applications

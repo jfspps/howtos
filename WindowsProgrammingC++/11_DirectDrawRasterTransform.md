@@ -1,7 +1,7 @@
 ---
 title: DirectDraw - Rasterisation and 2D Transformations
 nav_order: 11
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # DirectDraw - Rasterisation and 2D Transformations

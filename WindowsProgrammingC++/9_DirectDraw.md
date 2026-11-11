@@ -1,7 +1,7 @@
 ---
 title: DirectDraw (DirectX 7)
 nav_order: 9
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # DirectDraw (DirectX 7)

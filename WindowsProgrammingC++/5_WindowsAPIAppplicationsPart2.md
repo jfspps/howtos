@@ -1,7 +1,7 @@
 ---
 title: Microsoft Windows API C++ applications Part 2
 nav_order: 5
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # Microsoft Windows API C++ applications Part 2

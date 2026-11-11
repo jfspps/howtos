@@ -1,7 +1,7 @@
 ---
 title: DirectDraw - Buffers and Bitmaps
 nav_order: 10
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # DirectDraw - Buffers and Bitmaps

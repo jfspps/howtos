@@ -1,7 +1,7 @@
 ---
 title: GDI Windows API applications Part 1
 nav_order: 6
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # GDI Windows API applications Part 1

@@ -1,7 +1,7 @@
 ---
 title: Microsoft Foundation Classes applications
 nav_order: 3
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # Microsoft Foundation Classes applications

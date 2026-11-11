@@ -1,7 +1,7 @@
 ---
 title: Microsoft Visual Studio 2005
 nav_order: 1
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # Microsoft Visual Studio 2005

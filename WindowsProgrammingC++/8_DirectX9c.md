@@ -1,7 +1,7 @@
 ---
 title: DirectX 9.0c and COM
 nav_order: 8
-parent: Programming in C++
+parent: Windows Programming in C++
 ---
 
 # DirectX 9.0c and COM
