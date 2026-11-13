@@ -1038,7 +1038,7 @@ a2 & b2
 \end{bmatrix}
 $$
 
-Multiplication between two matrices  was demonstrated [previously](#finding-the-intersection-of-two-lines-in-matrix-form). The operation is non-commutative and always yields another matrix. It involves multiplying the elements of a row from the _first_ matrix with the elements of a column from the _second_ matrix. 
+Multiplication between two matrices  was demonstrated [previously](#finding-the-intersection-of-two-lines-in-matrix-form). The operation is non-commutative (with exception to identity matrices, zero matrices or two identical matrices) and always yields another matrix. It involves multiplying the elements of a row from the _first_ matrix with the elements of a column from the _second_ matrix. 
 
 This also means that multiplication between matrices __A__ and __B__ if both matrices have the same _inner dimensions_: __A__ has dimensions `pxn` and __B__ has dimensions `nxq`, where `p`, `n` and `q` are integers. It is not necessary for `p` to equal `p` or for either matrix to be square.
 
@@ -1064,7 +1064,7 @@ The above product has the dimensions `2x1`, or following the above example, more
 
 #### Implementing matrix multiplication
 
-To multiply two matrices, we can first define a structure for a `3x3` matrix (quite common to express three unknowns in 3D)
+To multiply two matrices, we can first define a structure for a `3x3` matrix (quite common to express three unknowns in 3D):
 
 ```cpp
 typedef struct MATRIX3X3_TYP{
@@ -1076,21 +1076,61 @@ One can then define a function for the multiplication of two matrices as:
 
 ```cpp
 int multiplyMatrix(MATRIX3X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX3X3_PTR matrixProduct){
-	for (int row = 0; row < 3; row++){
-		for (int col = 0; col < 3; col++){
-			// compute the dot product
-			float sum = 0;
+  for (int row = 0; row < 3; row++){
+    for (int col = 0; col < 3; col++){
+      // compute the dot product
+	  float sum = 0;
 
-			for (int index = 0; index < 3; index++){
-				if (matrixA->M[row][index] != 0 || matrixB->M[index][col] != 0){
-					sum += matrixA->M[row][index] * matrixB->M[index][col];
-				}
-			}
-
-			matrixProduct->M[row][col] = sum;
+	  for (int index = 0; index < 3; index++){
+		if (matrixA->M[row][index] != 0 || matrixB->M[index][col] != 0){
+		  sum += matrixA->M[row][index] * matrixB->M[index][col];
 		}
+	  }
+
+	  matrixProduct->M[row][col] = sum;
+    }
+  }
+
+  return(1);
+}
+```
+
+### Transformations with matrices
+
+In short, the coordinates are expressed as a matrix and then transformed by multiplying the matrix with another. Each operation (rotation, scaling and translation) are characterised by a specific transformation matrix.
+
+In 2D, a point is expressed as a `row matrix` (or `row vector`) as `[x, y, 1]`, where the value 1 is used as a scaling factor. The scaling factor also renders the matrix with _homogeneous coordinates_, allowing the row matrix to be transformed by other `3xm` transformation matrices.
+
+One can slightly modify the aforementioned structure and multiplication function for a 3x3 matrix to handle transformations with matrices:
+
+```cpp
+typedef struct MATRIX1X3_TYP{
+	float M[3];
+} MATRIX1X3, *MATRIX1X3_PTR;
+```
+
+The multiplication of the coordinate matrix with a transformation matrix (again, note the order matters) would yield a product matrix with dimensions `1x3` and can be given by:
+
+```cpp
+int multiplyMatrix(MATRIX1X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX1X3_PTR matrixProduct){
+
+	// matrixA would be the coordinates, expressed as a row matrix; process each
+	// element of matrixA with the transformation matrix by column
+	for (int col = 0; col < 3; col++){
+		// compute the dot product
+		float sum = 0;
+
+		for (int index = 0; index < 3; index++){
+		  if (matrixA->M[index] != 0 || matrixB->M[index][col] != 0){
+			sum += matrixA->M[index] * matrixB->M[index][col];
+		  }
+		}
+
+		// the product would have dimensions 1x3, the same as 
+		// the (original) coordinate matrix
+		matrixProduct->M[col] = sum;
 	}
 
-	return(1);
+  	return(1);
 }
 ```
