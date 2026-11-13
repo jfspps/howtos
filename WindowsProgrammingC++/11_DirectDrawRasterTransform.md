@@ -1009,3 +1009,88 @@ int scalePolygon2DI(POLYGON2DI_PTR polygon, float sx, float sy){
 	return(1);
 }
 ```
+
+### Review of matrices
+
+In practice, transformations are carried out with matrices. Before proceeding, we review matrix properties and operations.
+
+#### Properties
+
+Matrices have dimensions `mxn`, where `m` is the number of rows and `n` is the number of columns. They express multiple linear equations.
+
+An `identity matrix` __I__ is a square matrix in which all `elements` along the diagonal have the value 1. A `zero matrix` __0__ is a square matrix where all elements have the value zero.
+
+#### Operations
+
+The addition of matrices (or rather the sum of an element from one matrix and the corresponding element in another matrix) can only be performed between matrices of the same dimension.
+
+Multiplication of a scalar quantity with a matrix involves all elements, for example:
+
+3 __A__ = 
+$$
+3\begin{bmatrix}
+a1 & b1 \\
+a2 & b2
+\end{bmatrix} = 
+\begin{bmatrix}
+3a1 & 3b1 \\
+3a2 & 3b2
+\end{bmatrix}
+$$
+
+Multiplication between two matrices  was demonstrated [previously](#finding-the-intersection-of-two-lines-in-matrix-form). The operation is non-commutative and always yields another matrix. It involves multiplying the elements of a row from the _first_ matrix with the elements of a column from the _second_ matrix. 
+
+This also means that multiplication between matrices __A__ and __B__ if both matrices have the same _inner dimensions_: __A__ has dimensions `pxn` and __B__ has dimensions `nxq`, where `p`, `n` and `q` are integers. It is not necessary for `p` to equal `p` or for either matrix to be square.
+
+Continuing, matrix multiplication involves calculating the sum of the products of each required element (i.e. the _dot product_), to eventually yield a matrix of dot products (scalars).
+
+__Ax__ = 
+$$
+\begin{bmatrix}
+a & b \\
+c & d
+\end{bmatrix} 
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix} = 
+\begin{bmatrix}
+ax + by \\
+cx + dy
+\end{bmatrix} 
+$$
+
+The above product has the dimensions `2x1`, or following the above example, more generally: `pxq`.
+
+#### Implementing matrix multiplication
+
+To multiply two matrices, we can first define a structure for a `3x3` matrix (quite common to express three unknowns in 3D)
+
+```cpp
+typedef struct MATRIX3X3_TYP{
+	float M[3][3];
+} MATRIX3X3, *MATRIX3X3_PTR;
+```
+
+One can then define a function for the multiplication of two matrices as:
+
+```cpp
+int multiplyMatrix(MATRIX3X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX3X3_PTR matrixProduct){
+	for (int row = 0; row < 3; row++){
+		for (int col = 0; col < 3; col++){
+			// compute the dot product
+			float sum = 0;
+
+			for (int index = 0; index < 3; index++){
+				if (matrixA->M[row][index] != 0 || matrixB->M[index][col] != 0){
+					sum += matrixA->M[row][index] * matrixB->M[index][col];
+				}
+			}
+
+			matrixProduct->M[row][col] = sum;
+		}
+	}
+
+	return(1);
+}
+```
