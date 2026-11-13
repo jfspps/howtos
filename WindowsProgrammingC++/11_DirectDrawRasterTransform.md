@@ -965,3 +965,47 @@ int rotatePolygon2D(POLYGON2DF_PTR poly, int thetaDeg){
 ```
 
 Generally, one should rotate the central point (about an axis) of a polygon and then refer to the local coordinates when rendering the new position of the polygon. Otherwise, with multiple rotations and loss of accuracy, it's possible to distort the original shape of the polygon.
+
+### Scaling
+
+Scaling involves recalculating the local coordinates according to some scaling factor, without changing the central coordinate.
+
+The following scales polygons with `float` coordinates:
+
+```cpp
+int scalePolygon2DF(POLYGON2DF_PTR polygon, float sx, float sy){
+	// validate
+	if (!polygon || sx <= 0 || sy <= 0)
+	   return(0);
+
+	// loop and scale each point
+	for (int curr_vert = 0; curr_vert < polygon->numVerts; curr_vert++){
+		// scale and store result back
+		polygon->vList[curr_vert].x *= sx;
+		polygon->vList[curr_vert].y *= sy;
+	}
+
+	// return success
+	return(1);
+}
+```
+
+The following scales polygons with `int` coordinates:
+
+```cpp
+int scalePolygon2DI(POLYGON2DI_PTR polygon, float sx, float sy){
+	// validate
+	if (!polygon || sx <= 0 || sy <= 0)
+	   return(0);
+
+	// loop and scale each point
+	for (int curr_vert = 0; curr_vert < polygon->numVerts; curr_vert++){
+		// scale and store result back
+		polygon->vList[curr_vert].x *= sx;
+		polygon->vList[curr_vert].y *= sy;
+	}
+
+	// return success
+	return(1);
+}
+```
