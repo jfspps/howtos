@@ -1072,7 +1072,24 @@ typedef struct MATRIX3X3_TYP{
 } MATRIX3X3, *MATRIX3X3_PTR;
 ```
 
-One can then define a function for the multiplication of two matrices as:
+A `3x3` matrix can be initialised with:
+
+```cpp
+int matrixInit3X3(MATRIX3X3_PTR ma,
+				  float m00, float m01, float m02,
+				  float m10, float m11, float m12,
+				  float m20, float m21, float m22){
+
+	ma->M[0][0] = m00; ma->M[0][1] = m01; ma->M[0][2] = m02; 
+	ma->M[1][0] = m10; ma->M[1][1] = m11; ma->M[1][2] = m12; 
+	ma->M[2][0] = m20; ma->M[2][1] = m21; ma->M[2][2] = m22; 
+
+	// return success
+	return(1);
+}
+```
+
+One can then define a function for the multiplication of two `3x3` matrices as:
 
 ```cpp
 int multiplyMatrix(MATRIX3X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX3X3_PTR matrixProduct){
@@ -1101,7 +1118,7 @@ In short, the coordinates are expressed as a matrix and then transformed by mult
 
 In 2D, a point is expressed as a `row matrix` (or `row vector`) as `[x, y, 1]`, where the value 1 is used as a scaling factor. The scaling factor also renders the matrix with _homogeneous coordinates_, allowing the row matrix to be transformed by other `3xm` transformation matrices, and will be important when expressing 3D constructs (later).
 
-One can slightly modify the aforementioned structure and multiplication function for a 3x3 matrix to handle transformations with matrices:
+One can slightly modify the aforementioned structure and multiplication function for a 1x3 matrix to handle transformations with matrices:
 
 ```cpp
 typedef struct MATRIX1X3_TYP{
@@ -1109,29 +1126,25 @@ typedef struct MATRIX1X3_TYP{
 } MATRIX1X3, *MATRIX1X3_PTR;
 ```
 
-The multiplication of the coordinate matrix with a transformation matrix (again, note the order matters) would yield a product matrix with dimensions `1x3` and can be given by:
+The multiplication of the `1x3` coordinate matrix with a `3x3` transformation matrix (again, note the order matters) would yield a product matrix with dimensions `1x3` with:
 
 ```cpp
-int multiplyMatrix(MATRIX1X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX1X3_PTR matrixProduct){
+int matrixMultiply1X3_3X3(MATRIX1X3_PTR ma, MATRIX3X3_PTR mb, MATRIX1X3_PTR mprod){
+    for (int col = 0; col < 3; col++){
+        // compute dot product from row of ma 
+        // and column of mb
 
-	// matrixA would be the coordinates, expressed as a row matrix; process each
-	// element of matrixA with the transformation matrix by column
-	for (int col = 0; col < 3; col++){
-		// compute the dot product
-		float sum = 0;
+        float sum = 0;
 
-		for (int index = 0; index < 3; index++){
-		  if (matrixA->M[index] != 0 || matrixB->M[index][col] != 0){
-			sum += matrixA->M[index] * matrixB->M[index][col];
-		  }
+        for (int row = 0; row < 3; row++){
+			// add in next product pair
+			sum += (ma->M[row] * mb->M[row][col]);
 		}
 
-		// the product would have dimensions 1x3, the same as 
-		// the (original) coordinate matrix
-		matrixProduct->M[col] = sum;
+        mprod->M[col] = sum;
 	}
-
-  	return(1);
+	
+	return(1);
 }
 ```
 
@@ -1190,6 +1203,36 @@ $$
 \end{align*}
 $$
 
+The C++ function to translate a polygon (assumed float based) with matrices could be handled by:
+
+```cpp
+int translatePolygon2DFM(POLYGON2DF_PTR polygon, int dx, int dy){
+	if (!polygon)
+	   return(0);
+
+	MATRIX3X3 mt; // used to hold translation transform matrix
+
+	// initialize the translation matrix
+	matrixInit3X3(&mt,1,0,0, 0,1,0, dx,dy,1); 
+
+	// create a 1x3 matrix to do the transform
+	MATRIX1X3 p0 = {polygon->x0, polygon->y0, 0};
+	MATRIX1X3 pTemp = {0,0,0};
+
+	// now translate via a matrix multiply
+	matrixMultiply1X3_3X3(&p0, &mt, &pTemp);
+
+	// now copy the result back into polygon
+	polygon->x0 = pTemp.M[0];
+	polygon->y0 = pTemp.M[1];
+
+	// return success
+	return(1);
+}
+```
+
+The integer based polygon would essentially be the same.
+
 #### Scaling
 
 We scale each local coorindate so that we get:
@@ -1236,6 +1279,36 @@ $$
 \end{align*}
 $$
 
+The C++ function to scale a polygon (assumed float based) with matrices could be handled by:
+
+```cpp
+int scalePolygon2DFM(POLYGON2DF_PTR polygon, float sx, float sy){
+	if (!polygon || sx <=0 || sy <= 0)
+	   return(0);
+
+	MATRIX3X3 ms; // used to hold scaling transform matrix
+
+	matrixInit3X3(&ms,sx,0,0, 
+					  0,sy,0, 
+					  0,0,1); 
+
+	for (int curr_vert = 0; curr_vert < polygon->numVerts; curr_vert++){
+		MATRIX1X3 p0 = {polygon->vList[curr_vert].x, polygon->vList[curr_vert].y, 0};
+		MATRIX1X3 pTemp = {0,0,0};
+
+		// now scale via a matrix multiply
+		matrixMultiply1X3_3X3(&p0, &ms, &pTemp);
+
+		// now copy the result back into vertex
+		polygon->vList[curr_vert].x = pTemp.M[0];
+		polygon->vList[curr_vert].y = pTemp.M[1];
+	}
+
+	// return success
+	return(1);
+}
+```
+
 #### Rotation
 
 In this case, we need to adjust each local coordinate about a fixed central coordinate (no translation) as:
@@ -1268,3 +1341,37 @@ $$
 	\end{bmatrix}
 \end{align*}
 $$
+
+The C++ function to rotate a polygon (assumed float based) about the centre coordinate with matrices could be handled by:
+
+```cpp
+int rotatePolygon2DFM(POLYGON2DF_PTR polygon, int thetaDeg){
+	if (!polygon)
+	   return(0);
+
+	// test for negative rotation angle
+	if (thetaDeg < 0)
+	   thetaDeg += 360;
+
+	MATRIX3X3 mr; // used to hold rotation transform matrix
+
+	matrixInit3X3(&mr, cosLookup[thetaDeg],sinLookup[thetaDeg],0,
+					 -sinLookup[thetaDeg],cosLookup[thetaDeg],0, 
+					  0,0,1); 
+
+	for (int curr_vert = 0; curr_vert < polygon->numVerts; curr_vert++){
+		MATRIX1X3 p0 = {polygon->vList[curr_vert].x, polygon->vList[curr_vert].y, 0};
+		MATRIX1X3 pTemp;
+
+		// now rotate via the rotation matrix mr
+		matrixMultiply1X3_3X3(&p0, &mr, &pTemp);
+
+		// now copy the result back into vertex
+		polygon->vList[curr_vert].x = pTemp.M[0];
+		polygon->vList[curr_vert].y = pTemp.M[1];
+	}
+
+	// return success
+	return(1);
+}
+```
