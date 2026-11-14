@@ -1099,7 +1099,7 @@ int multiplyMatrix(MATRIX3X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX3X3_PTR m
 
 In short, the coordinates are expressed as a matrix and then transformed by multiplying the matrix with another. Each operation (rotation, scaling and translation) are characterised by a specific transformation matrix.
 
-In 2D, a point is expressed as a `row matrix` (or `row vector`) as `[x, y, 1]`, where the value 1 is used as a scaling factor. The scaling factor also renders the matrix with _homogeneous coordinates_, allowing the row matrix to be transformed by other `3xm` transformation matrices.
+In 2D, a point is expressed as a `row matrix` (or `row vector`) as `[x, y, 1]`, where the value 1 is used as a scaling factor. The scaling factor also renders the matrix with _homogeneous coordinates_, allowing the row matrix to be transformed by other `3xm` transformation matrices, and will be important when expressing 3D constructs (later).
 
 One can slightly modify the aforementioned structure and multiplication function for a 3x3 matrix to handle transformations with matrices:
 
@@ -1134,3 +1134,137 @@ int multiplyMatrix(MATRIX1X3_PTR matrixA, MATRIX3X3_PTR matrixB, MATRIX1X3_PTR m
   	return(1);
 }
 ```
+
+#### Translation
+
+To translate a polygon, we need to adjust the central coordinates by some delta:
+
+$$
+xt = x + dx \\
+yt = y + dy
+$$
+
+With the central coordinates __c__ expressed as a row matrix:
+
+$$
+\mathbf{c} =
+\begin{bmatrix}
+x & y & 1
+\end{bmatrix} 
+$$
+
+then the transformation matrix __M__ required would be:
+
+$$
+\mathbf{M} =
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+dx & dy & 1
+\end{bmatrix} 
+$$
+
+Then the product (the transformation) would be:
+
+$$
+\begin{align*}
+	\mathbf{c'} &=
+	\mathbf{cM} 
+	\\
+	&=
+	\begin{bmatrix}
+	x & y & 1
+	\end{bmatrix}  
+	\begin{bmatrix}
+	1 & 0 & 0 \\
+	0 & 1 & 0 \\
+	dx & dy & 1
+	\end{bmatrix} 
+	\\
+	&= 
+	\begin{bmatrix}
+	x + dx &
+	y + dy &
+	1
+	\end{bmatrix}
+\end{align*}
+$$
+
+#### Scaling
+
+We scale each local coorindate so that we get:
+
+$$
+x_{s} = x(sx) \\
+y_{s} = y(sy)
+$$
+
+The transformation matrix __M__ required would be:
+
+$$
+\mathbf{M} =
+\begin{bmatrix}
+sx & 0 & 0 \\
+0 & sy & 0 \\
+0 & 0 & 1
+\end{bmatrix} 
+$$
+
+Then the product (the transformation) would be:
+
+$$
+\begin{align*}
+	\mathbf{p'} &=
+	\mathbf{pM} 
+	\\
+	&=
+	\begin{bmatrix}
+	x & y & 1
+	\end{bmatrix}  
+	\begin{bmatrix}
+	sx & 0 & 0 \\
+	0 & sy & 0 \\
+	0 & 0 & 1
+	\end{bmatrix}
+	\\
+	&= 
+	\begin{bmatrix}
+	x(sx) &
+	y(sy) &
+	1
+	\end{bmatrix}
+\end{align*}
+$$
+
+#### Rotation
+
+In this case, we need to adjust each local coordinate about a fixed central coordinate (no translation) as:
+
+$$
+x_{rot} = xcos{\alpha} - ysin{\alpha} \\ 
+y_{rot} = xsin{\alpha} + ycos{\alpha}
+$$
+
+With the same local coordinate __p__, the transformation matrix __M__ required would, when multiplied, yield the required result:
+
+$$
+\begin{align*}
+	\mathbf{p'} &= \mathbf{pM} 
+	\\ &= 
+	\begin{bmatrix}
+	x & y & 1
+	\end{bmatrix}  
+	\begin{bmatrix}
+	cos{\alpha} & sin{\alpha} & 0\\
+	-sin{\alpha} & cos{\alpha} & 0 \\
+	0 & 0 & 1
+	\end{bmatrix}
+	\\ 
+	&= 
+	\begin{bmatrix}
+	xcos{\alpha} - ysin{\alpha} &
+	xsin{\alpha} + ycos{\alpha} &
+	1
+	\end{bmatrix}
+\end{align*}
+$$
