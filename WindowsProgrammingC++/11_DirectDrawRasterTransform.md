@@ -1450,11 +1450,9 @@ The triangle deconstruction function is supported by flat top triangle and flat 
 To draw a flat top triangle:
 
 ```cpp
-void drawFlatTopTriangle(int x1, int y1,
-						 int x2, int y2,
-						 int x3, int y3,
-						 int colour, 
-						 UCHAR *dest_buffer, int mempitch){
+void drawFlatTopTriangle(
+	int x1, int y1, int x2, int y2, int x3, int y3,
+	int colour, UCHAR *dest_buffer, int mempitch){
 
 	float dx_right,    // the dx/dy ratio of the right edge of line
 		  dx_left,     // the dx/dy ratio of the left edge of line
@@ -1551,11 +1549,9 @@ void drawFlatTopTriangle(int x1, int y1,
 To draw a flat bottom triangle:
 
 ```cpp
-void drawFlatBottomTriangle(int x1, int y1,
-							int x2, int y2,
-							int x3, int y3,
-							int colour,
-							UCHAR *dest_buffer, int mempitch){
+void drawFlatBottomTriangle(
+	int x1, int y1, int x2, int y2, int x3, int y3, 
+	int colour, UCHAR *dest_buffer, int mempitch){
 
 	float dx_right,    // the dx/dy ratio of the right edge of line
 		dx_left,     // the dx/dy ratio of the left edge of line
@@ -1651,12 +1647,12 @@ void drawFlatBottomTriangle(int x1, int y1,
 
 Finally, to draw a triangle, with potential to deconstruct and build triangles with above helper methods:
 
+![](./MSVC2005/triangle_deconstruction_coords.png)
+
 ```cpp
-void drawTriangle2DI(int x1, int y1,
-					  int x2, int y2,
-					  int x3, int y3,
-					  int colour,
-					  UCHAR *dest_buffer, int mempitch){
+void drawTriangle2DI(
+	int x1, int y1, int x2, int y2, int x3, int y3,
+	int colour, UCHAR *dest_buffer, int mempitch){
 
 	int temp_x, // used for sorting
 		temp_y,
