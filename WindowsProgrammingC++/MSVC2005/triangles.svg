@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="triangles.svg"
+   inkscape:export-filename="triangles.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.84096521"
+     inkscape:cx="218.79621"
+     inkscape:cy="388.24436"
+     inkscape:window-width="1440"
+     inkscape:window-height="838"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="star"
+       style="fill:#808000;stroke:#000000;stroke-width:0.264583"
+       id="path333"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="34.608047"
+       sodipodi:cy="67.957626"
+       sodipodi:r1="21.030085"
+       sodipodi:r2="10.515043"
+       sodipodi:arg1="0.67941381"
+       sodipodi:arg2="1.7266114"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 50.968216,81.171609 32.976267,78.345284 14.984318,75.518957 26.427963,61.350634 37.871608,47.182313 44.419913,64.176961 Z"
+       inkscape:transform-center-x="0.050108979"
+       inkscape:transform-center-y="-5.2140672"
+       transform="rotate(-8.6545054,-126.96994,117.72971)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#808000;stroke:#000000;stroke-width:0.264583"
+       id="path333-1"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="34.608047"
+       sodipodi:cy="67.957626"
+       sodipodi:r1="21.030085"
+       sodipodi:r2="10.515043"
+       sodipodi:arg1="0.67941381"
+       sodipodi:arg2="1.7266114"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 50.968216,81.171609 32.976267,78.345284 14.984318,75.518957 26.427963,61.350634 37.871608,47.182313 44.419913,64.176961 Z"
+       inkscape:transform-center-x="-0.0010354657"
+       inkscape:transform-center-y="5.2566233"
+       transform="rotate(-68.921897,57.66602,92.442971)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#808000;stroke:#000000;stroke-width:0.264583"
+       id="path333-2"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="34.608047"
+       sodipodi:cy="67.957626"
+       sodipodi:r1="21.030085"
+       sodipodi:r2="10.515043"
+       sodipodi:arg1="0.67941381"
+       sodipodi:arg2="1.7266114"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 50.968216,81.171609 32.976267,78.345284 14.984318,75.518957 26.427963,61.350634 37.871608,47.182313 44.419913,64.176961 Z"
+       inkscape:transform-center-x="3.9443771"
+       inkscape:transform-center-y="1.0753794"
+       transform="matrix(0.87595969,0.57269745,-0.48752235,1.2018632,117.86881,-68.336435)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#808000;stroke:#000000;stroke-width:0.264583"
+       id="path333-2-7"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="34.608047"
+       sodipodi:cy="67.957626"
+       sodipodi:r1="21.030085"
+       sodipodi:r2="10.515043"
+       sodipodi:arg1="0.67941381"
+       sodipodi:arg2="1.7266114"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 50.968216,81.171609 32.976267,78.345284 14.984318,75.518957 26.427963,61.350634 37.871608,47.182313 44.419913,64.176961 Z"
+       inkscape:transform-center-x="3.3923933"
+       inkscape:transform-center-y="-53.678041"
+       transform="matrix(-1.0275145,-0.19875033,-0.00338687,-1.2969741,146.01999,198.06505)" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#808000;stroke:#000000;stroke-width:0.264583"
+       x="41.215042"
+       y="75.508469"
+       id="text554"><tspan
+         sodipodi:role="line"
+         id="tspan552"
+         style="stroke-width:0.264583"
+         x="41.215042"
+         y="75.508469" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
+       x="14.458237"
+       y="65.672401"
+       id="text558"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583;fill:#b3b3b3;stroke:#ececec"
+         x="14.458237"
+         y="65.672401"
+         id="tspan614">Flat bottom</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
+       x="20.678602"
+       y="135.79132"
+       id="text558-2"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583;fill:#b3b3b3;stroke:#ececec"
+         x="20.678602"
+         y="135.79132"
+         id="tspan614-8">Flat top</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
+       x="100.9899"
+       y="67.048409"
+       id="text558-5"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583;fill:#b3b3b3;stroke:#ececec"
+         x="100.9899"
+         y="67.048409"
+         id="tspan614-1">Right side major</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
+       x="101.21237"
+       y="136.23627"
+       id="text558-0"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583;fill:#b3b3b3;stroke:#ececec"
+         x="101.21237"
+         y="136.23627"
+         id="tspan614-5">Left side major</tspan></text>
+  </g>
+</svg>

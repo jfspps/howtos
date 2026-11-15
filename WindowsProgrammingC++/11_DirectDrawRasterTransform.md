@@ -371,6 +371,8 @@ case CLIP_CODE_N:
   } break;
 ```
 
+> __In all examples shown in this section__, the addition of 0.5 to the clipped coordinates is an additional term that is meant to address truncation at the endpoints. During `float` to `int` conversions, coordinates will in many cases be truncated (values greater than e.g. 4.5 are rounded to 4 on conversion). Without it, some polygons may appear slightly smaller or not fully characterised, so adding 0.5 is meant to be a compromise.
+
 The complete function:
 
 ```cpp
@@ -1373,5 +1375,59 @@ int rotatePolygon2DFM(POLYGON2DF_PTR polygon, int thetaDeg){
 
 	// return success
 	return(1);
+}
+```
+
+## Solid filled polygons
+
+To render filled polygons, one must draw each edge and then raster (or scan) each row within the polygon, filling in the area.
+
+This discussion will be limited to:
+
++ polygons (any number of sides) that are _convex_, i.e. no line segment exists in space that joins two points within the polygon that also crosses an area outside the polygon
++ polygons that do not have any edges that cross other edges (is a _simple polygon_)
+
+### Triangles
+
+There are four types of triangles to cover:
+
++ __flat top__: where the top two vertices have the same y-coordinate
++ __flat bottom__: where the bottom two vertices have the same y-coordinate
++ __right side major__: where all vertices have different y-coordinates, with the longest edge on the right-hand side
++ __left side major__: where all vertices have different y-coordinates, with the longest edge on the left-hand side
+
+![](./MSVC2005/triangles.png)
+
+As will be outlined shortly, quadrilaterals and other polygons with at least four sides can be broken down into triangles (a process referred to as _triangular deconstruction_).
+
+In general, a simple way to drawing triangles is to break down triangles and all other polygons into flat top or flat bottom triangles. This is because filling in flat top or flat bottom triangles is simpler, and only involves drawing lines within the triangle from the top or bottom, without being concerned about slopes:
+
+1. Compute the inverse of the gradient for each side of the flat top or flat bottom triangle, as _dx/dy_. The change in _x_ for each _y_ allows one to determine the width of the scanline.
+2. Start at the vertex with its own y-coordinate (i.e. opposite flat top or flat bottom edge) and set some initial conditions x<sub>left</sub>, x<sub>right</sub> and y.
+3. Add the inverted gradient _dx/dy_ of each side to x<sub>left</sub> and x<sub>right</sub> accordingly. This will set a trace between each edge.
+4. Draw the line.
+5. Repeat steps 3 and 4 until the full height of the triangle has been rasterised.
+
+Assuming we are working with __flat bottom__ triangles for now (i.e. triangular deconstruction is not required), then a suitable method would be:
+
+![](./MSVC2005/triangles_flat_bottom_filling.png)
+
+```cpp
+// inverted gradient for the left side
+float dxy_left = (x2 - x0)/(y2 - y0);
+
+// inverted gradient for the right side
+float dxy_right = (x2 - x1)/(y2 - y1);
+
+float x_start = x0;
+float x_end = x1;
+
+// note the upper vertex and lower edge are not drawn
+for (int y = y0; y <= y2; y++){
+	// assume colour is initialised/known
+  drawLine((int) (x_start + 0.5), (int) (x_end + 0.5), y, colour);
+
+  x_start += dxy_left;
+  x_end += dxy_right;
 }
 ```
