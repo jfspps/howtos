@@ -1756,14 +1756,15 @@ void drawTriangle2DI(
 		(x1 > maxClipX && x2 > maxClipX && x3 > maxClipX) )
 		return;
 
-	// test if top of triangle is flat
 	if (y1 == y2){
 
+		// this means (x3, y3) are the lower vertex;
 		// coords: (xleft, yleft), (xright, yright), (xb, yb)
 		drawFlatTopTriangle(x1, y1, x2, y2, x3, y3, colour, dest_buffer, mempitch);
 
 	} else if (y2 == y3){
 
+		// this means (x1, y1) are the top vertex;
 		// coords: (xt, yt), (xleft, yleft), (xright, yright)
 		drawFlatBottomTriangle(x1, y1, x2, y2, x3, y3, colour, dest_buffer, mempitch);
 
@@ -1781,3 +1782,17 @@ void drawTriangle2DI(
 ```
 
 Note, the application of [_fixed-point arithmetic_](https://en.wikipedia.org/wiki/Fixed-point_arithmetic#Comparison_with_floating-point) while more appropriate for much older game engines and CPUs, these days CPUs and GPUs have better support for floating-point arithmetic (as applied above).
+
+#### Quadrilaterals
+
+Assuming the quadrilateral coordinates are set out in a clockwise manner, one can deconstruct it as two triangles by taking one triangle as vertices 0, 1 and 3, and a second triangle as vertices 1, 2 and 3.
+
+```cpp
+void drawQuad2DI(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, 
+				 int colour, UCHAR* destBuffer, int memPitch){
+
+	// this assumes x0 to x3 are given in a clockwise manner
+	drawTriangle2DI(x0, y0, x1, y1, x3, y3, colour, destBuffer, memPitch);
+	drawTriangle2DI(x1, y1, x2, y2, x3, y3, colour, destBuffer, memPitch);
+}
+```
