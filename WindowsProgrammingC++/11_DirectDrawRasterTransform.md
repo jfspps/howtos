@@ -677,6 +677,8 @@ typedef struct POLYGON2DI_TYP {
 
 The naming convention `2DI` emphasises `int` (x, y). This is fine for now but will be updated to support `float` (x, y) as `2DF`, to maintain some level of accuracy during transformations (demonstrated later).
 
+The order in which each vertex is initialised clearly matters, since the action to draw a polygon will follow the sequence in the array and define the shape. In this article, it can be seen that vertices are listed in a clockwise manner.
+
 To initialise e.g. a triangle:
 
 ```cpp
@@ -738,7 +740,7 @@ int draw2DIPolygon8Bit(POLYGON2DI_PTR polygon, UCHAR *videoBuffer, int lPitch){
 
 ### Translation
 
-A _translation_ is a bout moving an object from one point to another. The global coordinates assume the origin is at the top-left corner of the viewport. It then follows that the translation by `(dx, dy)` to give the new global coordinates `(xt, yt)` is:
+A _translation_ is about moving an object from one point to another. The global coordinates assume the origin is at the top-left corner of the viewport. It then follows that the translation by `(dx, dy)` to give the new global coordinates `(xt, yt)` is:
 
 $$
 xt = x + dx; \\
@@ -865,7 +867,7 @@ x_{rot} = xcos{\alpha} - ysin{\alpha} \\
 y_{rot} = xsin{\alpha} + ycos{\alpha}
 $$
 
-To reduce demand on the application, one should devise a lookup table to convert between degrees and radians during initialisation:
+To reduce demand on the application, one can build a lookup table to convert between degrees and radians during initialisation:
 
 ```cpp
 const double PI = 3.1415926535;
@@ -1408,9 +1410,62 @@ In general, a simple way to drawing triangles is to break down triangles and all
 4. Draw the line.
 5. Repeat steps 3 and 4 until the full height of the triangle has been rasterised.
 
-Assuming we are working with __flat bottom__ triangles for now (i.e. triangular deconstruction is not required), then a suitable method would be:
-
 ![](./MSVC2005/triangles_flat_bottom_filling.png)
+
+The mathematical derivation is based on Cartesin coordinate systems. Going further, a gradient can be used to determine the new value of x for a change to one pixel in y.
+
+$$ 
+\begin{align*}
+	m &= \frac{y_{k} - y_{k-1}}{x_{k} - x_{k-1}}
+\end{align*}
+$$
+
+The coordinates $$(x_{k}, y_{k})$$ are on a scan line _above_ $$(x_{k-1}, y_{k-1})$$.
+
+If we apply an iterative loop and scan downwards, we have:
+
+$$
+y_{k-1} - y_{k} = 1
+$$
+
+Then solving for the value of $$x_{k}$$ at a lower scan line:
+
+$$
+\begin{align*}
+	\frac{1}{m} &= x_{k-1} - x_{k}
+	\\
+	x_{k-1} &= x_{k} + \frac{1}{m}
+\end{align*}
+$$
+
+Computing the inverse of the gradient for both left and right-hand edges yields the scan line coordinates.
+
+As an aside, for a flat top triangle for which scan lines go upwards, then
+
+$$ 
+\begin{align*}
+	m &= \frac{y_{k+1} - y_{k}}{x_{k+1} - x_{k}}
+\end{align*}
+$$
+
+With a change of scan line as:
+
+$$
+y_{k+1} - y_{k} = 1
+$$
+
+Then finally:
+
+
+$$
+\begin{align*}
+	\frac{1}{m} &= x_{k+1} - x_{k}
+	\\
+	x_{k+1} &= x_{k} + \frac{1}{m}
+\end{align*}
+$$
+
+Assuming we are working with __flat bottom__ triangles for now (i.e. triangular deconstruction is not required), then a suitable method would be:
 
 ```cpp
 // inverted gradient for the left side
@@ -1419,16 +1474,16 @@ float dxy_left = (x2 - x0)/(y2 - y0);
 // inverted gradient for the right side
 float dxy_right = (x2 - x1)/(y2 - y1);
 
-float x_start = x0;
-float x_end = x1;
+float x_left = x0;
+float x_right = x1;
 
 // note the upper vertex and lower edge are not drawn
 for (int y = y0; y <= y2; y++){
-	// assume colour is initialised/known
-  drawLine((int) (x_start + 0.5), (int) (x_end + 0.5), y, colour);
+  // assume colour is initialised/known
+  drawLine((int) (x_left + 0.5), (int) (x_right + 0.5), y, colour);
 
-  x_start += dxy_left;
-  x_end += dxy_right;
+  x_left += dxy_left;
+  x_right += dxy_right;
 }
 ```
 

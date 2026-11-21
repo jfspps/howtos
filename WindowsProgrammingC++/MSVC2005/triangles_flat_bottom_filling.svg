@@ -28,8 +28,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.1893044"
-     inkscape:cx="232.06842"
-     inkscape:cy="103.84221"
+     inkscape:cx="208.94567"
+     inkscape:cy="230.80718"
      inkscape:window-width="1440"
      inkscape:window-height="838"
      inkscape:window-x="-8"
@@ -59,7 +59,7 @@
        d="M 50.968216,81.171609 32.976267,78.345284 14.984318,75.518957 26.427963,61.350634 37.871608,47.182313 44.419913,64.176961 Z"
        inkscape:transform-center-x="0.050108979"
        inkscape:transform-center-y="-5.2140672"
-       transform="rotate(-8.6545054,-99.1818,-166.61054)" />
+       transform="rotate(-8.6545054,-94.056394,-136.65398)" />
     <text
        xml:space="preserve"
        style="font-size:3.175px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#808000;stroke:#000000;stroke-width:0.264583"
@@ -74,46 +74,83 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-       x="58.819466"
-       y="80.144859"
+       x="54.370087"
+       y="81.257202"
        id="text558"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-         x="58.819466"
-         y="80.144859"
+         x="54.370087"
+         y="81.257202"
          id="tspan614">Flat bottom</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-       x="62.384892"
-       y="20.166866"
+       x="57.935513"
+       y="21.279211"
        id="text558-9"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-         x="62.384892"
-         y="20.166866"
+         x="57.935513"
+         y="21.279211"
          id="tspan614-9">(x0, y0)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-       x="38.851517"
-       y="60.934525"
+       x="34.402138"
+       y="62.046871"
        id="text558-9-2"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-         x="38.851517"
-         y="60.934525"
+         x="34.402138"
+         y="62.046871"
          id="tspan614-9-6">(x2, y2)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-       x="82.232971"
-       y="60.26712"
+       x="77.783592"
+       y="61.379467"
        id="text558-9-2-4"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke:#ececec;stroke-width:0.264583"
-         x="82.232971"
-         y="60.26712"
+         x="77.783592"
+         y="61.379467"
          id="tspan493">(x1, y1)</tspan></text>
+    <path
+       style="fill:none;stroke:#f2f2f2;stroke-width:0.264583"
+       d="m 19.354801,10.678511 v 78.754017 l 86.762899,0"
+       id="path244" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:none;stroke:#f2f2f2;stroke-width:0.264583"
+       x="10.90098"
+       y="11.790856"
+       id="text1012"><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="10.90098"
+         y="11.790856"
+         id="tspan1014">+ y</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:none;stroke:#f2f2f2;stroke-width:0.264583"
+       x="100.69863"
+       y="93.474434"
+       id="text1012-4"><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="100.69863"
+         y="93.474434"
+         id="tspan1014-2">+ x</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:none;stroke:#f2f2f2;stroke-width:0.264583"
+       x="16.017767"
+       y="93.436966"
+       id="text1047"><tspan
+         sodipodi:role="line"
+         id="tspan1045"
+         style="stroke-width:0.264583"
+         x="16.017767"
+         y="93.436966">0</tspan></text>
   </g>
 </svg>
