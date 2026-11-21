@@ -28,7 +28,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.0565516"
-     inkscape:cx="219.10903"
+     inkscape:cx="220.05551"
      inkscape:cy="186.92887"
      inkscape:window-width="1440"
      inkscape:window-height="838"
@@ -111,24 +111,24 @@
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#b3b3b3;stroke:#f2f2f2;stroke-width:0.264583"
-       x="0.95253551"
-       y="78.971489"
+       x="97.114426"
+       y="100.50774"
        id="text2127-1-4"><tspan
          sodipodi:role="line"
          id="tspan2125-9-4"
          style="stroke-width:0.264583"
-         x="0.95253551"
-         y="78.971489">(x2, y2)</tspan></text>
+         x="97.114426"
+         y="100.50774">(x2, y2)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#b3b3b3;stroke:#f2f2f2;stroke-width:0.264583"
-       x="99.618645"
-       y="100.0069"
+       x="2.2046454"
+       y="79.221909"
        id="text2127-1-1"><tspan
          sodipodi:role="line"
          id="tspan2125-9-9"
          style="stroke-width:0.264583"
-         x="99.618645"
-         y="100.0069">(x3, y3)</tspan></text>
+         x="2.2046454"
+         y="79.221909">(x3, y3)</tspan></text>
   </g>
 </svg>
